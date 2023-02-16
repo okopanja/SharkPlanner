@@ -111,7 +111,7 @@ end
 
 function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
   local cycleNumber = self:_determineNumberOfModePresses()
-  for i=1,cycleNumber do
+  for i = 1,cycleNumber do
     self:abrisPressButton5(commands)
   end
 end
@@ -154,9 +154,32 @@ end
 
 function KA50IIICommandGenerator:_determineNumberOfModePresses()
   local mode = Export.GetDevice(9):get_mode()
-  result = 0
-  net.log("Mode: "..mode.master)
-  return result
+  mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
+  if mode == "0000" then
+    return 0
+  elseif mode == "9000" then
+    return 1
+  elseif self:starts_with(mode,"5") then
+    return 4
+  elseif mode == "5000" then
+    return 4
+  elseif mode == "5500" then
+    return 3
+  elseif mode == "5100" then
+    return 2
+  elseif mode == "5400" then
+    return 5
+  elseif mode == "5310" then
+    return 5
+  elseif mode == "5200" then
+    return 5
+  elseif mode == "5430" then
+    return 5
+  elseif mode == "5240" then
+    return 5
+  end
+  -- net.log("ABRIS Mode: "..mode)
+  return 5
 end
 
 -- Coordinates utility functions
@@ -184,4 +207,8 @@ function KA50IIICommandGenerator:_getLongitudeDigits(longitude)
     end
   end
   return result
+end
+
+function KA50IIICommandGenerator:starts_with(str, start)
+   return str:sub(1, #start) == start
 end
