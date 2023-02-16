@@ -181,7 +181,9 @@ local function loadFlightPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
-    waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
+    if commandGenerator ~= nil then
+      waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
+    end
     wayPoints = {}
   end
 
@@ -209,8 +211,6 @@ local function loadFlightPlanner()
     delayed_depress_commands = {}
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints))
   end
-
-
 
   local function initializeUI()
     -- check if window already exists
@@ -249,6 +249,7 @@ local function loadFlightPlanner()
         "Ctrl+Shift+y",
         function()
             log("Hotkey pressed!")
+            if aircraftModel == 'Ka-50_3' then
             -- if isMissionActive then
               if isHidden == true then
                   show()
@@ -256,6 +257,7 @@ local function loadFlightPlanner()
                   hide()
               end
             -- end
+            end
         end
     )
 
@@ -263,7 +265,6 @@ local function loadFlightPlanner()
     hide()
     log("Window creation completed")
   end
-
 
   eventHandlers = {}
 

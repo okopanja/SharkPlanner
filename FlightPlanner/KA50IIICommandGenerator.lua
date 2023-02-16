@@ -1,6 +1,7 @@
 require("FlightPlanner.BaseCommandGenerator")
 require("FlightPlanner.Command")
 require("math")
+
 -- require("net")
 
 
@@ -16,15 +17,15 @@ function BaseCommandGenerator:getMaximalTargetPointsCount()
   return 10
 end
 
-function KA50IIICommandGenerator:generateCommands(waypoints)
+function KA50IIICommandGenerator:generateCommands(waypoints, selfX, selfZ)
   commands = {}
-  self:preparePVI800Commands(waypoints, commands)
-  self:prepareABRISCommands(waypoints, commands)
+  self:preparePVI800Commands(commands, waypoints)
+  self:prepareABRISCommands(commands, waypoints, selfX, selfZ)
   return commands
 end
 
 -- main function for PVI commands
-function KA50IIICommandGenerator:preparePVI800Commands(waypoints, commands)
+function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints)
   -- entry of waypoints positions
   self:pvi800SwitchToEntryMode(commands)
   self:pvi800PressWaypointBtn(commands)
@@ -93,10 +94,70 @@ function KA50IIICommandGenerator:pvi800PressDigitBtn(commands, digit, comment)
 end
 
 -- Main function for ABRIS
-function KA50IIICommandGenerator:prepareABRISCommands(waypoints, commands)
+function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints, selfX, selfZ)
+  -- Place ABRIS into MENU mode, no matter in which mode it is currently in
+  self:abrisCycleToMenuMode(commands)
+  -- Workaround ABRIS/SNS drift (this occurs only on the first usage, but for simplicity we will repeat it every time)
+  self:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
+  -- Make sure there is no route loaded
+  self:abrisUnloadRoute(commands)
+  -- Start entering
+  self:abrisStartRouteEntry(commands)
+  -- Enter waypoints
+  self:abrisEnterRouteWaypoints(commands, selfX, selfZ, coords)
+  -- Complete and store route
+  self:abrisCompleteRouteEntry(commands)
+end
+
+function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
+  local cycleNumber = self:_determineNumberOfModePresses()
+  for i=1,cycleNumber do
+    self:abrisPressButton5(commands)
+  end
+end
+
+function KA50IIICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
+end
+
+function KA50IIICommandGenerator:abrisUnloadRoute(commands)
+end
+
+function KA50IIICommandGenerator:abrisStartRouteEntry(commands)
+end
+
+function KA50IIICommandGenerator:abrisEnterRouteWaypoints(commands, selfX, selfZ, positions)
+end
+
+function KA50IIICommandGenerator:abrisCompleteRouteEntry(commands)
 end
 -- Utility functions for ABRIS
 
+function KA50IIICommandGenerator:abrisPressButton1(commands)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 1"):setDevice(9):setCode(3001):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton2(commands)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 2"):setDevice(9):setCode(3002):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton3(commands)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 3"):setDevice(9):setCode(3003):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton4(commands)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 4"):setDevice(9):setCode(3004):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton5(commands)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 5"):setDevice(9):setCode(3005):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:_determineNumberOfModePresses()
+  local mode = Export.GetDevice(9):get_mode()
+  result = 0
+  net.log("Mode: "..mode.master)
+  return result
+end
 
 -- Coordinates utility functions
 function KA50IIICommandGenerator:_getLatitudeDigits(latitude)
