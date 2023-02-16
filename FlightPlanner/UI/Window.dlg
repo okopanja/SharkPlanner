@@ -1,0 +1,149 @@
+dialog = {
+    ["type"] = "Window",
+    ["params"] = {
+        ["bounds"] = {
+            [1] = {
+                ["x"] = 0,
+                ["y"] = 0,
+                ["w"] = 400,
+                ["h"] = 20
+            }
+        },
+        ["draggable"] = false,
+        ["enabled"] = true,
+        ["hasCursor"] = true,
+        ["lockFlow"] = false,
+        ["modal"] = false,
+        ["offscreen"] = false,
+        ["resizable"] = false,
+        ["zOrder"] = 150,
+        ["text"] = "Crosshair"
+    },
+    ["skin"] = {
+        ["params"] = {
+			       ["headerHeight"] = 0,
+             ["name"] = "windowSkin"
+        },
+        ["states"] = {
+            ["released"] = {
+                [1] = {
+                    ["bkg"] = {
+                        ["center_center"] = "0x00000000"
+                    }
+                }
+            }
+        }
+    },
+    ["children"] = {
+        ["HideButton"] = {
+            ["params"] = {
+                ["bounds"] = {
+                    ["x"] = 0,
+                    ["y"] = 0,
+                    ["h"] = 20,
+                    ["w"] = 50
+                },
+                ["enabled"] = true,
+                ["tabOrder"] = 0,
+                ["text"] = "Hide",
+                ["tooltip"] = "Hide Flight Planner",
+                ["visible"] = true,
+                ["zindex"] = 1
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "buttonSkinAwacs"
+                }
+            },
+            ["type"] = "Button"
+        },
+        ["AddWaypointButton"] = {
+            ["params"] = {
+                ["bounds"] = {
+                    ["x"] = 50,
+                    ["y"] = 0,
+                    ["h"] = 20,
+                    ["w"] = 50
+                },
+                ["enabled"] = true,
+                ["tabOrder"] = 0,
+                ["text"] = "Add",
+                ["tooltip"] = "Add Waypoint",
+                ["visible"] = true,
+                ["zindex"] = 1
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "buttonSkinAwacs"
+                }
+            },
+            ["type"] = "Button"
+        },
+        ["ResetButton"] = {
+            ["params"] = {
+                ["bounds"] = {
+                    ["x"] = 100,
+                    ["y"] = 0,
+                    ["h"] = 20,
+                    ["w"] = 50
+                },
+                ["enabled"] = true,
+                ["tabOrder"] = 0,
+                ["text"] = "Reset",
+                ["tooltip"] = "Reset",
+                ["visible"] = true,
+                ["zindex"] = 1
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "buttonSkinAwacs"
+                }
+            },
+            ["type"] = "Button"
+        },
+        ["TransferButton"] = {
+            ["params"] = {
+                ["bounds"] = {
+                    ["x"] = 150,
+                    ["y"] = 0,
+                    ["h"] = 20,
+                    ["w"] = 90
+                },
+                ["enabled"] = true,
+                ["tabOrder"] = 0,
+                ["text"] = "Transfer",
+                ["tooltip"] = "Transfer waypoints",
+                ["visible"] = true,
+                ["zindex"] = 1
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "buttonSkinAwacs"
+                }
+            },
+            ["type"] = "Button"
+        },
+        ["WaypointCounter"] = {
+    			["params"] = {
+    				["bounds"] = {
+              ["x"] = 240,
+              ["y"] = 0,
+    					["h"] = 20,
+    					["w"] = 50,
+    				},
+    				["enabled"] = true,
+    				["text"] = "",
+    				["tooltip"] = "",
+    				["visible"] = true,
+    				["zindex"] = 0,
+    			},
+    			["skin"] = {
+    				["params"] = {
+    					["name"] = "buttonSkinAwacs",
+--              ["name"] = "staticSkin_ME",
+    				},
+    			},
+    			["type"] = "Static",
+    		}
+    }
+}
