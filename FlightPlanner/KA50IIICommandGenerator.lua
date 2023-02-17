@@ -7,13 +7,51 @@ require("math")
 
 local default_delay = 100 -- default delay in ms
 
-KA50IIICommandGenerator = BaseCommandGenerator:new()
+-- classes to be used to handle rotations in different ABRIS ranges
+ABRISZoomRange = {}
+
+KA50IIICommandGenerator = {}
+KA50IIICommandGenerator._ranges = {}
+KA50IIICommandGenerator._zoomLevel = 10
+
+function KA50IIICommandGenerator:new()
+  o = BaseCommandGenerator:new()
+  setmetatable(o, self)
+  self.__index = self
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    150}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    200}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    250}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    300}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    500}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    600}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =    750}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   1000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   1250}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   1500}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   2000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   2500}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   3000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   4000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   5000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   6000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =   7500}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  10000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  12500}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  15000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  20000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  25000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  30000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  40000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range =  50000}
+  self._ranges[#self._ranges + 1] = ABRISZoomRange.new{level = #self._ranges + 1, range = 100000}
+  return o
+end
 
 function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
 
-function BaseCommandGenerator:getMaximalTargetPointsCount()
+function KA50IIICommandGenerator:getMaximalTargetPointsCount()
   return 10
 end
 
@@ -112,7 +150,7 @@ end
 function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
   local cycleNumber = self:_determineNumberOfModePresses()
   for i = 1,cycleNumber do
-    self:abrisPressButton5(commands)
+    self:abrisPressButton5(commands, "Cycle mode")
   end
 end
 
@@ -120,9 +158,33 @@ function KA50IIICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX,
 end
 
 function KA50IIICommandGenerator:abrisUnloadRoute(commands)
+  -- ABRIS: plan mode
+  self:abrisPressButton3(commands, "Plan mode")
+  -- ABRIS: activate select menu
+  self:abrisPressButton1(commands, "Activate select menu")
+  -- ABRIS: select menu move down 2 entries (this will be split into 4 increments of 0.4)
+  for i = 1,4 do
+    self:abrisRotate(commands, 0.4, "Rotate menu: "..i.."/4")
+  end
+  -- ABRIS: activate unload option
+  self:abrisPressButton1(commands, "Activate unload option")
+  -- ABRIS: activate select menu again
+  self:abrisPressButton1(commands, "Activate select menu again")
+  -- ABRIS: move menu back 2 entries
+  for i = 1,4 do
+    self:abrisRotate(commands, -0.4, "Rotate menu: "..i.."/4")
+  end
+  -- ABRIS: now switch to menu mode again
+  self:abrisPressButton5(commands, "Switch to main menu")
 end
 
 function KA50IIICommandGenerator:abrisStartRouteEntry(commands)
+  -- ABRIS: plan mode
+  self:abrisPressButton3(commands, "Plan mode")
+  -- ABRIS: activate EDIT menu
+  self:abrisPressButton2(commands, "activate EDIT menu")
+  -- ABRIS: zoom in to maximum to make sure we start with known zoom level 0
+  self:abrisFullZoom(commands)
 end
 
 function KA50IIICommandGenerator:abrisEnterRouteWaypoints(commands, selfX, selfZ, positions)
@@ -131,25 +193,45 @@ end
 function KA50IIICommandGenerator:abrisCompleteRouteEntry(commands)
 end
 -- Utility functions for ABRIS
-
-function KA50IIICommandGenerator:abrisPressButton1(commands)
-  commands[#commands + 1] = Command:new():setName("ABRIS: press button 1"):setDevice(9):setCode(3001):setDelay(default_delay):setIntensity(1):setDepress(true)
+function KA50IIICommandGenerator:abrisPressButton1(commands, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 1"):setComment(comment):setDevice(9):setCode(3001):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
 
-function KA50IIICommandGenerator:abrisPressButton2(commands)
-  commands[#commands + 1] = Command:new():setName("ABRIS: press button 2"):setDevice(9):setCode(3002):setDelay(default_delay):setIntensity(1):setDepress(true)
+function KA50IIICommandGenerator:abrisPressButton2(commands, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 2"):setComment(comment):setDevice(9):setCode(3002):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
 
-function KA50IIICommandGenerator:abrisPressButton3(commands)
-  commands[#commands + 1] = Command:new():setName("ABRIS: press button 3"):setDevice(9):setCode(3003):setDelay(default_delay):setIntensity(1):setDepress(true)
+function KA50IIICommandGenerator:abrisPressButton3(commands, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 3"):setComment(comment):setDevice(9):setCode(3003):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
 
-function KA50IIICommandGenerator:abrisPressButton4(commands)
-  commands[#commands + 1] = Command:new():setName("ABRIS: press button 4"):setDevice(9):setCode(3004):setDelay(default_delay):setIntensity(1):setDepress(true)
+function KA50IIICommandGenerator:abrisPressButton4(commands, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 4"):setComment(comment):setDevice(9):setCode(3004):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
 
-function KA50IIICommandGenerator:abrisPressButton5(commands)
-  commands[#commands + 1] = Command:new():setName("ABRIS: press button 5"):setDevice(9):setCode(3005):setDelay(default_delay):setIntensity(1):setDepress(true)
+function KA50IIICommandGenerator:abrisPressButton5(commands, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 5"):setComment(comment):setDevice(9):setCode(3005):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisRotate(commands, intensity, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: rotate"):setComment(comment):setDevice(9):setCode(3006):setDelay(0):setIntensity(intensity):setDepress(false)
+end
+
+function KA50IIICommandGenerator:abrisFullZoom(commands)
+  self:abrisZoomIn(commands, #self._ranges)
+end
+
+function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
+  if relativeZoomLevel < 0 then
+    return
+  end
+  for i = 1, relativeZoomLevel do
+    self:abrisPressButton3(commands, 1, "ZoomIn")
+  end
+  self._zoomLevel = self._zoomLevel - relativeZoomLevel
+end
+
+function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
 end
 
 function KA50IIICommandGenerator:_determineNumberOfModePresses()
@@ -211,4 +293,31 @@ end
 
 function KA50IIICommandGenerator:starts_with(str, start)
    return str:sub(1, #start) == start
+end
+
+
+function ABRISZoomRange:new(o)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  self.ROTATION_TO_SCREEN_FACTOR = 1.23456
+  self.HORIZONTAL_ROTATIONS = 10
+  self.VERTICAL_ROTATIONS = 8
+  self.vertical = self.range * self.VERTICAL_ROTATIONS / self.ROTATION_TO_SCREEN_FACTOR
+  self.horizontal = self.range * self.HORIZONTAL_ROTATIONS / self.ROTATION_TO_SCREEN_FACTOR
+
+  return o
+end
+
+function ABRISZoomRange:getLevel()
+  return self.level
+end
+
+function ABRISZoomRange:toRotationsX(deltaX)
+  return self.VERTICAL_ROTATIONS * deltaX / self.vertical
+end
+
+function ABRISZoomRange:toRotationsZ(deltaZ)
+  return self.HORIZONTAL_ROTATIONS * deltaZ / self.horizontal
 end
