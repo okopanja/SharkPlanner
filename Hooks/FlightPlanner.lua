@@ -1,4 +1,4 @@
-
+DEBUG_ENABLED=true
 
 local function loadFlightPlanner()
   package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
@@ -209,6 +209,7 @@ local function loadFlightPlanner()
     -- transferButton:setEnabled(false)
     -- create list of commands for delayed depress, initially empty
     delayed_depress_commands = {}
+    commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints))
   end
 
@@ -282,6 +283,7 @@ local function loadFlightPlanner()
       log("Detected: "..aircraftModel)
       log("Creating command generator")
       commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+      saveDump("commandGenerator", commandGenerator)
       if commandGenerator ~= nil then
         log("Command generator created: "..aircraftModel)
       else
@@ -302,6 +304,7 @@ local function loadFlightPlanner()
     isMissionActive = false
     aircraftModel = nil
     commandFactoryGenerator = nil
+    commandGenerator = nil
     hide()
   end
 
