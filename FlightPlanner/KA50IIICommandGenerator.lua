@@ -60,8 +60,8 @@ end
 
 function KA50IIICommandGenerator:generateCommands(waypoints)
   commands = {}
-  self:preparePVI800Commands(commands, waypoints)
   self:prepareABRISCommands(commands, waypoints)
+  self:preparePVI800Commands(commands, waypoints)
   return commands
 end
 
