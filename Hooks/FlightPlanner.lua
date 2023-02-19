@@ -283,7 +283,7 @@ local function loadFlightPlanner()
       log("Detected: "..aircraftModel)
       log("Creating command generator")
       commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
-      saveDump("commandGenerator", commandGenerator)
+      -- saveDump("commandGenerator", commandGenerator)
       if commandGenerator ~= nil then
         log("Command generator created: "..aircraftModel)
       else
