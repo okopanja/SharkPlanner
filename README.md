@@ -2,7 +2,7 @@
 FlightPlanner is a mod for entry of waypoints into ABRIS and PVI-800, based on selection of locations from F10 map within DCS. It is 100% implemented in LUA and integrates into the DCS UI.
 ## FAQ
 ### How it works?
-FlightPlanner runs as a LUA script hook and is able to utilize DCS's native UI in order to deliver minimalistic UI without requireing external application.
+FlightPlanner runs as a LUA script hook and is able to utilize DCS's native UI in order to deliver minimalistic UI without requiring external application.
 ### Do I need binary?
 No, FlightPlanner runs within the DCS as such does not require external tools to run. 
 ### Which DCS versions are supported?
@@ -37,5 +37,5 @@ To remove FlightPlanner
 1. Delete file **%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\FlightPlanner.lua** or **%USERPROFILE%\Saved Games\DCS\Scripts\Hooks\FlightPlanner.lua** depending on version of the DCS you are using.
 2. Delete folder **%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\FlightPlanner** or **%USERPROFILE%\Saved Games\DCS\Scripts\FlightPlanner** depending on version of the DCS you are using.
 ## Kudos
-* [TheWay](https://github.com/aronCiucu/DCSTheWay) is a very cool project which enabled entry of waypoints for a rather large number of DCS airframes . My initial idea was to provide the code contribution to [TheWay](https://github.com/aronCiucu/DCSTheWay/pull/24/), but ABRIS proved to be very challanging to implement within existing framework and resulted in large changes that could not be easily harmonized and test with existing code base. [TheWay](https://github.com/aronCiucu/DCSTheWay) remains to be the most comprehensive software for waypoint entry in DCS and is highly recommended to use. 
+* [TheWay](https://github.com/aronCiucu/DCSTheWay) is a very cool project which enabled entry of waypoints for a rather large number of DCS airframes . My initial idea was to provide the code contribution to [TheWay](https://github.com/aronCiucu/DCSTheWay/pull/24/), but ABRIS proved to be very challanging to implement within existing framework and resulted in large changes that could not be easily harmonized and tested with existing code base. [TheWay](https://github.com/aronCiucu/DCSTheWay) remains to be the most comprehensive software for waypoint entry in DCS and is highly recommended to use. 
 * [DCS Scratchpad](https://github.com/rkusa/dcs-scratchpad) provided the idea how to inject the UI and trigger it with a keyboard shortcut.
