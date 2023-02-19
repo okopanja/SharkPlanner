@@ -166,6 +166,10 @@ local function loadFlightPlanner()
     local geoCoordinates = Export.LoLoCoordinatesToGeoCoordinates(x, z)
     local wp = Position:new{x = x, y = elevation, z = z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
     -- saveDump("geoCoordinates", geoCoordinates)
+    -- ensure waypoints is created
+    if wayPoints == nil then
+      wayPoints = {}
+    end
     wayPoints[#wayPoints + 1] = wp
     waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
 
