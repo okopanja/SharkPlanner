@@ -1,0 +1,36 @@
+name: FlightPlanner -> package, create realase(on tag)
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  publish:
+    runs-on: ubuntu-latest 
+    permissions: 
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare versions for EXE file 
+        uses: actions/github-script@v6
+        id: set_version
+        with:
+          script: |
+            const tag = context.ref.substring(10)
+            const tag_no_v = context.ref.substring(11)
+            console.log(tag)            
+            core.setOutput('tag', tag)
+            core.setOutput('tag-no-v', tag_no_v)
+        if: startsWith(github.ref, 'refs/tags/')            
+      - name: Package
+        run: |
+          tree
+          echo "VERSION_INFO=\"${{steps.set_version.outputs.tag-no-v}}\"" > FlightPlanner/VersionInfo.lua
+          zip -9 -r FlightPlanner-${{steps.set_version.outputs.tag-no-v}}.zip Hooks FlightPlanner README.md LICENSE
+        if: startsWith(github.ref, 'refs/tags/')            
+      - name: Create release and upload asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: FlightPlanner-${{steps.set_version.outputs.tag-no-v}}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}

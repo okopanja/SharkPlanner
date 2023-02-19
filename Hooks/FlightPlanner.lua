@@ -14,7 +14,7 @@ local function loadFlightPlanner()
   local Tools = require("tools")
   local U = require("me_utilities")
   -- local utils = require("FlightPlanner.utils")
-  -- local waypoint = require("FlightPlanner.Waypoint")
+  require("FlightPlanner.VersionInfo")
   require("FlightPlanner.utils")
   require("FlightPlanner.Position")
   local CommandGeneratorFactory = require("FlightPlanner.CommandGeneratorFactory")
@@ -39,6 +39,8 @@ local function loadFlightPlanner()
   local function log(message)
     net.log("[FlightPlanner] "..message)
   end
+
+  log("Version: "..VERSION_INFO)
 
   function saveDump(dump_name, reference)
     local file = io.open(lfs.writedir() .."\\Scripts\\dumps\\"..dump_name..".lua",'w')
