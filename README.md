@@ -1,25 +1,25 @@
 # FlightPlanner
-FlightPlanner is a mod for entry of waypoints into ABRIS and PVI-800, based on selection of locations from F10 map within DCS. It is 100% implemented in LUA and integrates into the DCS UI.
+FlightPlanner is a mod for entry of waypoints into **ABRIS** and **PVI-800** of DCS Ka-50 attack helicopter. It is 100% implemented in LUA and integrates into the DCS UI.
 ## FAQ
-### How it works?
+### How does it work?
 FlightPlanner runs as a LUA script hook and is able to utilize DCS's native UI in order to deliver minimalistic UI without requiring external application.
 ### Do I need binary?
-No, FlightPlanner runs within the DCS as such does not require external tools to run. 
+No, FlightPlanner runs within the DCS as such does not require external tools to run.
 ### Which DCS versions are supported?
-Minimal requirement is *2.8* either *stable* or **openbeta**. 
+Minimal requirement is **2.8** either **stable** or **openbeta**. 
 ### Which airframes are supported?
 - BlackShark 3: Ka-50 version 2022 (implemented)
 - BlackShark 3: Ka-50 version 2011 (planned)
 - BlackShark 2: Ka-50 (planned)
 ### How do I report bugs?
-Open the (issues)[https://github.com/okopanja/FlightPlanner/issues], read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
+Open the [issues](https://github.com/okopanja/FlightPlanner/issues), read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
 Please try to be precise and provide the steps for reproduction and if needed:
 - screenshots if available
 - links to video if available
 - mission file if available (needs to be renamed into zip, I recommend my_mission.miz.zip)
 - dcs.log
 ## Installation instructions
-1. Download the latest (release)[https://github.com/okopanja/FlightPlanner/releases]. The needed file is named: FlightPlanner-VERSION.zip
+1. Download the latest [release](https://github.com/okopanja/FlightPlanner/releases). The needed file is named: FlightPlanner-VERSION.zip
 2. Unpack the content of the zip file into **%USERPROFILE%\Saved Games\DCS.openbeta\Scripts** or **%USERPROFILE%\Saved Games\DCS\Scripts** depending on version of the DCS you are using.
 3. Start or restart DCS
 ## Usage instractions
