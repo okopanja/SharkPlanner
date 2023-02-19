@@ -323,7 +323,7 @@ local function loadFlightPlanner()
     return last_due_command_index
   end
 
-  local minimalInterval = 0.010
+  local minimalInterval = 0.001
   local lastTime = DCS.getModelTime()
 
   function eventHandlers.onSimulationFrame()
@@ -380,6 +380,11 @@ local function loadFlightPlanner()
           -- remove depressed commands (includes both depressed and those that were moved to delayed depress queue)
           for i = 1, last_scheduled_command do
             table.remove(commands, 1)
+          end
+          -- invalidate commands
+          if #commands == 0 then
+            log("Commands have been fully executed.")
+            commands = nil
           end
         end
       end

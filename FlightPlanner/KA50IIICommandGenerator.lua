@@ -361,7 +361,7 @@ function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
     return
   end
   for i = 1, relativeZoomLevel do
-    self:abrisPressButton3(commands, "ZoomIn", 100)
+    self:abrisPressButton3(commands, "ZoomIn", 10)
   end
   self.zoomLevel = math.max(self.zoomLevel - relativeZoomLevel, 0)
   net.log("abrisZoomIn Zoom Level: "..self.zoomLevel)
@@ -374,7 +374,7 @@ function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
     return
   end
   for i = 1, relativeZoomLevel do
-    self:abrisPressButton4(commands, "ZoomOut", 100)
+    self:abrisPressButton4(commands, "ZoomOut", 10)
   end
   self.zoomLevel = math.min(self.zoomLevel + relativeZoomLevel, #self._ranges)
   net.log("abrisZoomOut Zoom Level: "..self.zoomLevel)
