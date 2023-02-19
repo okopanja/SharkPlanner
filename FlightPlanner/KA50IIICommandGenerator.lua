@@ -1,30 +1,72 @@
 require("FlightPlanner.BaseCommandGenerator")
 require("FlightPlanner.Command")
+require("FlightPlanner.Position")
+require("FlightPlanner.ABRISZoomRange")
 require("math")
+
 -- require("net")
 
 
 local default_delay = 100 -- default delay in ms
 
-KA50IIICommandGenerator = BaseCommandGenerator:new()
+
+KA50IIICommandGenerator = {}
+
+function KA50IIICommandGenerator:new(o)
+  --o = BaseCommandGenerator:new()
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+  -- self.
+  self._ranges = {
+    ABRISZoomRange:new{level = 0, range =     150},
+    ABRISZoomRange:new{level = 1, range =     200},
+    ABRISZoomRange:new{level = 2, range =     250},
+    ABRISZoomRange:new{level = 3, range =     300},
+    ABRISZoomRange:new{level = 4, range =     500},
+    ABRISZoomRange:new{level = 5, range =     600},
+    ABRISZoomRange:new{level = 6, range =     750},
+    ABRISZoomRange:new{level = 7, range =    1000},
+    ABRISZoomRange:new{level = 8, range =    1250},
+    ABRISZoomRange:new{level = 9, range =    1500},
+    ABRISZoomRange:new{level = 10, range =   2000},
+    ABRISZoomRange:new{level = 11, range =   2500},
+    ABRISZoomRange:new{level = 12, range =   3000},
+    ABRISZoomRange:new{level = 13, range =   4000},
+    ABRISZoomRange:new{level = 14, range =   5000},
+    ABRISZoomRange:new{level = 15, range =   6000},
+    ABRISZoomRange:new{level = 16, range =   7500},
+    ABRISZoomRange:new{level = 17, range =  10000},
+    ABRISZoomRange:new{level = 18, range =  12500},
+    ABRISZoomRange:new{level = 19, range =  15000},
+    ABRISZoomRange:new{level = 20, range =  20000},
+    ABRISZoomRange:new{level = 21, range =  25000},
+    ABRISZoomRange:new{level = 22, range =  30000},
+    ABRISZoomRange:new{level = 23, range =  40000},
+    ABRISZoomRange:new{level = 24, range =  50000},
+    ABRISZoomRange:new{level = 25, range = 100000}
+  }
+  self.zoomLevel = 10
+  return o
+end
 
 function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
 
-function BaseCommandGenerator:getMaximalTargetPointsCount()
+function KA50IIICommandGenerator:getMaximalTargetPointsCount()
   return 10
 end
 
 function KA50IIICommandGenerator:generateCommands(waypoints)
   commands = {}
-  self:preparePVI800Commands(waypoints, commands)
-  self:prepareABRISCommands(waypoints, commands)
+  self:prepareABRISCommands(commands, waypoints)
+  self:preparePVI800Commands(commands, waypoints)
   return commands
 end
 
 -- main function for PVI commands
-function KA50IIICommandGenerator:preparePVI800Commands(waypoints, commands)
+function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints)
   -- entry of waypoints positions
   self:pvi800SwitchToEntryMode(commands)
   self:pvi800PressWaypointBtn(commands)
@@ -93,10 +135,280 @@ function KA50IIICommandGenerator:pvi800PressDigitBtn(commands, digit, comment)
 end
 
 -- Main function for ABRIS
-function KA50IIICommandGenerator:prepareABRISCommands(waypoints, commands)
+function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints)
+  net.log("prepareABRISCommands, zoom level: "..self.zoomLevel)
+
+  -- current location of aircraft is needed for relative entry of waypoints
+  local selfData = Export.LoGetSelfData()
+  local selfX = selfData["Position"]["x"]
+  local selfZ = selfData["Position"]["z"]
+  -- Place ABRIS into MENU mode, no matter in which mode it is currently in
+  self:abrisCycleToMenuMode(commands)
+  net.log("abrisCycleToMenuMode, zoom level: "..self.zoomLevel)
+  -- Workaround ABRIS/SNS drift (this occurs only on the first usage, but for simplicity we will repeat it every time)
+  self:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
+  -- Make sure there is no route loaded
+  self:abrisUnloadRoute(commands)
+  -- Start entering
+  self:abrisStartRouteEntry(commands)
+  -- Enter waypoints
+  self:abrisEnterRouteWaypoints(commands, waypoints, selfX, selfZ)
+  -- Complete and store route
+  self:abrisCompleteRouteEntry(commands)
+end
+
+function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
+  local cycleNumber = self:_determineNumberOfModePresses()
+  for i = 1,cycleNumber do
+    self:abrisPressButton5(commands, "Cycle mode", nil)
+  end
+end
+
+function KA50IIICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
+  net.log("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
+
+  local dummyRoute = {}
+  dummyRoute[#dummyRoute + 1] = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
+  net.log("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
+  self:abrisUnloadRoute(commands)
+  net.log("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
+  self:abrisStartRouteEntry(commands)
+  net.log("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
+  self:abrisEnterRouteWaypoints(commands, dummyRoute, selfX, selfZ)
+  net.log("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
+  self:abrisCompleteRouteEntry(commands)
+  for i = 1, 4 do
+    self:abrisPressButton5(commands, "Cycle mode")
+  end
+end
+
+function KA50IIICommandGenerator:abrisUnloadRoute(commands)
+  -- ABRIS: plan mode
+  self:abrisPressButton3(commands, "Plan mode", 0)
+  -- ABRIS: activate select menu
+  self:abrisPressButton1(commands, "Activate select menu", 0)
+  -- ABRIS: select menu move down 2 entries (this will be split into 4 increments of 0.4)
+  for i = 1,4 do
+    self:abrisRotate(commands, 0.4, "Rotate menu: "..i.."/4")
+  end
+  -- ABRIS: activate unload option
+  self:abrisPressButton1(commands, "Activate unload option", 0)
+  -- ABRIS: activate select menu again
+  self:abrisPressButton1(commands, "Activate select menu again", 0)
+  -- ABRIS: move menu back 2 entries
+  for i = 1,4 do
+    self:abrisRotate(commands, -0.4, "Rotate menu: "..i.."/4")
+  end
+  -- ABRIS: now switch to menu mode again
+  self:abrisPressButton5(commands, "Switch to main menu", 0)
+end
+
+function KA50IIICommandGenerator:abrisStartRouteEntry(commands)
+  -- ABRIS: plan mode
+  self:abrisPressButton3(commands, "Plan mode", 0)
+  -- ABRIS: activate EDIT menu
+  self:abrisPressButton2(commands, "activate EDIT menu", 0)
+  -- ABRIS: zoom in to maximum to make sure we start with known zoom level 0
+  self:abrisFullZoom(commands)
+end
+
+function KA50IIICommandGenerator:abrisEnterRouteWaypoints(commands, waypoints, selfX, selfZ)
+  net.log("abrisEnterRouteWaypoints, zoom level "..self.zoomLevel)
+  -- create initial waypoint from current location
+  local previous = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
+  -- add waypoints
+  for i, waypoint in pairs(waypoints) do
+    if i == 1 then
+      -- first entry does not require edit/insert command
+      self:abrisAddWaypoint(commands, previous, waypoint, false)
+    else
+      -- other wayppints require edit/insert commands
+      self:abrisAddWaypoint(commands, previous, waypoint, true)
+    end
+    -- allocated current waypoint to priorWaypoint for next iteration
+    previous = waypoint
+  end
+end
+
+function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, isNotFirst)
+  -- Calculate deltaX and deltaZ to the prior coordinate
+  local deltaX = waypoint:getX() - previous:getX()
+  local deltaZ = waypoint:getZ() - previous:getZ()
+  -- first waypoint does not need edit/insert
+  if isNotFirst then
+    self:abrisStartNextWaypoint(commands)
+  end
+  -- determine the smallest bounding Z range
+  local range = self:findSmallestBoundingZRange(previous, waypoint)
+  net.log("Smallest Z range: "..range:getLevel())
+  -- ABRIS: zoom to the bounding range
+  self:abrisZoomToRange(commands, range:getLevel())
+  local rotationsZ = range:toRotationsZ(deltaZ)
+  -- ABRIS: rotate dial for Z
+  self:abrisRotateEx(commands, rotationsZ, 20, true,"Rotate Z")
+  -- ABRIS: switch to X entry
+  self:abrisPressRotateButton(commands, "Switch to X entry", 1)
+  -- determine the smallest bounding X range
+  range = self:findSmallestBoundingXRange(previous, waypoint);
+  net.log("Smallest X range: "..range:getLevel())
+  -- ABRIS: zoom to the bounding range
+  self:abrisZoomToRange(commands, range:getLevel())
+  -- calculate number of dial rotations
+  local rotationsX = range:toRotationsX(deltaX)
+  -- ABRIS: rotate dial for X
+  self:abrisRotateEx(commands, rotationsX, 20, true,"Rotate X")
+  -- ABRIS: complete entry of waypoint
+  self:abrisStartNextWaypoint(commands)
+end
+
+function KA50IIICommandGenerator:abrisStartNextWaypoint(commands)
+  -- ABRIS: edit
+  self:abrisPressButton1(commands, "Edit", 100) -- 1
+  -- ABRIS: add
+  self:abrisPressButton1(commands, "Add", 100) -- 1
+end
+
+function KA50IIICommandGenerator:findSmallestBoundingZRange(previous, waypoint)
+  for i, range in pairs(self._ranges) do
+    net.log("Checking Z level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
+    if range:areBothPointsWithinZRange(previous, waypoint) then
+      return range
+    end
+  end
+  -- we should never reach here until ED creates larger MAPS than current BS3 can handle
+  -- if this happens self:_ranges must be extended accordingly, but at this moment we can not anticipate future ranges
+  return nil
+end
+
+function KA50IIICommandGenerator:findSmallestBoundingXRange(previous, waypoint)
+  for i, range in pairs(self._ranges) do
+    net.log("Checking X level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
+    if range:areBothPointsWithinXRange(previous, waypoint) then
+      return range
+    end
+  end
+  -- we should never reach here until ED creates larger MAPS than current BS3 can handle
+  -- if this happens self:_ranges must be extended accordingly, but at this moment we can not anticipate future ranges
+  return nil
+end
+
+function KA50IIICommandGenerator:abrisCompleteRouteEntry(commands)
+  -- ABRIS: Switch back to PLAN
+  self:abrisPressButton5(commands, "Switch back to PLAN", 0)
+  -- ABRIS: activate the route
+  self:abrisPressButton4(commands, "Activate the route", 0)
 end
 -- Utility functions for ABRIS
+function KA50IIICommandGenerator:abrisPressButton1(commands, comment, delay)
+  delay = delay or default_delay
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 1"):setComment(comment):setDevice(9):setCode(3001):setDelay(delay):setIntensity(1):setDepress(true)
+end
 
+function KA50IIICommandGenerator:abrisPressButton2(commands, comment, delay)
+  delay = delay or default_delay
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 2"):setComment(comment):setDevice(9):setCode(3002):setDelay(delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton3(commands, comment, delay)
+  delay = delay or default_delay
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 3"):setComment(comment):setDevice(9):setCode(3003):setDelay(delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton4(commands, comment, delay)
+  delay = delay or default_delay
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 4"):setComment(comment):setDevice(9):setCode(3004):setDelay(delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisPressButton5(commands, comment, delay)
+  delay = delay or default_delay
+  commands[#commands + 1] = Command:new():setName("ABRIS: press button 5"):setComment(comment):setDevice(9):setCode(3005):setDelay(delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisRotate(commands, intensity, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: rotate"):setComment(comment):setDevice(9):setCode(3006):setDelay(0):setIntensity(intensity):setDepress(false)
+end
+
+function KA50IIICommandGenerator:abrisRotateEx(commands, intensity, delay, depress, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: rotate"):setComment(comment):setDevice(9):setCode(3006):setDelay(delay):setIntensity(intensity):setDepress(depress)
+end
+
+function KA50IIICommandGenerator:abrisPressRotateButton(commands, comment)
+  commands[#commands + 1] = Command:new():setName("ABRIS: press rotate button"):setComment(comment):setDevice(9):setCode(3007):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:abrisZoomToRange(commands, level)
+  local delta = level - self.zoomLevel
+  net.log("Requested zoom: "..level)
+  net.log("Current zoom: "..self.zoomLevel)
+  net.log("Delta: "..delta)
+  if delta < 0 then
+    self:abrisZoomIn(commands, -delta)
+  else
+    self:abrisZoomOut(commands, delta)
+  end
+  net.log("POST Requested zoom: "..level)
+  net.log("POST Current zoom: "..self.zoomLevel)
+  net.log("POST Delta: "..delta)
+end
+
+function KA50IIICommandGenerator:abrisFullZoom(commands)
+  self:abrisZoomIn(commands, #self._ranges)
+end
+
+function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
+  net.log("abrisZoomIn relativeZoomLevel: "..relativeZoomLevel)
+  if relativeZoomLevel < 0 then
+    return
+  end
+  for i = 1, relativeZoomLevel do
+    self:abrisPressButton3(commands, "ZoomIn", 20)
+  end
+  self.zoomLevel = math.max(self.zoomLevel - relativeZoomLevel, 0)
+  net.log("abrisZoomIn Zoom Level: "..self.zoomLevel)
+end
+
+function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
+  net.log("abrisZoomOut Zoom Level: "..self.zoomLevel)
+  net.log("abrisZoomOut relativeZoomLevel: "..relativeZoomLevel)
+  if relativeZoomLevel < 0 then
+    return
+  end
+  for i = 1, relativeZoomLevel do
+    self:abrisPressButton4(commands, "ZoomOut", 20)
+  end
+  self.zoomLevel = math.min(self.zoomLevel + relativeZoomLevel, #self._ranges)
+  net.log("abrisZoomOut Zoom Level: "..self.zoomLevel)
+end
+
+function KA50IIICommandGenerator:_determineNumberOfModePresses()
+  local mode = Export.GetDevice(9):get_mode()
+  mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
+  if mode == "0000" then
+    return 0
+  elseif mode == "9000" then
+    return 1
+  elseif self:starts_with(mode,"5") then
+    return 4
+  elseif mode == "5000" then
+    return 4
+  elseif mode == "5500" then
+    return 3
+  elseif mode == "5100" then
+    return 2
+  elseif mode == "5400" then
+    return 5
+  elseif mode == "5310" then
+    return 5
+  elseif mode == "5200" then
+    return 5
+  elseif mode == "5430" then
+    return 5
+  elseif mode == "5240" then
+    return 5
+  end
+  -- net.log("ABRIS Mode: "..mode)
+  return 5
+end
 
 -- Coordinates utility functions
 function KA50IIICommandGenerator:_getLatitudeDigits(latitude)
@@ -123,4 +435,8 @@ function KA50IIICommandGenerator:_getLongitudeDigits(longitude)
     end
   end
   return result
+end
+
+function KA50IIICommandGenerator:starts_with(str, start)
+   return str:sub(1, #start) == start
 end

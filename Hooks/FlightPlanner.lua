@@ -1,4 +1,4 @@
-
+DEBUG_ENABLED=false
 
 local function loadFlightPlanner()
   package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
@@ -14,7 +14,7 @@ local function loadFlightPlanner()
   local Tools = require("tools")
   local U = require("me_utilities")
   -- local utils = require("FlightPlanner.utils")
-  -- local waypoint = require("FlightPlanner.Waypoint")
+  require("FlightPlanner.VersionInfo")
   require("FlightPlanner.utils")
   require("FlightPlanner.Position")
   local CommandGeneratorFactory = require("FlightPlanner.CommandGeneratorFactory")
@@ -39,6 +39,8 @@ local function loadFlightPlanner()
   local function log(message)
     net.log("[FlightPlanner] "..message)
   end
+
+  log("Version: "..VERSION_INFO)
 
   function saveDump(dump_name, reference)
     local file = io.open(lfs.writedir() .."\\Scripts\\dumps\\"..dump_name..".lua",'w')
@@ -166,6 +168,10 @@ local function loadFlightPlanner()
     local geoCoordinates = Export.LoLoCoordinatesToGeoCoordinates(x, z)
     local wp = Position:new{x = x, y = elevation, z = z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
     -- saveDump("geoCoordinates", geoCoordinates)
+    -- ensure waypoints is created
+    if wayPoints == nil then
+      wayPoints = {}
+    end
     wayPoints[#wayPoints + 1] = wp
     waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
 
@@ -181,7 +187,9 @@ local function loadFlightPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
-    waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
+    if commandGenerator ~= nil then
+      waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
+    end
     wayPoints = {}
   end
 
@@ -207,10 +215,9 @@ local function loadFlightPlanner()
     -- transferButton:setEnabled(false)
     -- create list of commands for delayed depress, initially empty
     delayed_depress_commands = {}
+    commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints))
   end
-
-
 
   local function initializeUI()
     -- check if window already exists
@@ -249,6 +256,7 @@ local function loadFlightPlanner()
         "Ctrl+Shift+y",
         function()
             log("Hotkey pressed!")
+            if aircraftModel == 'Ka-50_3' then
             -- if isMissionActive then
               if isHidden == true then
                   show()
@@ -256,6 +264,7 @@ local function loadFlightPlanner()
                   hide()
               end
             -- end
+            end
         end
     )
 
@@ -263,7 +272,6 @@ local function loadFlightPlanner()
     hide()
     log("Window creation completed")
   end
-
 
   eventHandlers = {}
 
@@ -281,6 +289,7 @@ local function loadFlightPlanner()
       log("Detected: "..aircraftModel)
       log("Creating command generator")
       commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+      -- saveDump("commandGenerator", commandGenerator)
       if commandGenerator ~= nil then
         log("Command generator created: "..aircraftModel)
       else
@@ -301,6 +310,7 @@ local function loadFlightPlanner()
     isMissionActive = false
     aircraftModel = nil
     commandFactoryGenerator = nil
+    commandGenerator = nil
     hide()
   end
 
@@ -315,7 +325,7 @@ local function loadFlightPlanner()
     return last_due_command_index
   end
 
-  local minimalInterval = 0.010
+  local minimalInterval = 0.001
   local lastTime = DCS.getModelTime()
 
   function eventHandlers.onSimulationFrame()
@@ -372,6 +382,11 @@ local function loadFlightPlanner()
           -- remove depressed commands (includes both depressed and those that were moved to delayed depress queue)
           for i = 1, last_scheduled_command do
             table.remove(commands, 1)
+          end
+          -- invalidate commands
+          if #commands == 0 then
+            log("Commands have been fully executed.")
+            commands = nil
           end
         end
       end
