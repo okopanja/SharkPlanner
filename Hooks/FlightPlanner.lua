@@ -1,4 +1,4 @@
-DEBUG_ENABLED=true
+DEBUG_ENABLED=false
 
 local function loadFlightPlanner()
   package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
