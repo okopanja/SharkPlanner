@@ -6,8 +6,6 @@ function KA50IICommandGenerator:_determineNumberOfModePresses()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   if mode == "0000" then
     return 0
-  elseif self:starts_with(mode,"5") then
-    return 3
   elseif mode == "5000" then
     return 3
   elseif mode == "5500" then
@@ -24,6 +22,8 @@ function KA50IICommandGenerator:_determineNumberOfModePresses()
     return 4
   elseif mode == "5240" then
     return 4
+  elseif self:starts_with(mode,"5") then
+    return 3
   end
   -- net.log("ABRIS Mode: "..mode)
   return 4

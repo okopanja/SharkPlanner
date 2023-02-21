@@ -209,11 +209,6 @@ local function loadFlightPlanner()
 
   local function transfer()
     log("Transfer")
-    -- hideButton:setEnabled(true)
-    -- addWaypointButton:setEnabled(false)
-    -- resetButton:setEnabled(false)
-    -- transferButton:setEnabled(false)
-    -- create list of commands for delayed depress, initially empty
     delayed_depress_commands = {}
     commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints))
@@ -249,16 +244,19 @@ local function loadFlightPlanner()
       end
     )
 
-
     log("Adding hotkey callback")
     -- add open/close hotkey
     window:addHotKeyCallback(
         "Ctrl+Shift+y",
         function()
             log("Hotkey pressed!")
-            if aircraftModel == 'Ka-50_3' then
+            local currentAircraftModel = CommandGeneratorFactory.getCurrentAirframe()
+            if CommandGeneratorFactory.isSupported(currentAircraftModel) then
             -- if isMissionActive then
               if isHidden == true then
+                  if currentAircraftModel ~= aircraftModel then
+                    eventHandlers.onSimulationStart()
+                  end
                   show()
               else
                   hide()
@@ -282,36 +280,42 @@ local function loadFlightPlanner()
         log("Windows is not yet created")
         initializeUI()
     end
-    local selfData = Export.LoGetSelfData()
-    if selfData ~= nil then
-      log("selfData is not nil")
-      aircraftModel = selfData["Name"]
+    aircraftModel = CommandGeneratorFactory.getCurrentAirframe()
+    if aircraftModel ~= nil then
       log("Detected: "..aircraftModel)
-      log("Creating command generator")
-      commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
-      -- saveDump("commandGenerator", commandGenerator)
-      if commandGenerator ~= nil then
-        log("Command generator created: "..aircraftModel)
+      if CommandGeneratorFactory.isSupported(aircraftModel) then
+        log("Airframe is supported: "..aircraftModel)
+        log("Creating command generator")
+        commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+        if commandGenerator ~= nil then
+          log("Command generator for was created")
+        else
+          log("Command generator for was not created")
+        end
+        reset()
       else
-        log("Command generator not available for: "..aircraftModel)
+        log("Airframe is not supported: "..aircraftModel)
       end
-      reset()
-    else
-      log("selfData is nil")
     end
   end
 
-  -- function eventHandlers.onPlayerChangeSlot(id)
-  --   log("Player slot changed")
-  --   eventHandlers.onSimulationStart()
-  -- end
-
   function eventHandlers.onSimulationStop()
+    log("Simulation stopped")
     isMissionActive = false
     aircraftModel = nil
-    commandFactoryGenerator = nil
     commandGenerator = nil
     hide()
+  end
+
+  function eventHandlers.onPlayerChangeSlot(id)
+    local my_id = net.get_my_player_id()
+    if id == my_id then
+      log("User has changed slot")
+      isMissionActive = false
+      aircraftModel = nil
+      commandGenerator = nil
+      hide()
+    end
   end
 
   function find_last_due_command_index(command_list, reference_time)
@@ -332,9 +336,7 @@ local function loadFlightPlanner()
     -- ensure we run command checks at most every 10 miliseconds
     local current_time = DCS.getModelTime()
     if( lastTime + minimalInterval <= current_time) then
-      if commandGenerator == nil then
-        eventHandlers.onSimulationStart()
-      end
+      lastTime = current_time
       if commands ~= nil then
         -- determine what can be depressed
         local last_command_due_for_depress = find_last_due_command_index(delayed_depress_commands, current_time)

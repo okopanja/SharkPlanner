@@ -60,6 +60,9 @@ end
 
 function KA50IIICommandGenerator:generateCommands(waypoints)
   commands = {}
+  local mode = Export.GetDevice(9):get_mode()
+  mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
+  net.log("ABRIS mode: "..mode)
   self:prepareABRISCommands(commands, waypoints)
   self:preparePVI800Commands(commands, waypoints)
   return commands
@@ -387,8 +390,6 @@ function KA50IIICommandGenerator:_determineNumberOfModePresses()
     return 0
   elseif mode == "9000" then
     return 1
-  elseif self:starts_with(mode,"5") then
-    return 4
   elseif mode == "5000" then
     return 4
   elseif mode == "5500" then
@@ -404,6 +405,8 @@ function KA50IIICommandGenerator:_determineNumberOfModePresses()
   elseif mode == "5430" then
     return 5
   elseif mode == "5240" then
+    return 5
+  elseif self:starts_with(mode,"5") then
     return 5
   end
   -- net.log("ABRIS Mode: "..mode)
