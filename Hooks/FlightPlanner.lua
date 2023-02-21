@@ -336,7 +336,7 @@ local function loadFlightPlanner()
     -- ensure we run command checks at most every 10 miliseconds
     local current_time = DCS.getModelTime()
     if( lastTime + minimalInterval <= current_time) then
-      lastTime = current_time
+      -- lastTime = current_time
       if commands ~= nil then
         -- determine what can be depressed
         local last_command_due_for_depress = find_last_due_command_index(delayed_depress_commands, current_time)

@@ -70,6 +70,13 @@ end
 
 -- main function for PVI commands
 function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints)
+  -- cycle waypoint, fixpoints, airports (to ensure proper mode), then select waypoint 1
+  self:pvi800PressWaypointBtn(commands)
+  self:pvi800PressFixpointBtn(commands)
+  self:pvi800PressAirfieldBtn(commands)
+  self:pvi800PressNavTargetBtn(commands)
+  self:pvi800PressWaypointBtn(commands)
+  self:pvi800PressDigitBtn(commands, 1, "Waypoint: 1")
   -- entry of waypoints positions
   self:pvi800SwitchToEntryMode(commands)
   self:pvi800PressWaypointBtn(commands)
@@ -120,6 +127,19 @@ end
 function KA50IIICommandGenerator:pvi800PressWaypointBtn(commands)
   commands[#commands + 1] = Command:new():setName("PVI-800: press Waypoint button"):setDevice(20):setCode(3011):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
+
+function KA50IIICommandGenerator:pvi800PressFixpointBtn(commands)
+  commands[#commands + 1] = Command:new():setName("PVI-800: press Waypoint button"):setDevice(20):setCode(3013):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:pvi800PressAirfieldBtn(commands)
+  commands[#commands + 1] = Command:new():setName("PVI-800: press Waypoint button"):setDevice(20):setCode(3015):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:pvi800PressNavTargetBtn(commands)
+  commands[#commands + 1] = Command:new():setName("PVI-800: press Waypoint button"):setDevice(20):setCode(3017):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
 
 function KA50IIICommandGenerator:pvi800PressEnterBtn(commands)
   commands[#commands + 1] = Command:new():setName("PVI-800: press Enter button"):setDevice(20):setCode(3018):setDelay(default_delay):setIntensity(1):setDepress(true)
