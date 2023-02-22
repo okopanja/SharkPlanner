@@ -159,15 +159,19 @@ local function loadFlightPlanner()
     return w['x']['x'] == 0 and w['x']['y'] == -1 and w['x']['z'] == 0 and w['y']['x'] == 1 and w['y']['y'] == 0 and w['y']['z'] == 0 and w['z']['x'] == 0 and w['z']['y'] == 0 and w['z']['z'] == 1
   end
 
+  local function logPosition(w)
+    log( "cameraPosition: {\n"..
+      "x={"..w['x']['x']..", y="..w['x']['y']..", z="..w['x']['z'].."}\n"..
+      "y={"..w['y']['x']..", y="..w['y']['y']..", z="..w['y']['z'].."}\n"..
+      "z={"..w['z']['x']..", z="..w['z']['y']..", z="..w['z']['z'].."}\n"..
+      "p={"..w['p']['x']..", y="..w['p']['y']..", z="..w['p']['z'].."}\n}"
+    )
+  end
+
   local function addWaypoint()
     log("Add waypoint")
     local cameraPosition = Export.LoGetCameraPosition()
-    log( "cameraPosition: {\n"..
-      "x={"..cameraPosition['x']['x']..", y="..cameraPosition['x']['y']..", z="..cameraPosition['x']['z'].."}\n"..
-      "y={"..cameraPosition['y']['x']..", y="..cameraPosition['y']['y']..", z="..cameraPosition['y']['z'].."}\n"..
-      "z={"..cameraPosition['z']['x']..", y="..cameraPosition['z']['y']..", z="..cameraPosition['z']['z'].."}\n"..
-      "p={"..cameraPosition['p']['x']..", y="..cameraPosition['p']['y']..", z="..cameraPosition['p']['z'].."}\n}"
-    )
+    logPosition(cameraPosition)
     if isValidWaypoint(cameraPosition) == false then
       log("Invalid waypoint, ignoring")
       return
