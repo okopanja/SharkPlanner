@@ -2,8 +2,8 @@ CommandGeneratorFactory = {}
 
 if DEBUG_ENABLED ~= true then
   net.log("Debug mode is disabled")
-  require("FlightPlanner.KA50IIICommandGenerator")
-  require("FlightPlanner.KA50IICommandGenerator")
+  require("SharkPlanner.KA50IIICommandGenerator")
+  require("SharkPlanner.KA50IICommandGenerator")
   -- Declare the module name and the corresponding command generator
   CommandGeneratorFactory.supported = {}
   CommandGeneratorFactory.supported["Ka-50_3"] = KA50IIICommandGenerator
@@ -31,8 +31,8 @@ end
 function CommandGeneratorFactory.isSupported(name)
   if DEBUG_ENABLED == true then
     net.log("Debug mode is enabled")
-    dofile(lfs.writedir().."Scripts\\FlightPlanner\\KA50IIICommandGenerator.lua")
-    dofile(lfs.writedir().."Scripts\\FlightPlanner\\KA50IICommandGenerator.lua")
+    dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IIICommandGenerator.lua")
+    dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IICommandGenerator.lua")
     CommandGeneratorFactory.supported = {}
     CommandGeneratorFactory.supported["Ka-50_3"] = KA50IIICommandGenerator
     CommandGeneratorFactory.supported["Ka-50_3 2011"] = KA50IICommandGenerator

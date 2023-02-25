@@ -1,7 +1,7 @@
-require("FlightPlanner.BaseCommandGenerator")
-require("FlightPlanner.Command")
-require("FlightPlanner.Position")
-require("FlightPlanner.ABRISZoomRange")
+require("SharkPlanner.BaseCommandGenerator")
+require("SharkPlanner.Command")
+require("SharkPlanner.Position")
+require("SharkPlanner.ABRISZoomRange")
 require("math")
 
 -- require("net")
