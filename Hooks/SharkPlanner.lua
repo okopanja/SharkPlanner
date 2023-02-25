@@ -1,23 +1,23 @@
 DEBUG_ENABLED=false
 
-local function loadFlightPlanner()
+local function loadSharkPlanner()
   package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
 
   local DialogLoader = require("DialogLoader")
   local dxgui = require('dxgui')
   local Input = require("Input")
   local lfs = require("lfs")
-  -- package.path = package.path .. ";"..lfs.writedir().."Scripts\\FlightPlanner\\?.lua;"
+  -- package.path = package.path .. ";"..lfs.writedir().."Scripts\\SharkPlanner\\?.lua;"
   local Skin = require("Skin")
   local SkinUtils = require("SkinUtils")
   local Terrain = require('terrain')
   local Tools = require("tools")
   local U = require("me_utilities")
-  -- local utils = require("FlightPlanner.utils")
-  require("FlightPlanner.VersionInfo")
-  require("FlightPlanner.utils")
-  require("FlightPlanner.Position")
-  local CommandGeneratorFactory = require("FlightPlanner.CommandGeneratorFactory")
+  -- local utils = require("SharkPlanner.utils")
+  require("SharkPlanner.VersionInfo")
+  require("SharkPlanner.utils")
+  require("SharkPlanner.Position")
+  local CommandGeneratorFactory = require("SharkPlanner.CommandGeneratorFactory")
 
   local window = nil
   local crosshairWindow = nil
@@ -37,7 +37,7 @@ local function loadFlightPlanner()
   -- local keyboardLocked = true
 
   local function log(message)
-    net.log("[FlightPlanner] "..message)
+    net.log("[SharkPlanner] "..message)
   end
 
   log("Version: "..VERSION_INFO)
@@ -107,7 +107,7 @@ local function loadFlightPlanner()
   local function createCrosshairWindow()
     log("Creating crosshair window")
     crosshairWindow = DialogLoader.spawnDialogFromFile(
-        lfs.writedir() .. "Scripts\\FlightPlanner\\UI\\CrosshairWindow.dlg"
+        lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\CrosshairWindow.dlg"
     )
     -- crosshair picture location depends on user DCS folder, therefore we will reload the skin by constructing definite path at runtime
     local skin = crosshairWindow.WaypointCrosshair:getSkin()
@@ -131,7 +131,7 @@ local function loadFlightPlanner()
     log("Creating window")
     x, y, w, h = crosshairWindow:getBounds()
     window = DialogLoader.spawnDialogFromFile(
-        lfs.writedir() .. "Scripts\\FlightPlanner\\UI\\Window.dlg"
+        lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\Window.dlg"
     )
     log("Setting bounds")
     window:setBounds(x, y - 20, w, 20)
@@ -435,7 +435,7 @@ local function loadFlightPlanner()
   DCS.setUserCallbacks(eventHandlers)
 end
 
-local status, err = pcall(loadFlightPlanner)
+local status, err = pcall(loadSharkPlanner)
 if not status then
-    net.log("[FlightPlanner] load error: " .. tostring(err))
+    net.log("[SharkPlanner] load error: " .. tostring(err))
 end

@@ -1,4 +1,4 @@
-require("FlightPlanner.KA50IIICommandGenerator")
+require("SharkPlanner.KA50IIICommandGenerator")
 KA50IICommandGenerator = KA50IIICommandGenerator:new()
 
 function KA50IICommandGenerator:_determineNumberOfModePresses()
