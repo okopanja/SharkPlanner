@@ -1,1 +1,1 @@
-VERSION_INFO="unversioned"
+VERSION_INFO="0.0.0"

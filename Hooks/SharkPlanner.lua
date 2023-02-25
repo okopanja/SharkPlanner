@@ -21,12 +21,15 @@ local function loadSharkPlanner()
 
   local window = nil
   local crosshairWindow = nil
+  local statusWindow = nil
   local windowDefaultSkin = nil
   local windowSkinHidden = Skin.windowSkinChatMin()
   local hideButton = nil
   local addWaypointButton = nil
   local resetButton = nil
   local transferButton = nil
+  local statusStatic = nil
+  local versionInfoStatic = nil
   local isHidden = true
   local isMissionActive = false
   local aircraftModel = nil
@@ -69,16 +72,26 @@ local function loadSharkPlanner()
     window:setVisible(true)
     window:setSkin(windowDefaultSkin)
     window:setHasCursor(true)
+    statusWindow:setVisible(true)
     crosshairWindow.WaypointCrosshair:setVisible(true)
     crosshairWindow:setVisible(true)
 
-    -- show all widgets
+    -- show all widgets on control window
     local count = window:getWidgetCount()
   	for i = 1, count do
   		local index 		= i - 1
   		local widget 		= window:getWidget(index)
       widget:setVisible(true)
     end
+
+    -- show all widgets on status window
+    local count = statusWindow:getWidgetCount()
+  	for i = 1, count do
+  		local index 		= i - 1
+  		local widget 		= window:getWidget(index)
+      widget:setVisible(true)
+    end
+
     -- DCS.unlockKeyboardInput(false)
     isHidden = false
   end
@@ -89,7 +102,7 @@ local function loadSharkPlanner()
     window:setSkin(windowSkinHidden)
     -- window:setVisible(false) -- do not do this!!!
 
-    -- hide all widgets!
+    -- hide all widgets on conrol window
   	local count = window:getWidgetCount()
   	for i = 1, count do
   		local index 		= i - 1
@@ -97,8 +110,19 @@ local function loadSharkPlanner()
       widget:setVisible(false)
       widget:setFocused(false)
     end
-
     window:setHasCursor(false)
+
+    -- hide all widgets on conrol window
+  	local count = statusWindow:getWidgetCount()
+  	for i = 1, count do
+  		local index 		= i - 1
+  		local widget 		= window:getWidget(index)
+      widget:setVisible(false)
+      widget:setFocused(false)
+    end
+    statusWindow:setHasCursor(false)
+    statusWindow:setVisible(false)
+
     crosshairWindow:setVisible(false)
     -- unlockKeyboardInput()
     isHidden = true
@@ -127,14 +151,47 @@ local function loadSharkPlanner()
     return crosshairWindow
   end
 
+  local function createStatusWindow(crosshairWindow)
+    log("Creating status window")
+    local x, y, w, h = crosshairWindow:getBounds()
+    statusWindow = DialogLoader.spawnDialogFromFile(
+        lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\StatusWindow.dlg"
+    )
+
+    local skin = statusWindow.Status:getSkin()
+    skin.skinData.states.released[1].text.horzAlign.type = "min"
+    statusWindow.Status:setSkin(skin)
+
+    local screenWidth, screenHeight = dxgui.GetScreenSize()
+    log("StatusWindow: setting bounds below crosshair")
+    statusWindow:setBounds(x, y + h, w, 20)
+    statusStatic = statusWindow.Status
+    versionInfoStatic = statusWindow.VersionInfo
+    versionInfoStatic:setText(VERSION_INFO)
+    log("Showing StatusWindow")
+    statusWindow:setVisible(true)
+    return statusWindow
+  end
+
   local function createControlWindow(crosshairWindow)
     log("Creating window")
-    x, y, w, h = crosshairWindow:getBounds()
+    local x, y, w, h = crosshairWindow:getBounds()
     window = DialogLoader.spawnDialogFromFile(
         lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\Window.dlg"
     )
+
+    -- calculate actual width
+    local totalWidth = 0
+  	for i = 1, window:getWidgetCount() do
+  		local index 		= i - 1
+  		local widget 		= window:getWidget(index)
+      local x, y, w, h = widget:getBounds()
+      totalWidth = totalWidth + w
+    end
+    -- calculate offset to make it center aligned
+    local offsetX = (w - totalWidth) / 2
     log("Setting bounds")
-    window:setBounds(x, y - 20, w, 20)
+    window:setBounds(x + offsetX, y - 20, w, 20)
     hideButton = window.HideButton
     addWaypointButton = window.AddWaypointButton
     resetButton = window.ResetButton
@@ -195,7 +252,7 @@ local function loadSharkPlanner()
     end
     wayPoints[#wayPoints + 1] = wp
     waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
-
+    statusStatic:setText("Waypoint added.")
     -- prevent further entry
     if #wayPoints == commandGenerator:getMaximalWaypointCount() then
       addWaypointButton:setEnabled(false)
@@ -208,6 +265,8 @@ local function loadSharkPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
+    statusStatic:setText("")
+
     if commandGenerator ~= nil then
       waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
     end
@@ -233,6 +292,7 @@ local function loadSharkPlanner()
     delayed_depress_commands = {}
     commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints))
+    statusStatic:setText("Transfer started")
   end
 
   local function initializeUI()
@@ -242,6 +302,7 @@ local function loadSharkPlanner()
     end
     crosshairWindow = createCrosshairWindow()
     window = createControlWindow(crosshairWindow)
+    statusWindow = createStatusWindow(crosshairWindow)
 
     -- register UI callbacks
     hideButton:addMouseDownCallback(
@@ -424,6 +485,7 @@ local function loadSharkPlanner()
           -- invalidate commands
           if #commands == 0 then
             log("Commands have been fully executed.")
+            statusStatic:setText("Transfer completed")
             commands = nil
           end
         end
