@@ -15,7 +15,6 @@ local function loadSharkPlanner()
   local U = require("me_utilities")
   -- local utils = require("SharkPlanner.utils")
   require("SharkPlanner.VersionInfo")
-  require("SharkPlanner.utils")
   require("SharkPlanner.Position")
   local CommandGeneratorFactory = require("SharkPlanner.CommandGeneratorFactory")
 
@@ -44,12 +43,6 @@ local function loadSharkPlanner()
   end
 
   log("Version: "..VERSION_INFO)
-
-  function saveDump(dump_name, reference)
-    local file = io.open(lfs.writedir() .."\\Scripts\\dumps\\"..dump_name..".lua",'w')
-    file:write(dump(dump_name,reference))
-    file:close()
-  end
 
   local function unlockKeyboardInput()
       if keyboardLocked then
