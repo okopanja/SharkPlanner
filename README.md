@@ -8,9 +8,9 @@ No, FlightPlanner runs within the DCS, and as such does not require external too
 ### Which DCS versions are supported?
 Minimal requirement is **2.8** either **stable** or **openbeta**.
 ### Which airframes are supported?
-- BlackShark 3: Ka-50 version 2022 (implemented)
-- BlackShark 3: Ka-50 version 2011 (planned)
-- BlackShark 2: Ka-50 (planned)
+- BlackShark 3: Ka-50 version 2022
+- BlackShark 3: Ka-50 version 2011
+- BlackShark 2: Ka-50
 ### How do I report bugs?
 Open the [issues](https://github.com/okopanja/FlightPlanner/issues), read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
 Please try to be precise and provide the steps for reproduction and if needed:
@@ -26,12 +26,12 @@ Please try to be precise and provide the steps for reproduction and if needed:
 1. Start DCS
 2. Hop into your Black Shark
 3. Switch to F10 mode
-4. Hit: **LCTRL+LSHIFT+y**
+4. Hit: **CTRL+SHIFT+SPACE**
 5. You should see a crosshair in the middle of screen. Above crosshair the following buttons are located: **Hide**, **Add**, **Reset**, **Transfer** as well as label showing current and maximal number of waypoints.
 6. Use your mouse to zoom and pan to your point of interest, and use **Add** button to select your waypoints.
 7. Once you add at least one waypoint, you can click on **Transfer** button and FlightPlanner will start entering waypoints into ABRIS and PVI-800. It is recommended to do this on ground for maximal accuracy. 
 8. If you would like to create a new route, hit **Reset** and go to step 5.
-9. To hide FlightPlanner hit again: **LCTRL+LSHIFT+y**
+9. To hide FlightPlanner hit again: **CTRL+SHIFT+SPACE**
 ## Removal instructions
 To remove FlightPlanner:
 1. Delete file **%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\FlightPlanner.lua** or **%USERPROFILE%\Saved Games\DCS\Scripts\Hooks\FlightPlanner.lua** depending on version of the DCS you are using.

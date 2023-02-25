@@ -174,6 +174,7 @@ local function loadFlightPlanner()
     logPosition(cameraPosition)
     if isValidWaypoint(cameraPosition) == false then
       log("Invalid waypoint, ignoring")
+      addWaypointButton:setEnabled(true)
       return
     end
 
@@ -253,9 +254,19 @@ local function loadFlightPlanner()
         addWaypoint()
       end
     )
+    addWaypointButton:addMouseUpCallback(
+      function(self)
+        addWaypointButton:setFocused(false)
+      end
+    )
     resetButton:addMouseDownCallback(
       function(self)
         reset()
+      end
+    )
+    resetButton:addMouseUpCallback(
+      function(self)
+        resetButton:setFocused(false)
       end
     )
     transferButton:addMouseDownCallback(
@@ -263,11 +274,16 @@ local function loadFlightPlanner()
         transfer()
       end
     )
+    transferButton:addMouseUpCallback(
+      function(self)
+        transferButton:setFocused(false)
+      end
+    )
 
     log("Adding hotkey callback")
     -- add open/close hotkey
     window:addHotKeyCallback(
-        "Ctrl+Shift+y",
+        "Ctrl+Shift+space",
         function()
             log("Hotkey pressed!")
             local currentAircraftModel = CommandGeneratorFactory.getCurrentAirframe()
