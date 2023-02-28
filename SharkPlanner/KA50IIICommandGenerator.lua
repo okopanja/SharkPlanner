@@ -10,7 +10,9 @@ require("math")
 local default_delay = 100 -- default delay in ms
 
 
-KA50IIICommandGenerator = {}
+-- KA50IIICommandGenerator = {}
+KA50IIICommandGenerator = BaseCommandGenerator:new()
+
 
 function KA50IIICommandGenerator:new(o)
   --o = BaseCommandGenerator:new()
@@ -54,11 +56,11 @@ function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
 
-function KA50IIICommandGenerator:getMaximalTargetPointsCount()
+function KA50IIICommandGenerator:getMaximalTargetPointCount()
   return 10
 end
 
-function KA50IIICommandGenerator:generateCommands(waypoints)
+function KA50IIICommandGenerator:generateCommands(waypoints, targets)
   commands = {}
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)

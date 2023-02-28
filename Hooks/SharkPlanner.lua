@@ -27,12 +27,14 @@ local function loadSharkPlanner()
   local addWaypointButton = nil
   local resetButton = nil
   local transferButton = nil
+  local waypointTargetCheckBox = nil
   local statusStatic = nil
   local versionInfoStatic = nil
   local isHidden = true
   local isMissionActive = false
   local aircraftModel = nil
   local wayPoints = nil
+  local targets = nil
   local commandGenerator = nil
   local commands = nil
   local delayed_depress_commands = nil
@@ -157,7 +159,7 @@ local function loadSharkPlanner()
 
     local screenWidth, screenHeight = dxgui.GetScreenSize()
     log("StatusWindow: setting bounds below crosshair")
-    statusWindow:setBounds(x, y + h, w, 20)
+    statusWindow:setBounds(x, y + h, w, 30)
     statusStatic = statusWindow.Status
     versionInfoStatic = statusWindow.VersionInfo
     versionInfoStatic:setText(VERSION_INFO)
@@ -184,12 +186,16 @@ local function loadSharkPlanner()
     -- calculate offset to make it center aligned
     local offsetX = (w - totalWidth) / 2
     log("Setting bounds")
-    window:setBounds(x + offsetX, y - 20, w, 20)
+    window:setBounds(x + offsetX, y - 30, w, 30)
     hideButton = window.HideButton
     addWaypointButton = window.AddWaypointButton
     resetButton = window.ResetButton
     transferButton = window.TransferButton
     waypointCounterStatic = window.WaypointCounter
+    waypointTargetCheckBox = window.WaypointTargetCheckBox
+    waypointTargetCheckBox:setTooltipText("Waypoint entry")
+    waypointTargetCheckBox:setState(false)
+
     log("Getting default skin")
     windowDefaultSkin = window:getSkin()
     log("Showing the control window")
@@ -203,6 +209,7 @@ local function loadSharkPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(true)
     transferButton:setEnabled(false)
+    waypointTargetCheckBox:setState(false)
   end
 
   local function isValidWaypoint(w)
@@ -216,6 +223,20 @@ local function loadSharkPlanner()
       "z={"..w['z']['x']..", z="..w['z']['y']..", z="..w['z']['z'].."}\n"..
       "p={"..w['p']['x']..", y="..w['p']['y']..", z="..w['p']['z'].."}\n}"
     )
+  end
+
+  local function updateWayPointUIState()
+    if waypointTargetCheckBox:getState() == false then
+      waypointTargetCheckBox:setTooltipText("Waypoint entry")
+      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
+      -- prevent further entry if maximal number reached
+      addWaypointButton:setEnabled(#wayPoints < commandGenerator:getMaximalWaypointCount())
+    else
+      waypointTargetCheckBox:setTooltipText("Target entry")
+      waypointCounterStatic:setText(""..#targets.."/"..commandGenerator:getMaximalTargetPointCount())
+      -- prevent further entry if maximal number reached
+      addWaypointButton:setEnabled(#targets < commandGenerator:getMaximalTargetPointCount())
+    end
   end
 
   local function addWaypoint()
@@ -243,13 +264,18 @@ local function loadSharkPlanner()
     if wayPoints == nil then
       wayPoints = {}
     end
-    wayPoints[#wayPoints + 1] = wp
-    waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
-    statusStatic:setText("Waypoint added.")
-    -- prevent further entry
-    if #wayPoints == commandGenerator:getMaximalWaypointCount() then
-      addWaypointButton:setEnabled(false)
+    -- ensure targets are created
+    if targets == nil then
+      targets = {}
     end
+    if waypointTargetCheckBox:getState() == false then
+      wayPoints[#wayPoints + 1] = wp
+      statusStatic:setText("Waypoint added.")
+    else
+      targets[#targets + 1] = wp
+      statusStatic:setText("Target added.")
+    end
+    updateWayPointUIState()
   end
 
   local function reset()
@@ -259,11 +285,13 @@ local function loadSharkPlanner()
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
     statusStatic:setText("")
-
+    waypointTargetCheckBox:setTooltipText("Waypoint entry")
+    waypointTargetCheckBox:setState(false)
     if commandGenerator ~= nil then
       waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
     end
     wayPoints = {}
+    targets = {}
   end
 
   local function schedule_commands(commands)
@@ -284,7 +312,7 @@ local function loadSharkPlanner()
     log("Transfer")
     delayed_depress_commands = {}
     commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
-    commands = schedule_commands(commandGenerator:generateCommands(wayPoints))
+    commands = schedule_commands(commandGenerator:generateCommands(wayPoints, targets))
     statusStatic:setText("Transfer started")
   end
 
@@ -333,6 +361,14 @@ local function loadSharkPlanner()
         transferButton:setFocused(false)
       end
     )
+    waypointTargetCheckBox:addChangeCallback(
+      function(self)
+        updateWayPointUIState()
+  		  log("Changed: "..tostring(self:getState()))
+      end
+    )
+
+
 
     log("Adding hotkey callback")
     -- add open/close hotkey

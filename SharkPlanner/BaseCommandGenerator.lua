@@ -11,10 +11,10 @@ function BaseCommandGenerator:getMaximalWaypointCount()
   return nil
 end
 
-function BaseCommandGenerator:getMaximalTargetPointsCount()
+function BaseCommandGenerator:getMaximalTargetPointCount()
   return nil
 end
 
-function BaseCommandGenerator:generateCommands(waypoints)
+function BaseCommandGenerator:generateCommands(waypoints, targets)
   return nil
 end
