@@ -30,6 +30,7 @@ local function loadSharkPlanner()
   local waypointTargetCheckBox = nil
   local statusStatic = nil
   local versionInfoStatic = nil
+  local progressBar = nil
   local isHidden = true
   local isMissionActive = false
   local aircraftModel = nil
@@ -159,9 +160,12 @@ local function loadSharkPlanner()
 
     local screenWidth, screenHeight = dxgui.GetScreenSize()
     log("StatusWindow: setting bounds below crosshair")
-    statusWindow:setBounds(x, y + h, w, 30)
+    -- statusWindow:setBounds(x, y + h, w, 30)
+    statusWindow:setBounds(x, y + h, w, 110)
     statusStatic = statusWindow.Status
     versionInfoStatic = statusWindow.VersionInfo
+    progressBar = statusWindow.ProgressBar
+    -- progressBar:setText("Show me something")
     versionInfoStatic:setText(VERSION_INFO)
     log("Showing StatusWindow")
     statusWindow:setVisible(true)
@@ -231,11 +235,13 @@ local function loadSharkPlanner()
       waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
       -- prevent further entry if maximal number reached
       addWaypointButton:setEnabled(#wayPoints < commandGenerator:getMaximalWaypointCount())
+      statusStatic:setText("Selected waypoint entry.")
     else
       waypointTargetCheckBox:setTooltipText("Target entry")
       waypointCounterStatic:setText(""..#targets.."/"..commandGenerator:getMaximalTargetPointCount())
       -- prevent further entry if maximal number reached
       addWaypointButton:setEnabled(#targets < commandGenerator:getMaximalTargetPointCount())
+      statusStatic:setText("Selected target point entry.")
     end
   end
 
@@ -313,7 +319,10 @@ local function loadSharkPlanner()
     delayed_depress_commands = {}
     commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints, targets))
-    statusStatic:setText("Transfer started")
+    progressBar:setValue(1)
+    progressBar:setRange(1, #commands)
+    progressBar:setVisible(true)
+    statusStatic:setText("Transfer in progress...")
   end
 
   local function initializeUI()
@@ -511,11 +520,15 @@ local function loadSharkPlanner()
           for i = 1, last_scheduled_command do
             table.remove(commands, 1)
           end
+          local min, max = progressBar:getRange()
+          progressBar:setValue(max - #commands)
+
           -- invalidate commands
           if #commands == 0 then
             log("Commands have been fully executed.")
             statusStatic:setText("Transfer completed")
             commands = nil
+            progressBar:setVisible(false)
           end
         end
       end

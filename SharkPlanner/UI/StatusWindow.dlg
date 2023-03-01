@@ -6,7 +6,7 @@ dialog = {
                 ["x"] = 0,
                 ["y"] = 0,
                 ["w"] = 400,
-                ["h"] = 20
+                ["h"] = 50
             }
         },
         ["draggable"] = false,
@@ -102,6 +102,47 @@ dialog = {
                  },
              },
              ["type"] = "Static",
-     	   }
+     	   },
+         ["ProgressBar"] = {
+     			["params"] = {
+     				["bounds"] = {
+     					["x"] = 0,
+     					["y"] = 20,
+              ["w"] = 400,
+              ["h"] = 30,
+     				},
+     				["enabled"] = true,
+     				["range"] = {
+     					["max"] = 100,
+     					["min"] = 0,
+     				},
+     				["step"] = 1,
+     				["text"] = "horzProgressBar0",
+     				["tooltip"] = "",
+     				["value"] = 0,
+     				["visible"] = false,
+     				["zindex"] = 1,
+     			},
+     			["skin"] = {
+     				["params"] = {
+     					["name"] = "horzProgressBarStartDialogSkin",
+     				},
+     				["states"] = {
+     					["released"] = {
+     						[1] = {
+     							["bkg"] = {
+     								["center_center"] = "$nil$",
+     							},
+     							["picture"] = {
+     								["vertAlign"] = {
+     									["type"] = "middle",
+     								},
+     							},
+     						},
+     					},
+     				},
+     			},
+     			["type"] = "HorzProgressBar",
+     		},
     }
 }
