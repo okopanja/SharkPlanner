@@ -66,12 +66,12 @@ function KA50IIICommandGenerator:generateCommands(waypoints, targets)
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   net.log("ABRIS mode: "..mode)
   self:prepareABRISCommands(commands, waypoints)
-  self:preparePVI800Commands(commands, waypoints)
+  self:preparePVI800Commands(commands, waypoints, targets)
   return commands
 end
 
 -- main function for PVI commands
-function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints)
+function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, targets)
   -- cycle waypoint, fixpoints, airports (to ensure proper mode), then select waypoint 1
   self:pvi800PressWaypointBtn(commands)
   self:pvi800PressFixpointBtn(commands)
@@ -81,27 +81,17 @@ function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints)
   self:pvi800PressDigitBtn(commands, 1, "Waypoint: 1")
   -- entry of waypoints positions
   self:pvi800SwitchToEntryMode(commands)
-  self:pvi800PressWaypointBtn(commands)
-  for digit, waypoint in pairs(waypoints) do
-    -- select waypoint number
-    self:pvi800PressDigitBtn(commands, digit, "Waypoint: "..digit)
-    -- enter lat hemisphere
-    self:pvi800PressDigitBtn(commands, waypoint:getLatitudeHemisphere(), "Latitude Hemisphere")
-    -- enter latitude
-    local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMDec())
-    for pos, digit in pairs(latitude_digits) do
-      self:pvi800PressDigitBtn(commands, digit, "Latitude digit: "..digit)
-    end
-    -- enter long hemisphere
-    self:pvi800PressDigitBtn(commands, waypoint:getLongitudeHemisphere(), "Longitude Hemisphere")
-    -- enter longitude
-    local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMDec())
-    for pos, digit in pairs(longitude_digits) do
-      self:pvi800PressDigitBtn(commands, digit, "Latitude digit: "..digit)
-    end
-    -- complete navpoint entry
-    self:pvi800PressEnterBtn(commands)
+  -- enter waypoints if any
+  if #waypoints > 0 then
+    self:pvi800PressWaypointBtn(commands)
+    self:pvi800EnterPositions(commands, waypoints)
   end
+  -- enter targets if any
+  if #targets > 0 then
+    self:pvi800PressNavTargetBtn(commands)
+    self:pvi800EnterPositions(commands, targets)
+  end
+  -- switch to operation mode
   self:pvi800SwitchToOperMode(commands)
   -- enter route consisting of previosly entered waypoints
   for digit, waypoint in pairs(waypoints) do
@@ -115,6 +105,29 @@ function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints)
     self:pvi800PressWaypointBtn(commands)
   end
   self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
+end
+
+function KA50IIICommandGenerator:pvi800EnterPositions(commands, positions)
+  for digit, position in pairs(positions) do
+    -- select waypoint number
+    self:pvi800PressDigitBtn(commands, digit, "Position: "..digit)
+    -- enter lat hemisphere
+    self:pvi800PressDigitBtn(commands, position:getLatitudeHemisphere(), "Latitude Hemisphere")
+    -- enter latitude
+    local latitude_digits = self:_getLatitudeDigits(position:getLatitudeDMDec())
+    for pos, digit in pairs(latitude_digits) do
+      self:pvi800PressDigitBtn(commands, digit, "Latitude digit: "..digit)
+    end
+    -- enter long hemisphere
+    self:pvi800PressDigitBtn(commands, position:getLongitudeHemisphere(), "Longitude Hemisphere")
+    -- enter longitude
+    local longitude_digits = self:_getLongitudeDigits(position:getLongitudeDMDec())
+    for pos, digit in pairs(longitude_digits) do
+      self:pvi800PressDigitBtn(commands, digit, "Latitude digit: "..digit)
+    end
+    -- complete navpoint entry
+    self:pvi800PressEnterBtn(commands)
+  end
 end
 
 -- utility functions for PVI-800

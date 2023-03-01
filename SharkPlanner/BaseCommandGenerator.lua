@@ -8,13 +8,13 @@ function BaseCommandGenerator:new (o)
 end
 
 function BaseCommandGenerator:getMaximalWaypointCount()
-  return nil
+  return 0
 end
 
 function BaseCommandGenerator:getMaximalTargetPointCount()
-  return nil
+  return 0
 end
 
 function BaseCommandGenerator:generateCommands(waypoints, targets)
-  return nil
+  return {}
 end
