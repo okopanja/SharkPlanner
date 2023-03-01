@@ -155,7 +155,6 @@ function KA50IIICommandGenerator:pvi800PressNavTargetBtn(commands)
   commands[#commands + 1] = Command:new():setName("PVI-800: press Waypoint button"):setDevice(20):setCode(3017):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
 
-
 function KA50IIICommandGenerator:pvi800PressEnterBtn(commands)
   commands[#commands + 1] = Command:new():setName("PVI-800: press Enter button"):setDevice(20):setCode(3018):setDelay(default_delay):setIntensity(1):setDepress(true)
 end

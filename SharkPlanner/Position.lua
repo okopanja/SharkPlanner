@@ -61,7 +61,6 @@ function Position:getLatitudeDMDec()
   return convertDecimalToDMDec(self.latitude)
 end
 
-
 function Position:getLatitudeHemisphere()
   if self.latitude >= 0 then
     return LatHemispheres.NORTH
@@ -69,7 +68,6 @@ function Position:getLatitudeHemisphere()
     return LatHemispheres.SOUTH
   end
 end
-
 
 function Position:getLongitudeHemisphere()
   if self.longitude >= 0 then
