@@ -134,6 +134,7 @@ dialog = {
      								["center_center"] = "$nil$",
      							},
      							["picture"] = {
+                    ["color"] = "0xffffffff",
      								["vertAlign"] = {
      									["type"] = "middle",
      								},
