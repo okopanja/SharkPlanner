@@ -47,8 +47,8 @@ end
 -- returns current airframe, the function searches through all modules
 function CommandGeneratorFactory.getCurrentAirframe()
   local selfData = Export.LoGetSelfData()
+  local default_variant = selfData["Name"]
   local variant = nil
-
   if selfData ~= nil then
     for module_name, determineVariant in pairs(CommandGeneratorFactory.variantLookupFunctions) do
       variant = determineVariant(selfData["Name"])
@@ -57,7 +57,10 @@ function CommandGeneratorFactory.getCurrentAirframe()
       end
     end
   end
-  return variant
+  if variant ~= nil then
+    return variant
+  end
+  return default_variant
 end
 
 -- check if it is supported
