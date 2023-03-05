@@ -81,9 +81,7 @@ function CommandGeneratorFactory.createGenerator(module)
   return nil
 end
 
-if DEBUG_ENABLED ~= true then
-  Logging.info("Debug mode is disabled")
-  CommandGeneratorFactory.reload()
-end
+-- load modules
+CommandGeneratorFactory.reload()
 
 return CommandGeneratorFactory

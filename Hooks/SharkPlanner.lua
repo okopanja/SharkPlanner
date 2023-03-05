@@ -1,26 +1,13 @@
-DEBUG_ENABLED=false
-
 local function loadSharkPlanner()
-  -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
-  -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;.\\Scripts\\?\\init.lua;"
-  -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\?\\init.lua;"
-  --  package.path = package.path .. ";\\Scripts\\?\\init.lua;\\Scripts\\?.lua;"
-  --  net.Logging.info("SharkPlanner: "..package.path)
-
-  -- for i in string.gmatch(package.path, "[^;]+") do
-  --  net.Logging.info("SharkPlanner: "..i)
-  -- end
   local DialogLoader = require("DialogLoader")
   local dxgui = require('dxgui')
   local Input = require("Input")
   local lfs = require("lfs")
-  -- package.path = package.path .. ";"..lfs.writedir().."Scripts\\SharkPlanner\\?.lua;"
   local Skin = require("Skin")
   local SkinUtils = require("SkinUtils")
   local Terrain = require('terrain')
   local Tools = require("tools")
   local U = require("me_utilities")
-  -- local utils = require("SharkPlanner.utils")
   package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
   local SharkPlanner = require("SharkPlanner")
   local Logging = SharkPlanner.Utils.Logging
@@ -46,8 +33,6 @@ local function loadSharkPlanner()
   local commands = nil
   local delayed_depress_commands = nil
   -- local keyboardLocked = true
-
-  Logging.info("Version: "..SharkPlanner.VERSION_INFO)
 
   local function unlockKeyboardInput()
       if keyboardLocked then
@@ -389,7 +374,7 @@ local function loadSharkPlanner()
             Logging.info("Hotkey pressed!")
             local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
             Logging.info("Current airframe: "..currentAircraftModel)
-            if CommandGeneratorFactory.isSupported(currentAircraftModel) then              
+            if CommandGeneratorFactory.isSupported(currentAircraftModel) then
             -- if isMissionActive then
               if isHidden == true then
                   if currentAircraftModel ~= aircraftModel then
