@@ -1,7 +1,9 @@
+local Logging = require("SharkPlanner.Utils.Logging")
+
 CommandGeneratorFactory = {}
 
 if DEBUG_ENABLED ~= true then
-  net.log("Debug mode is disabled")
+  Logging.info("Debug mode is disabled")
   -- require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
   -- require("SharkPlanner.Modules.Ka-50.KA50IICommandGenerator")
   -- local SharkPlanner = require("SharkPlanner")
@@ -31,7 +33,7 @@ end
 
 function CommandGeneratorFactory.isSupported(name)
   if DEBUG_ENABLED == true then
-    net.log("Debug mode is enabled")
+    Logging.info("Debug mode is enabled")
     dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IIICommandGenerator.lua")
     dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IICommandGenerator.lua")
     CommandGeneratorFactory.supported = {}

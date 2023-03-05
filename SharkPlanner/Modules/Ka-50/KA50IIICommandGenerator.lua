@@ -1,3 +1,4 @@
+local Logging = require("SharkPlanner.Utils.Logging")
 local BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator")
 local Command = require("SharkPlanner.Base.Command")
 local Position = require("SharkPlanner.Base.Position")
@@ -64,7 +65,7 @@ function KA50IIICommandGenerator:generateCommands(waypoints, targets)
   commands = {}
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
-  net.log("ABRIS mode: "..mode)
+  Logging.info("ABRIS mode: "..mode)
   self:prepareABRISCommands(commands, waypoints)
   self:preparePVI800Commands(commands, waypoints, targets)
   return commands
@@ -173,7 +174,7 @@ end
 
 -- Main function for ABRIS
 function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints)
-  net.log("prepareABRISCommands, zoom level: "..self.zoomLevel)
+  Logging.info("prepareABRISCommands, zoom level: "..self.zoomLevel)
 
   -- current location of aircraft is needed for relative entry of waypoints
   local selfData = Export.LoGetSelfData()
@@ -181,7 +182,7 @@ function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints)
   local selfZ = selfData["Position"]["z"]
   -- Place ABRIS into MENU mode, no matter in which mode it is currently in
   self:abrisCycleToMenuMode(commands)
-  net.log("abrisCycleToMenuMode, zoom level: "..self.zoomLevel)
+  Logging.info("abrisCycleToMenuMode, zoom level: "..self.zoomLevel)
   -- Workaround ABRIS/SNS drift (this occurs only on the first usage, but for simplicity we will repeat it every time)
   self:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
   -- Make sure there is no route loaded
@@ -202,17 +203,17 @@ function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
 end
 
 function KA50IIICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
-  net.log("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
+  Logging.info("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
 
   local dummyRoute = {}
   dummyRoute[#dummyRoute + 1] = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
-  net.log("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
   self:abrisUnloadRoute(commands)
-  net.log("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
   self:abrisStartRouteEntry(commands)
-  net.log("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
   self:abrisEnterRouteWaypoints(commands, dummyRoute, selfX, selfZ)
-  net.log("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
   self:abrisCompleteRouteEntry(commands)
   for i = 1, 4 do
     self:abrisPressButton5(commands, "Cycle mode")
@@ -250,7 +251,7 @@ function KA50IIICommandGenerator:abrisStartRouteEntry(commands)
 end
 
 function KA50IIICommandGenerator:abrisEnterRouteWaypoints(commands, waypoints, selfX, selfZ)
-  net.log("abrisEnterRouteWaypoints, zoom level "..self.zoomLevel)
+  Logging.info("abrisEnterRouteWaypoints, zoom level "..self.zoomLevel)
   -- create initial waypoint from current location
   local previous = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
   -- add waypoints
@@ -277,7 +278,7 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   end
   -- determine the smallest bounding Z range
   local range = self:findSmallestBoundingZRange(previous, waypoint)
-  net.log("Smallest Z range: "..range:getLevel())
+  Logging.info("Smallest Z range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   local rotationsZ = range:toRotationsZ(deltaZ)
@@ -287,7 +288,7 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   self:abrisPressRotateButton(commands, "Switch to X entry", 1)
   -- determine the smallest bounding X range
   range = self:findSmallestBoundingXRange(previous, waypoint);
-  net.log("Smallest X range: "..range:getLevel())
+  Logging.info("Smallest X range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- calculate number of dial rotations
@@ -307,7 +308,7 @@ end
 
 function KA50IIICommandGenerator:findSmallestBoundingZRange(previous, waypoint)
   for i, range in pairs(self._ranges) do
-    net.log("Checking Z level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
+    Logging.info("Checking Z level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
     if range:areBothPointsWithinZRange(previous, waypoint) then
       return range
     end
@@ -319,7 +320,7 @@ end
 
 function KA50IIICommandGenerator:findSmallestBoundingXRange(previous, waypoint)
   for i, range in pairs(self._ranges) do
-    net.log("Checking X level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
+    Logging.info("Checking X level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
     if range:areBothPointsWithinXRange(previous, waypoint) then
       return range
     end
@@ -375,17 +376,17 @@ end
 
 function KA50IIICommandGenerator:abrisZoomToRange(commands, level)
   local delta = level - self.zoomLevel
-  net.log("Requested zoom: "..level)
-  net.log("Current zoom: "..self.zoomLevel)
-  net.log("Delta: "..delta)
+  Logging.info("Requested zoom: "..level)
+  Logging.info("Current zoom: "..self.zoomLevel)
+  Logging.info("Delta: "..delta)
   if delta < 0 then
     self:abrisZoomIn(commands, -delta)
   else
     self:abrisZoomOut(commands, delta)
   end
-  net.log("POST Requested zoom: "..level)
-  net.log("POST Current zoom: "..self.zoomLevel)
-  net.log("POST Delta: "..delta)
+  Logging.info("POST Requested zoom: "..level)
+  Logging.info("POST Current zoom: "..self.zoomLevel)
+  Logging.info("POST Delta: "..delta)
 end
 
 function KA50IIICommandGenerator:abrisFullZoom(commands)
@@ -393,7 +394,7 @@ function KA50IIICommandGenerator:abrisFullZoom(commands)
 end
 
 function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
-  net.log("abrisZoomIn relativeZoomLevel: "..relativeZoomLevel)
+  Logging.info("abrisZoomIn relativeZoomLevel: "..relativeZoomLevel)
   if relativeZoomLevel < 0 then
     return
   end
@@ -401,12 +402,12 @@ function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
     self:abrisPressButton3(commands, "ZoomIn", 20)
   end
   self.zoomLevel = math.max(self.zoomLevel - relativeZoomLevel, 0)
-  net.log("abrisZoomIn Zoom Level: "..self.zoomLevel)
+  Logging.info("abrisZoomIn Zoom Level: "..self.zoomLevel)
 end
 
 function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
-  net.log("abrisZoomOut Zoom Level: "..self.zoomLevel)
-  net.log("abrisZoomOut relativeZoomLevel: "..relativeZoomLevel)
+  Logging.info("abrisZoomOut Zoom Level: "..self.zoomLevel)
+  Logging.info("abrisZoomOut relativeZoomLevel: "..relativeZoomLevel)
   if relativeZoomLevel < 0 then
     return
   end
@@ -414,7 +415,7 @@ function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
     self:abrisPressButton4(commands, "ZoomOut", 20)
   end
   self.zoomLevel = math.min(self.zoomLevel + relativeZoomLevel, #self._ranges)
-  net.log("abrisZoomOut Zoom Level: "..self.zoomLevel)
+  Logging.info("abrisZoomOut Zoom Level: "..self.zoomLevel)
 end
 
 function KA50IIICommandGenerator:_determineNumberOfModePresses()
@@ -443,14 +444,14 @@ function KA50IIICommandGenerator:_determineNumberOfModePresses()
   elseif self:starts_with(mode,"5") then
     return 5
   end
-  -- net.log("ABRIS Mode: "..mode)
+  -- Logging.info("ABRIS Mode: "..mode)
   return 5
 end
 
 -- Coordinates utility functions
 function KA50IIICommandGenerator:_getLatitudeDigits(latitude)
   local buffer = string.format("%02.0f", latitude.degrees)..string.format("%04.1f", latitude.minutes)
-  -- net.log("Latitude buffer: "..buffer)
+  -- Logging.info("Latitude buffer: "..buffer)
   local result = {}
   for i = 1, #buffer do
     local temp = string.sub(buffer, i, i)
@@ -463,7 +464,7 @@ end
 
 function KA50IIICommandGenerator:_getLongitudeDigits(longitude)
   local buffer = string.format("%03.0f", longitude.degrees)..string.format("%04.1f", longitude.minutes)
-  -- net.log("Longitude buffer: "..buffer)
+  -- Logging.info("Longitude buffer: "..buffer)
   local result = {}
   for i = 1, #buffer do
     local temp = string.sub(buffer, i, i)

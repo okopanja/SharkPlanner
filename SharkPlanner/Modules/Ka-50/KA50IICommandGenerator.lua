@@ -1,3 +1,4 @@
+local Logging = require("SharkPlanner.Utils.Logging")
 local KA50IIICommandGenerator = require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
 KA50IICommandGenerator = KA50IIICommandGenerator:new()
 
@@ -25,22 +26,22 @@ function KA50IICommandGenerator:_determineNumberOfModePresses()
   elseif self:starts_with(mode,"5") then
     return 3
   end
-  -- net.log("ABRIS Mode: "..mode)
+  -- Logging.info("ABRIS Mode: "..mode)
   return 4
 end
 
 function KA50IICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
-  net.log("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
+  Logging.info("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
 
   local dummyRoute = {}
   dummyRoute[#dummyRoute + 1] = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
-  net.log("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
   self:abrisUnloadRoute(commands)
-  net.log("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
   self:abrisStartRouteEntry(commands)
-  net.log("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
   self:abrisEnterRouteWaypoints(commands, dummyRoute, selfX, selfZ)
-  net.log("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
+  Logging.info("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
   self:abrisCompleteRouteEntry(commands)
   for i = 1, 3 do
     self:abrisPressButton5(commands, "Cycle mode")
