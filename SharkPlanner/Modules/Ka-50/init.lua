@@ -1,11 +1,10 @@
 local KA50IIICommandGenerator = require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
 local KA50IICommandGenerator = require("SharkPlanner.Modules.Ka-50.KA50IICommandGenerator")
 
-local COMMAND_GENERATORS = {
-    -- "Ka-50_3 2022" = KA50IIICommandGenerator,
-    -- "Ka-50_3 2011" = KA50IICommandGenerator,
-    -- "Ka-50" = KA50IICommandGenerator,
-}
+local COMMAND_GENERATORS = {}
+COMMAND_GENERATORS["Ka-50_3 2022"] = KA50IIICommandGenerator
+COMMAND_GENERATORS["Ka-50_3 2011"] = KA50IICommandGenerator
+COMMAND_GENERATORS["Ka-50"] = KA50IICommandGenerator
 
 -- returns table indicating the supported
 local function getCommandGenerators()

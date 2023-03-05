@@ -4,12 +4,12 @@ local function loadSharkPlanner()
   -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
   -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;.\\Scripts\\?\\init.lua;"
   -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\?\\init.lua;"
-  package.path = package.path .. ";\\Scripts\\?\\init.lua;\\Scripts\\?.lua;"
-  net.log("SharkPlanner: "..package.path)
+--  package.path = package.path .. ";\\Scripts\\?\\init.lua;\\Scripts\\?.lua;"
+--  net.log("SharkPlanner: "..package.path)
 
-  for i in string.gmatch(package.path, "[^;]+") do
-   net.log("SharkPlanner: "..i)
-  end
+  -- for i in string.gmatch(package.path, "[^;]+") do
+  --  net.log("SharkPlanner: "..i)
+  -- end
   local DialogLoader = require("DialogLoader")
   local dxgui = require('dxgui')
   local Input = require("Input")

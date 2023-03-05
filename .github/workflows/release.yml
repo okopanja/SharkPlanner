@@ -25,7 +25,7 @@ jobs:
       - name: Package
         run: |
           tree
-          echo "VERSION_INFO=\"${{steps.set_version.outputs.tag-no-v}}\"" > SharkPlanner/VersionInfo.lua
+          echo "local VERSION_INFO=\"${{steps.set_version.outputs.tag-no-v}}\"\nreturn VERSION_INFO" > SharkPlanner/VersionInfo.lua
           zip -9 -r SharkPlanner-${{steps.set_version.outputs.tag-no-v}}.zip Hooks SharkPlanner README.md LICENSE
         if: startsWith(github.ref, 'refs/tags/')            
       - name: Create release and upload asset
