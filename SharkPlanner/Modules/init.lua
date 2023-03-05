@@ -1,3 +1,3 @@
+-- Important: modules are not explicitly loaded, instead they are loaded within SharkPlanner.Base.CommandGeneratorFactory.reload() function
 return {
-  Ka_50 = require("SharkPlanner.Modules.Ka-50")
 }

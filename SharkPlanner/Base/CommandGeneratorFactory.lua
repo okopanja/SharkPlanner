@@ -1,46 +1,68 @@
 local Logging = require("SharkPlanner.Utils.Logging")
-
+local String = require("SharkPlanner.Utils.String")
 CommandGeneratorFactory = {}
 
-if DEBUG_ENABLED ~= true then
-  Logging.info("Debug mode is disabled")
-  -- require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
-  -- require("SharkPlanner.Modules.Ka-50.KA50IICommandGenerator")
-  -- local SharkPlanner = require("SharkPlanner")
-  -- Declare the module name and the corresponding command generator
-  CommandGeneratorFactory.supported = {}
-  CommandGeneratorFactory.supported["Ka-50_3"] = require("SharkPlanner.Modules.KA-50.KA50IIICommandGenerator")
-  CommandGeneratorFactory.supported["Ka-50_3 2011"] = require("SharkPlanner.Modules.KA-50.KA50IICommandGenerator")
-  CommandGeneratorFactory.supported["Ka-50"] = require("SharkPlanner.Modules.KA-50.KA50IICommandGenerator")
-
-end
-
-function CommandGeneratorFactory.getCurrentAirframe()
-  local selfData = Export.LoGetSelfData()
-  local moduleName = nil
-
-  if selfData ~= nil then
-    moduleName = selfData["Name"]
-    -- BS3 needs special handling due to 2022 and 2011 version. The differnce is established by absenence of device 64.
-    if moduleName == "Ka-50_3" and Export.GetDevice(64) == nil then
-      -- Allocate new distinctive name for 2011 version
-      moduleName = moduleName.." 2011"
+-- helper function to read list of subfolders of modules
+local function getListOfModules()
+  local result = {}
+  local path = lfs.writedir().."Scripts\\SharkPlanner\\Modules"
+  for file in lfs.dir(path) do
+    local full_path = path.."\\"..file
+    if lfs.attributes(full_path, "mode") == "directory" then
+      if file ~= '.' and file ~= '..' then
+        result[file] = "SharkPlanner.Modules."..file
+      end
     end
   end
-
-  return moduleName
+  return result
 end
 
-function CommandGeneratorFactory.isSupported(name)
-  if DEBUG_ENABLED == true then
-    Logging.info("Debug mode is enabled")
-    dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IIICommandGenerator.lua")
-    dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IICommandGenerator.lua")
-    CommandGeneratorFactory.supported = {}
-    CommandGeneratorFactory.supported["Ka-50_3"] = SharkPlanner.Modules.KA_50.KA50IIICommandGenerator
-    CommandGeneratorFactory.supported["Ka-50_3 2011"] = SharkPlanner.Modules.KA_50.KA50IICommandGenerator
-    CommandGeneratorFactory.supported["Ka-50"] = SharkPlanner.Modules.KA_50.KA50IICommandGenerator
+-- function to reload the modules
+function CommandGeneratorFactory.reload()
+  -- clear list of supported variants
+  CommandGeneratorFactory.supported = {}
+  -- unload the packages belonging to modules
+  for k, v in pairs(package.loaded) do
+      if String.starts_with(k, "SharkPlanner.Modules.") then
+        package[k] = nil
+      end
   end
+  -- prepare list of determineVariant functions
+  CommandGeneratorFactory.variantLookupFunctions = {}
+  -- rediscover modules
+  local module_list = getListOfModules()
+  -- for each module register variants
+  for module_name, module_full_path in pairs(module_list) do
+    Logging.info("Loading: "..module_full_path)
+    local module = require(module_full_path)
+    CommandGeneratorFactory.variantLookupFunctions[module_name] = module.determineVariant
+    local module_command_generators = module.getCommandGenerators()
+    for variant, command_generator in pairs(module_command_generators) do
+      Logging.info("Registering generator for: "..variant)
+      CommandGeneratorFactory.supported[variant] = command_generator
+    end
+  end
+end
+
+-- returns current airframe, the function searches through all modules
+function CommandGeneratorFactory.getCurrentAirframe()
+  local selfData = Export.LoGetSelfData()
+  local variant = nil
+
+  if selfData ~= nil then
+    for module_name, determineVariant in pairs(CommandGeneratorFactory.variantLookupFunctions) do
+      variant = determineVariant(selfData["Name"])
+      if variant ~= nil then
+        break
+      end
+    end
+  end
+  return variant
+end
+
+-- check if it is supported
+function CommandGeneratorFactory.isSupported(name)
+  Logging.info("Checking for support for: "..name)
   for k, v in pairs(CommandGeneratorFactory.supported) do
     if k == name then
       return true
@@ -50,12 +72,18 @@ function CommandGeneratorFactory.isSupported(name)
 end
 
 function CommandGeneratorFactory.createGenerator(module)
+  Logging.info("Creating generator for: "..module)
   for k, v in pairs(CommandGeneratorFactory.supported) do
     if k == module then
       return v:new{}
     end
   end
   return nil
+end
+
+if DEBUG_ENABLED ~= true then
+  Logging.info("Debug mode is disabled")
+  CommandGeneratorFactory.reload()
 end
 
 return CommandGeneratorFactory

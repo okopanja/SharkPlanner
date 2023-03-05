@@ -388,7 +388,8 @@ local function loadSharkPlanner()
         function()
             Logging.info("Hotkey pressed!")
             local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
-            if CommandGeneratorFactory.isSupported(currentAircraftModel) then
+            Logging.info("Current airframe: "..currentAircraftModel)
+            if CommandGeneratorFactory.isSupported(currentAircraftModel) then              
             -- if isMissionActive then
               if isHidden == true then
                   if currentAircraftModel ~= aircraftModel then
