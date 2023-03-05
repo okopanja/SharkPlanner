@@ -1,8 +1,15 @@
 DEBUG_ENABLED=false
 
 local function loadSharkPlanner()
-  package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
+  -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
+  -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;.\\Scripts\\?\\init.lua;"
+  -- package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\?\\init.lua;"
+  package.path = package.path .. ";\\Scripts\\?\\init.lua;\\Scripts\\?.lua;"
+  net.log("SharkPlanner: "..package.path)
 
+  for i in string.gmatch(package.path, "[^;]+") do
+   net.log("SharkPlanner: "..i)
+  end
   local DialogLoader = require("DialogLoader")
   local dxgui = require('dxgui')
   local Input = require("Input")
@@ -14,9 +21,11 @@ local function loadSharkPlanner()
   local Tools = require("tools")
   local U = require("me_utilities")
   -- local utils = require("SharkPlanner.utils")
-  require("SharkPlanner.VersionInfo")
-  require("SharkPlanner.Position")
-  local CommandGeneratorFactory = require("SharkPlanner.CommandGeneratorFactory")
+  package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
+  local SharkPlanner = require("SharkPlanner")
+  -- require("SharkPlanner.VersionInfo")
+  -- require("SharkPlanner.Position")
+  -- local CommandGeneratorFactory = require("SharkPlanner.CommandGeneratorFactory")
 
   local window = nil
   local crosshairWindow = nil
@@ -45,7 +54,7 @@ local function loadSharkPlanner()
     net.log("[SharkPlanner] "..message)
   end
 
-  log("Version: "..VERSION_INFO)
+  log("Version: "..SharkPlanner.VERSION_INFO)
 
   local function unlockKeyboardInput()
       if keyboardLocked then
@@ -166,7 +175,7 @@ local function loadSharkPlanner()
     versionInfoStatic = statusWindow.VersionInfo
     progressBar = statusWindow.ProgressBar
     -- progressBar:setText("Show me something")
-    versionInfoStatic:setText(VERSION_INFO)
+    versionInfoStatic:setText(SharkPlanner.VERSION_INFO)
     log("Showing StatusWindow")
     statusWindow:setVisible(true)
     return statusWindow
@@ -317,7 +326,7 @@ local function loadSharkPlanner()
   local function transfer()
     log("Transfer")
     delayed_depress_commands = {}
-    commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+    commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints, targets))
     progressBar:setValue(1)
     progressBar:setRange(1, #commands)
@@ -385,7 +394,7 @@ local function loadSharkPlanner()
         "Ctrl+Shift+space",
         function()
             log("Hotkey pressed!")
-            local currentAircraftModel = CommandGeneratorFactory.getCurrentAirframe()
+            local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
             if CommandGeneratorFactory.isSupported(currentAircraftModel) then
             -- if isMissionActive then
               if isHidden == true then
@@ -415,13 +424,13 @@ local function loadSharkPlanner()
         log("Windows is not yet created")
         initializeUI()
     end
-    aircraftModel = CommandGeneratorFactory.getCurrentAirframe()
+    aircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
     if aircraftModel ~= nil then
       log("Detected: "..aircraftModel)
       if CommandGeneratorFactory.isSupported(aircraftModel) then
         log("Airframe is supported: "..aircraftModel)
         log("Creating command generator")
-        commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+        commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
         if commandGenerator ~= nil then
           log("Command generator for was created")
         else
@@ -541,5 +550,5 @@ end
 
 local status, err = pcall(loadSharkPlanner)
 if not status then
-    net.log("[SharkPlanner] load error: " .. tostring(err))
+  net.log("[SharkPlanner] load error: " .. tostring(err))
 end

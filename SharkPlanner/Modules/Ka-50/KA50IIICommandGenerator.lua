@@ -1,7 +1,7 @@
-require("SharkPlanner.BaseCommandGenerator")
-require("SharkPlanner.Command")
-require("SharkPlanner.Position")
-require("SharkPlanner.ABRISZoomRange")
+local BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator")
+local Command = require("SharkPlanner.Base.Command")
+local Position = require("SharkPlanner.Base.Position")
+local ABRISZoomRange = require("SharkPlanner.Modules.Ka-50.ABRISZoomRange")
 require("math")
 
 -- require("net")
@@ -477,3 +477,5 @@ end
 function KA50IIICommandGenerator:starts_with(str, start)
    return str:sub(1, #start) == start
 end
+
+return KA50IIICommandGenerator

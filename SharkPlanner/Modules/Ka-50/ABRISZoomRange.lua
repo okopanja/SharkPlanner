@@ -48,3 +48,5 @@ end
 function ABRISZoomRange:areBothPointsWithinXRange(current, next)
   return math.abs(current:getX() - next:getX()) <= self.vertical
 end
+
+return ABRISZoomRange

@@ -1,1 +1,2 @@
-VERSION_INFO="0.0.0"
+local VERSION_INFO="0.0.0"
+return VERSION_INFO

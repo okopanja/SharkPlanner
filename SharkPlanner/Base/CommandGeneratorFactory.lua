@@ -2,13 +2,14 @@ CommandGeneratorFactory = {}
 
 if DEBUG_ENABLED ~= true then
   net.log("Debug mode is disabled")
-  require("SharkPlanner.KA50IIICommandGenerator")
-  require("SharkPlanner.KA50IICommandGenerator")
+  -- require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
+  -- require("SharkPlanner.Modules.Ka-50.KA50IICommandGenerator")
+  -- local SharkPlanner = require("SharkPlanner")
   -- Declare the module name and the corresponding command generator
   CommandGeneratorFactory.supported = {}
-  CommandGeneratorFactory.supported["Ka-50_3"] = KA50IIICommandGenerator
-  CommandGeneratorFactory.supported["Ka-50_3 2011"] = KA50IICommandGenerator
-  CommandGeneratorFactory.supported["Ka-50"] = KA50IICommandGenerator
+  CommandGeneratorFactory.supported["Ka-50_3"] = require("SharkPlanner.Modules.KA-50.KA50IIICommandGenerator")
+  CommandGeneratorFactory.supported["Ka-50_3 2011"] = require("SharkPlanner.Modules.KA-50.KA50IICommandGenerator")
+  CommandGeneratorFactory.supported["Ka-50"] = require("SharkPlanner.Modules.KA-50.KA50IICommandGenerator")
 
 end
 
@@ -34,9 +35,9 @@ function CommandGeneratorFactory.isSupported(name)
     dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IIICommandGenerator.lua")
     dofile(lfs.writedir().."Scripts\\SharkPlanner\\KA50IICommandGenerator.lua")
     CommandGeneratorFactory.supported = {}
-    CommandGeneratorFactory.supported["Ka-50_3"] = KA50IIICommandGenerator
-    CommandGeneratorFactory.supported["Ka-50_3 2011"] = KA50IICommandGenerator
-    CommandGeneratorFactory.supported["Ka-50"] = KA50IICommandGenerator
+    CommandGeneratorFactory.supported["Ka-50_3"] = SharkPlanner.Modules.KA_50.KA50IIICommandGenerator
+    CommandGeneratorFactory.supported["Ka-50_3 2011"] = SharkPlanner.Modules.KA_50.KA50IICommandGenerator
+    CommandGeneratorFactory.supported["Ka-50"] = SharkPlanner.Modules.KA_50.KA50IICommandGenerator
   end
   for k, v in pairs(CommandGeneratorFactory.supported) do
     if k == name then

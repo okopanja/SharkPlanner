@@ -1,4 +1,4 @@
-require("SharkPlanner.KA50IIICommandGenerator")
+local KA50IIICommandGenerator = require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
 KA50IICommandGenerator = KA50IIICommandGenerator:new()
 
 function KA50IICommandGenerator:_determineNumberOfModePresses()

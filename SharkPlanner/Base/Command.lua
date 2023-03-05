@@ -107,3 +107,5 @@ function Command:getText()
   end
   return text
 end
+
+return Command
