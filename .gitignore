@@ -39,3 +39,5 @@ luac.out
 *.x86_64
 *.hex
 
+# Ignore dummy module for testing. Sorry dudes I did not figure out how to do this yet.
+SharkPlanner/Modules/Su-27/*
