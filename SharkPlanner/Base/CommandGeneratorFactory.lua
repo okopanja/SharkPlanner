@@ -47,6 +47,7 @@ end
 -- returns current airframe, the function searches through all modules
 function CommandGeneratorFactory.getCurrentAirframe()
   local selfData = Export.LoGetSelfData()
+  if selfData == nil then return "nil" end
   local default_variant = selfData["Name"]
   local variant = nil
   if selfData ~= nil then

@@ -385,7 +385,8 @@ local function loadSharkPlanner()
               else
                   hide()
               end
-            -- end
+            else
+              Logging.info("Airframe is not supported: "..currentAircraftModel)
             end
         end
     )
@@ -434,7 +435,7 @@ local function loadSharkPlanner()
   function eventHandlers.onPlayerChangeSlot(id)
     local my_id = net.get_my_player_id()
     if id == my_id then
-      Logging.info("User has changed slot")
+      Logging.info("User has changed slot: "..SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe())
       isMissionActive = false
       aircraftModel = nil
       commandGenerator = nil
