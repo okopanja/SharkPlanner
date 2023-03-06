@@ -375,7 +375,7 @@ local function loadSharkPlanner()
             local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
             Logging.info("Current airframe: "..currentAircraftModel)
             if CommandGeneratorFactory.isSupported(currentAircraftModel) then
-              Logging.info("Airframe is supported: "..aircraftModel)
+              Logging.info("Airframe is supported: "..currentAircraftModel)
             -- if isMissionActive then
               if isHidden == true then
                   if currentAircraftModel ~= aircraftModel then
