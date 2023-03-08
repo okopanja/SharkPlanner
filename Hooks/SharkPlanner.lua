@@ -1,23 +1,16 @@
-DEBUG_ENABLED=false
-
 local function loadSharkPlanner()
-  package.path = package.path .. ";.\\Scripts\\?.lua;.\\Scripts\\UI\\?.lua;"
-
   local DialogLoader = require("DialogLoader")
   local dxgui = require('dxgui')
   local Input = require("Input")
   local lfs = require("lfs")
-  -- package.path = package.path .. ";"..lfs.writedir().."Scripts\\SharkPlanner\\?.lua;"
   local Skin = require("Skin")
   local SkinUtils = require("SkinUtils")
   local Terrain = require('terrain')
   local Tools = require("tools")
   local U = require("me_utilities")
-  -- local utils = require("SharkPlanner.utils")
-  require("SharkPlanner.VersionInfo")
-  require("SharkPlanner.Position")
-  local CommandGeneratorFactory = require("SharkPlanner.CommandGeneratorFactory")
-
+  package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
+  local SharkPlanner = require("SharkPlanner")
+  local Logging = SharkPlanner.Utils.Logging
   local window = nil
   local crosshairWindow = nil
   local statusWindow = nil
@@ -41,12 +34,6 @@ local function loadSharkPlanner()
   local delayed_depress_commands = nil
   -- local keyboardLocked = true
 
-  local function log(message)
-    net.log("[SharkPlanner] "..message)
-  end
-
-  log("Version: "..VERSION_INFO)
-
   local function unlockKeyboardInput()
       if keyboardLocked then
           DCS.unlockKeyboardInput(true)
@@ -64,7 +51,7 @@ local function loadSharkPlanner()
   end
 
   local function show()
-    log("show")
+    Logging.info("show")
     window:setVisible(true)
     window:setSkin(windowDefaultSkin)
     window:setHasCursor(true)
@@ -94,7 +81,7 @@ local function loadSharkPlanner()
 
   local function hide()
     -- do not: window:setVisible(false) it remove the window from event loop
-    log("hide")
+    Logging.info("hide")
     window:setSkin(windowSkinHidden)
     -- window:setVisible(false) -- do not do this!!!
 
@@ -125,30 +112,30 @@ local function loadSharkPlanner()
   end
 
   local function createCrosshairWindow()
-    log("Creating crosshair window")
+    Logging.info("Creating crosshair window")
     crosshairWindow = DialogLoader.spawnDialogFromFile(
         lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\CrosshairWindow.dlg"
     )
     -- crosshair picture location depends on user DCS folder, therefore we will reload the skin by constructing definite path at runtime
     local skin = crosshairWindow.WaypointCrosshair:getSkin()
     local crosshair_picture_path = lfs.writedir()..skin.skinData.states.released[1].picture.file
-    log("Path to crosshair picture: "..crosshair_picture_path)
+    Logging.info("Path to crosshair picture: "..crosshair_picture_path)
     crosshairWindow.WaypointCrosshair:setSkin(SkinUtils.setStaticPicture(crosshair_picture_path, skin))
 
     local screenWidth, screenHeight = dxgui.GetScreenSize()
     local x = math.floor(screenWidth/2) - 200
     local y = math.floor(screenHeight/2) - 200
-    log("X: "..x.." Y: "..y)
-    log("Setting bounds")
+    Logging.info("X: "..x.." Y: "..y)
+    Logging.info("Setting bounds")
     crosshairWindow:setBounds(x, y, 400, 400)
     crosshairWindow:setTransparentForUserInput(true)
-    log("Showing the crosshair window")
+    Logging.info("Showing the crosshair window")
     crosshairWindow:setVisible(true)
     return crosshairWindow
   end
 
   local function createStatusWindow(crosshairWindow)
-    log("Creating status window")
+    Logging.info("Creating status window")
     local x, y, w, h = crosshairWindow:getBounds()
     statusWindow = DialogLoader.spawnDialogFromFile(
         lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\StatusWindow.dlg"
@@ -159,21 +146,21 @@ local function loadSharkPlanner()
     statusWindow.Status:setSkin(skin)
 
     local screenWidth, screenHeight = dxgui.GetScreenSize()
-    log("StatusWindow: setting bounds below crosshair")
+    Logging.info("StatusWindow: setting bounds below crosshair")
     -- statusWindow:setBounds(x, y + h, w, 30)
     statusWindow:setBounds(x, y + h, w, 110)
     statusStatic = statusWindow.Status
     versionInfoStatic = statusWindow.VersionInfo
     progressBar = statusWindow.ProgressBar
     -- progressBar:setText("Show me something")
-    versionInfoStatic:setText(VERSION_INFO)
-    log("Showing StatusWindow")
+    versionInfoStatic:setText(SharkPlanner.VERSION_INFO)
+    Logging.info("Showing StatusWindow")
     statusWindow:setVisible(true)
     return statusWindow
   end
 
   local function createControlWindow(crosshairWindow)
-    log("Creating window")
+    Logging.info("Creating window")
     local x, y, w, h = crosshairWindow:getBounds()
     window = DialogLoader.spawnDialogFromFile(
         lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\Window.dlg"
@@ -189,7 +176,7 @@ local function loadSharkPlanner()
     end
     -- calculate offset to make it center aligned
     local offsetX = (w - totalWidth) / 2
-    log("Setting bounds")
+    Logging.info("Setting bounds")
     window:setBounds(x + offsetX, y - 30, w, 30)
     hideButton = window.HideButton
     addWaypointButton = window.AddWaypointButton
@@ -200,15 +187,15 @@ local function loadSharkPlanner()
     waypointTargetCheckBox:setTooltipText("Waypoint entry")
     waypointTargetCheckBox:setState(false)
 
-    log("Getting default skin")
+    Logging.info("Getting default skin")
     windowDefaultSkin = window:getSkin()
-    log("Showing the control window")
+    Logging.info("Showing the control window")
     window:setVisible(true)
     return window
   end
 
   local function startWaypointEntry()
-    log("Start waypoint entry")
+    Logging.info("Start waypoint entry")
     hideButton:setEnabled(true)
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(true)
@@ -221,7 +208,7 @@ local function loadSharkPlanner()
   end
 
   local function logPosition(w)
-    log( "cameraPosition: {\n"..
+    Logging.info( "cameraPosition: {\n"..
       "x={"..w['x']['x']..", y="..w['x']['y']..", z="..w['x']['z'].."}\n"..
       "y={"..w['y']['x']..", y="..w['y']['y']..", z="..w['y']['z'].."}\n"..
       "z={"..w['z']['x']..", z="..w['z']['y']..", z="..w['z']['z'].."}\n"..
@@ -246,11 +233,11 @@ local function loadSharkPlanner()
   end
 
   local function addWaypoint()
-    log("Add waypoint")
+    Logging.info("Add waypoint")
     local cameraPosition = Export.LoGetCameraPosition()
     logPosition(cameraPosition)
     if isValidWaypoint(cameraPosition) == false then
-      log("Invalid waypoint, ignoring")
+      Logging.info("Invalid waypoint, ignoring")
       addWaypointButton:setEnabled(true)
       return
     end
@@ -285,7 +272,7 @@ local function loadSharkPlanner()
   end
 
   local function reset()
-    log("Reset")
+    Logging.info("Reset")
     hideButton:setEnabled(true)
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
@@ -303,21 +290,21 @@ local function loadSharkPlanner()
   local function schedule_commands(commands)
     -- introduce 100ms delay at start
     local schedule_time = DCS.getModelTime() + 0.100
-    log("Expected schedule start: "..schedule_time)
+    Logging.info("Expected schedule start: "..schedule_time)
     for k, command in pairs(commands) do
       command:setSchedule(schedule_time)
-      log(command:getText())
+      Logging.info(command:getText())
       -- adjust the schedule_time by delay caused by current command. (causes all remaning to be delayed)
       schedule_time = schedule_time + (command:getDelay() / 1000)
     end
-    log("Expected schedule end: "..schedule_time)
+    Logging.info("Expected schedule end: "..schedule_time)
     return commands
   end
 
   local function transfer()
-    log("Transfer")
+    Logging.info("Transfer")
     delayed_depress_commands = {}
-    commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+    commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints, targets))
     progressBar:setValue(1)
     progressBar:setRange(1, #commands)
@@ -373,20 +360,22 @@ local function loadSharkPlanner()
     waypointTargetCheckBox:addChangeCallback(
       function(self)
         updateWayPointUIState()
-  		  log("Changed: "..tostring(self:getState()))
+  		  Logging.info("Changed: "..tostring(self:getState()))
       end
     )
 
 
 
-    log("Adding hotkey callback")
+    Logging.info("Adding hotkey callback")
     -- add open/close hotkey
     window:addHotKeyCallback(
         "Ctrl+Shift+space",
         function()
-            log("Hotkey pressed!")
-            local currentAircraftModel = CommandGeneratorFactory.getCurrentAirframe()
+            Logging.info("Hotkey pressed!")
+            local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
+            Logging.info("Current airframe: "..currentAircraftModel)
             if CommandGeneratorFactory.isSupported(currentAircraftModel) then
+              Logging.info("Airframe is supported: "..currentAircraftModel)
             -- if isMissionActive then
               if isHidden == true then
                   if currentAircraftModel ~= aircraftModel then
@@ -396,46 +385,47 @@ local function loadSharkPlanner()
               else
                   hide()
               end
-            -- end
+            else
+              Logging.info("Airframe is not supported: "..currentAircraftModel)
             end
         end
     )
 
-    log("Hidding the window")
+    Logging.info("Hidding the window")
     hide()
-    log("Window creation completed")
+    Logging.info("Window creation completed")
   end
 
   eventHandlers = {}
 
   function eventHandlers.onSimulationStart()
-    log("Simulation started")
+    Logging.info("Simulation started")
     isMissionActive = true
     if not window then
-        log("Windows is not yet created")
+        Logging.info("Windows is not yet created")
         initializeUI()
     end
-    aircraftModel = CommandGeneratorFactory.getCurrentAirframe()
+    aircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
     if aircraftModel ~= nil then
-      log("Detected: "..aircraftModel)
+      Logging.info("Detected: "..aircraftModel)
       if CommandGeneratorFactory.isSupported(aircraftModel) then
-        log("Airframe is supported: "..aircraftModel)
-        log("Creating command generator")
-        commandGenerator = CommandGeneratorFactory.createGenerator(aircraftModel)
+        Logging.info("Airframe is supported: "..aircraftModel)
+        Logging.info("Creating command generator")
+        commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
         if commandGenerator ~= nil then
-          log("Command generator for was created")
+          Logging.info("Command generator for was created")
         else
-          log("Command generator for was not created")
+          Logging.info("Command generator for was not created")
         end
         reset()
       else
-        log("Airframe is not supported: "..aircraftModel)
+        Logging.info("Airframe is not supported: "..aircraftModel)
       end
     end
   end
 
   function eventHandlers.onSimulationStop()
-    log("Simulation stopped")
+    Logging.info("Simulation stopped")
     isMissionActive = false
     aircraftModel = nil
     commandGenerator = nil
@@ -445,7 +435,7 @@ local function loadSharkPlanner()
   function eventHandlers.onPlayerChangeSlot(id)
     local my_id = net.get_my_player_id()
     if id == my_id then
-      log("User has changed slot")
+      Logging.info("User has changed slot: "..SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe())
       isMissionActive = false
       aircraftModel = nil
       commandGenerator = nil
@@ -476,7 +466,7 @@ local function loadSharkPlanner()
         -- determine what can be depressed
         local last_command_due_for_depress = find_last_due_command_index(delayed_depress_commands, current_time)
         if last_command_due_for_depress > 0 then
-          log("Last command due for depress: "..last_command_due_for_depress)
+          Logging.info("Last command due for depress: "..last_command_due_for_depress)
           -- depress all matching
           for i = 1, last_command_due_for_depress do
             local command = delayed_depress_commands[i]
@@ -495,24 +485,24 @@ local function loadSharkPlanner()
         -- determine commands that have reach the point for execition
         local last_scheduled_command = find_last_due_command_index(commands, current_time)
         if last_scheduled_command > 0 then
-          log("Commands found: "..last_scheduled_command)
+          Logging.info("Commands found: "..last_scheduled_command)
           for i = 1, last_scheduled_command do
             local command = commands[i]
-            log(command:getText())
+            Logging.info(command:getText())
             Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), command:getIntensity())
-            log("Pressed")
+            Logging.info("Pressed")
             -- check if the command needs depress
             if command:getDepress() then
               -- check for Delay
               if command:getDelay() == 0 then
                 -- if the delay is 0, the command can be immidiatly depressed
                 Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), 0)
-                log("Depressed")
+                Logging.info("Depressed")
               else
                 -- Delayed commands can not be depressed now
                 command:setSchedule(current_time + (command:getDelay() / 1000))
                 delayed_depress_commands[#delayed_depress_commands + 1] = command
-                log("Queued for delayed depress")
+                Logging.info("Queued for delayed depress")
               end
             end
           end
@@ -525,7 +515,7 @@ local function loadSharkPlanner()
 
           -- invalidate commands
           if #commands == 0 then
-            log("Commands have been fully executed.")
+            Logging.info("Commands have been fully executed.")
             statusStatic:setText("Transfer completed")
             commands = nil
             progressBar:setVisible(false)
@@ -535,11 +525,11 @@ local function loadSharkPlanner()
     end
   end
 
-  log("Registering event handlers")
+  Logging.info("Registering event handlers")
   DCS.setUserCallbacks(eventHandlers)
 end
 
 local status, err = pcall(loadSharkPlanner)
 if not status then
-    net.log("[SharkPlanner] load error: " .. tostring(err))
+  net.log("[SharkPlanner] load error: " .. tostring(err))
 end

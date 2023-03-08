@@ -1,4 +1,4 @@
-require("math")
+local math = require("math")
 
 Position = {
   x = 0,
@@ -99,3 +99,5 @@ function convertDecimalToDMDec(decimal)
   result.minutes = rest * 60
   return result
 end
+
+return Position

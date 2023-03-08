@@ -18,3 +18,5 @@ end
 function BaseCommandGenerator:generateCommands(waypoints, targets)
   return {}
 end
+
+return BaseCommandGenerator
