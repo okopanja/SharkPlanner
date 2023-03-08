@@ -20,7 +20,6 @@ local function loadSharkPlanner()
   local addWaypointButton = nil
   local resetButton = nil
   local transferButton = nil
-  local waypointTargetCheckBox = nil
   local waypointToggle = nil
   local fixpointToggle = nil
   local targetPointToggle = nil
@@ -206,13 +205,10 @@ local function loadSharkPlanner()
     resetButton = window.ResetButton
     transferButton = window.TransferButton
     waypointCounterStatic = window.WaypointCounter
-    waypointTargetCheckBox = window.WaypointTargetCheckBox
     waypointToggle = window.WaypointToggle
     fixpointToggle = window.FixpointToggle
     targetPointToggle = window.TargetPointToggle
     toggleGroup = {waypointToggle, fixpointToggle, targetPointToggle}
-    waypointTargetCheckBox:setTooltipText("Waypoint entry")
-    waypointTargetCheckBox:setState(false)
     updateToggleStates("W")
 
     Logging.info("Getting default skin")
@@ -228,7 +224,6 @@ local function loadSharkPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(true)
     transferButton:setEnabled(false)
-    waypointTargetCheckBox:setState(false)
     updateToggleStates("W")
   end
 
@@ -319,8 +314,6 @@ local function loadSharkPlanner()
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
     statusStatic:setText("")
-    waypointTargetCheckBox:setTooltipText("Waypoint entry")
-    waypointTargetCheckBox:setState(false)
     updateToggleStates("W")
     if commandGenerator ~= nil then
       waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
@@ -424,12 +417,6 @@ local function loadSharkPlanner()
     transferButton:addMouseUpCallback(
       function(self)
         transferButton:setFocused(false)
-      end
-    )
-    waypointTargetCheckBox:addChangeCallback(
-      function(self)
-        updateWayPointUIState()
-  		  Logging.info("Changed: "..tostring(self:getState()))
       end
     )
 
