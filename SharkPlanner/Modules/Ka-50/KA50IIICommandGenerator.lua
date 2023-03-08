@@ -57,22 +57,28 @@ function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
 
+function KA50IIICommandGenerator:getMaximalFixPointCount()
+  return 10
+end
+
 function KA50IIICommandGenerator:getMaximalTargetPointCount()
   return 10
 end
 
-function KA50IIICommandGenerator:generateCommands(waypoints, targets)
+function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   commands = {}
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   Logging.info("ABRIS mode: "..mode)
-  self:prepareABRISCommands(commands, waypoints)
-  self:preparePVI800Commands(commands, waypoints, targets)
+  if #waypoints > 0 then
+    self:prepareABRISCommands(commands, waypoints)
+  end
+  self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   return commands
 end
 
 -- main function for PVI commands
-function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, targets)
+function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   -- cycle waypoint, fixpoints, airports (to ensure proper mode), then select waypoint 1
   self:pvi800PressWaypointBtn(commands)
   self:pvi800PressFixpointBtn(commands)
@@ -86,6 +92,11 @@ function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, targ
   if #waypoints > 0 then
     self:pvi800PressWaypointBtn(commands)
     self:pvi800EnterPositions(commands, waypoints)
+  end
+  -- enter fixpoints if any
+  if #fixpoints > 0 then
+    self:pvi800PressFixpointBtn(commands)
+    self:pvi800EnterPositions(commands, fixpoints)
   end
   -- enter targets if any
   if #targets > 0 then
