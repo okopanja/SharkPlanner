@@ -11,6 +11,10 @@ function BaseCommandGenerator:getMaximalWaypointCount()
   return 0
 end
 
+function BaseCommandGenerator:getMaximalFixPointCount()
+  return 0
+end
+
 function BaseCommandGenerator:getMaximalTargetPointCount()
   return 0
 end

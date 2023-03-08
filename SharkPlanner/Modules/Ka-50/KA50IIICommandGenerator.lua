@@ -57,6 +57,10 @@ function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
 
+function KA50IIICommandGenerator:getMaximalFixPointCount()
+  return 10
+end
+
 function KA50IIICommandGenerator:getMaximalTargetPointCount()
   return 10
 end
@@ -66,7 +70,9 @@ function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   Logging.info("ABRIS mode: "..mode)
-  self:prepareABRISCommands(commands, waypoints)
+  if #waypoints > 0 then
+    self:prepareABRISCommands(commands, waypoints)
+  end
   self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   return commands
 end

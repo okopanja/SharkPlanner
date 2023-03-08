@@ -144,31 +144,981 @@ dialog = {
     			},
     			["type"] = "Static",
     		},
-        ["WaypointSwitchLabel"] = {
-    			["params"] = {
-    				["bounds"] = {
+        ["WaypointToggle"] = {
+          ["params"] = {
+            ["bounds"] = {
               ["x"] = 270,
-              ["y"] = 0,
-              ["w"] = 30,
-    					["h"] = 30,
-    				},
-    				["enabled"] = true,
-    				["text"] = "W",
-    				["tooltip"] = "Waypoints",
-    				["visible"] = true,
-    				["zindex"] = 0,
-    			},
-    			["skin"] = {
-    				["params"] = {
-    					["name"] = "buttonSkinAwacs",
-    				},
-    			},
-    			["type"] = "Static",
-    		},
+              ["y"] = 2,
+              ["w"] = 26,
+              ["h"] = 26,
+            },
+            ["enabled"] = true,
+            ["state"] = false,
+            ["tabOrder"] = 0,
+            ["visible"] = true,
+            ["zindex"] = 0,
+            ["text"] = "W",
+            ["tooltip"] = "Waypoint entry",
+          },
+          ["skin"] = {
+            ["params"] = {
+              ["name"] = "toggleButtonSkin_ME",
+            },
+            ["states"] = {
+              ["disabled"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffff80",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffff80",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+              },
+              ["hover"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+              ["pressed"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffcc",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffcc",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+              ["released"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+            },
+          },
+          ["type"] = "ToggleButton",
+        },
+
+
+
+
+        ["FixpointToggle"] = {
+          ["params"] = {
+            ["bounds"] = {
+              ["x"] = 296,
+              ["y"] = 2,
+              ["w"] = 26,
+              ["h"] = 26,
+            },
+            ["enabled"] = true,
+            ["state"] = false,
+            ["tabOrder"] = 0,
+            ["visible"] = true,
+            ["zindex"] = 0,
+            ["text"] = "F",
+            ["tooltip"] = "Fixpoint entry",
+          },
+          ["skin"] = {
+            ["params"] = {
+              ["name"] = "toggleButtonSkin_ME",
+            },
+            ["states"] = {
+              ["disabled"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffff80",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffff80",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+              },
+              ["hover"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+              ["pressed"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffcc",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffcc",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+              ["released"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+            },
+          },
+          ["type"] = "ToggleButton",
+        },
+        ["TargetPointToggle"] = {
+          ["params"] = {
+            ["bounds"] = {
+              ["x"] = 322,
+              ["y"] = 2,
+              ["w"] = 26,
+              ["h"] = 26,
+            },
+            ["enabled"] = true,
+            ["state"] = false,
+            ["tabOrder"] = 0,
+            ["visible"] = true,
+            ["zindex"] = 0,
+            ["text"] = "T",
+            ["tooltip"] = "Target point entry",
+          },
+          ["skin"] = {
+            ["params"] = {
+              ["name"] = "toggleButtonSkin_ME",
+            },
+            ["states"] = {
+              ["disabled"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffff80",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffff80",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+              },
+              ["hover"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+              ["pressed"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffcc",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffcc",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+              ["released"] = {
+                [1] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                },
+                [2] = {
+                  ["bkg"] = {
+                    ["center_bottom"] = "$nil$",
+                    ["center_center"] = "$nil$",
+                    ["center_top"] = "$nil$",
+                    ["file"] = "$nil$",
+                    ["insets"] = "$nil$",
+                    ["left_bottom"] = "$nil$",
+                    ["left_center"] = "$nil$",
+                    ["left_top"] = "$nil$",
+                    ["right_bottom"] = "$nil$",
+                    ["right_center"] = "$nil$",
+                    ["right_top"] = "$nil$",
+                  },
+                  ["picture"] = {
+                    ["color"] = "0xffffffff",
+                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["horzAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                    ["resizeToFill"] = false,
+                    ["size"] = {
+                      ["horz"] = 0,
+                      ["vert"] = 0,
+                    },
+                    ["tileHorizontally"] = false,
+                    ["tileVertically"] = false,
+                    ["userTexSampler"] = 0,
+                    ["vertAlign"] = {
+                      ["offset"] = 0,
+                      ["type"] = "middle",
+                    },
+                  },
+                  ["text"] = {
+                    ["color"] = "0x6ed8f3ff",
+                  },
+                },
+              },
+            },
+          },
+          ["type"] = "ToggleButton",
+        },
+
+        -- ["WaypointSwitchLabel"] = {
+    		-- 	["params"] = {
+    		-- 		["bounds"] = {
+        --       ["x"] = 270,
+        --       ["y"] = 0,
+        --       ["w"] = 30,
+    		-- 			["h"] = 30,
+    		-- 		},
+    		-- 		["enabled"] = true,
+    		-- 		["text"] = "W",
+    		-- 		["tooltip"] = "Waypoints",
+    		-- 		["visible"] = true,
+    		-- 		["zindex"] = 0,
+    		-- 	},
+    		-- 	["skin"] = {
+    		-- 		["params"] = {
+    		-- 			["name"] = "buttonSkinAwacs",
+    		-- 		},
+    		-- 	},
+    		-- 	["type"] = "Static",
+    		-- },
         ["WaypointTargetCheckBox"] = {
 					["params"] = {
 						["bounds"] = {
-              ["x"] = 300,
+              ["x"] = 360,
 							["y"] = 0,
               ["w"] = 60,
 							["h"] = 30,
@@ -367,26 +1317,26 @@ dialog = {
 					},
 					["type"] = "CheckBox",
 				},
-        ["TargetSwitchLabel"] = {
-    			["params"] = {
-    				["bounds"] = {
-              ["x"] = 360,
-              ["y"] = 0,
-    					["h"] = 30,
-    					["w"] = 30,
-    				},
-    				["enabled"] = true,
-    				["text"] = "T",
-    				["tooltip"] = "Targets",
-    				["visible"] = true,
-    				["zindex"] = 0,
-    			},
-    			["skin"] = {
-    				["params"] = {
-    					["name"] = "buttonSkinAwacs",
-    				},
-    			},
-    			["type"] = "Static",
-    		},
+        -- ["TargetSwitchLabel"] = {
+    		-- 	["params"] = {
+    		-- 		["bounds"] = {
+        --       ["x"] = 360,
+        --       ["y"] = 0,
+    		-- 			["h"] = 30,
+    		-- 			["w"] = 30,
+    		-- 		},
+    		-- 		["enabled"] = true,
+    		-- 		["text"] = "T",
+    		-- 		["tooltip"] = "Targets",
+    		-- 		["visible"] = true,
+    		-- 		["zindex"] = 0,
+    		-- 	},
+    		-- 	["skin"] = {
+    		-- 		["params"] = {
+    		-- 			["name"] = "buttonSkinAwacs",
+    		-- 		},
+    		-- 	},
+    		-- 	["type"] = "Static",
+    		-- },
     }
 }

@@ -21,6 +21,10 @@ local function loadSharkPlanner()
   local resetButton = nil
   local transferButton = nil
   local waypointTargetCheckBox = nil
+  local waypointToggle = nil
+  local fixpointToggle = nil
+  local targetPointToggle = nil
+  local toggleGroup = nil
   local statusStatic = nil
   local versionInfoStatic = nil
   local progressBar = nil
@@ -112,6 +116,24 @@ local function loadSharkPlanner()
     isHidden = true
   end
 
+  local function updateToggleStates(state)
+    local waypointState = false
+    local fixpointState = false
+    local targetPointState = false
+
+    if state == "W" then
+      waypointState = true
+    elseif state == "F" then
+      fixpointState = true
+    elseif state == "T" then
+      targetPointState = true
+    end
+
+    waypointToggle:setState(waypointState)
+    fixpointToggle:setState(fixpointState)
+    targetPointToggle:setState(targetPointState)
+  end
+
   local function createCrosshairWindow()
     Logging.info("Creating crosshair window")
     crosshairWindow = DialogLoader.spawnDialogFromFile(
@@ -185,8 +207,13 @@ local function loadSharkPlanner()
     transferButton = window.TransferButton
     waypointCounterStatic = window.WaypointCounter
     waypointTargetCheckBox = window.WaypointTargetCheckBox
+    waypointToggle = window.WaypointToggle
+    fixpointToggle = window.FixpointToggle
+    targetPointToggle = window.TargetPointToggle
+    toggleGroup = {waypointToggle, fixpointToggle, targetPointToggle}
     waypointTargetCheckBox:setTooltipText("Waypoint entry")
     waypointTargetCheckBox:setState(false)
+    updateToggleStates("W")
 
     Logging.info("Getting default skin")
     windowDefaultSkin = window:getSkin()
@@ -202,6 +229,7 @@ local function loadSharkPlanner()
     resetButton:setEnabled(true)
     transferButton:setEnabled(false)
     waypointTargetCheckBox:setState(false)
+    updateToggleStates("W")
   end
 
   local function isValidWaypoint(w)
@@ -218,14 +246,17 @@ local function loadSharkPlanner()
   end
 
   local function updateWayPointUIState()
-    if waypointTargetCheckBox:getState() == false then
-      waypointTargetCheckBox:setTooltipText("Waypoint entry")
+    if waypointToggle:getState() then
       waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
       -- prevent further entry if maximal number reached
       addWaypointButton:setEnabled(#wayPoints < commandGenerator:getMaximalWaypointCount())
       statusStatic:setText("Selected waypoint entry.")
-    else
-      waypointTargetCheckBox:setTooltipText("Target entry")
+    elseif fixpointToggle:getState() then
+      waypointCounterStatic:setText(""..#fixPoints.."/"..commandGenerator:getMaximalFixPointCount())
+      -- prevent further entry if maximal number reached
+      addWaypointButton:setEnabled(#fixPoints < commandGenerator:getMaximalFixPointCount())
+      statusStatic:setText("Selected fix point entry.")
+    elseif targetPointToggle:getState() then
       waypointCounterStatic:setText(""..#targets.."/"..commandGenerator:getMaximalTargetPointCount())
       -- prevent further entry if maximal number reached
       addWaypointButton:setEnabled(#targets < commandGenerator:getMaximalTargetPointCount())
@@ -266,10 +297,15 @@ local function loadSharkPlanner()
     if targets == nil then
       targets = {}
     end
-    if waypointTargetCheckBox:getState() == false then
+    if waypointToggle:getState() then
       wayPoints[#wayPoints + 1] = wp
       statusStatic:setText("Waypoint added.")
-    else
+    end
+    if fixpointToggle:getState() then
+      fixPoints[#fixPoints + 1] = wp
+      statusStatic:setText("Fixpoint added.")
+    end
+    if targetPointToggle:getState() then
       targets[#targets + 1] = wp
       statusStatic:setText("Target added.")
     end
@@ -285,6 +321,7 @@ local function loadSharkPlanner()
     statusStatic:setText("")
     waypointTargetCheckBox:setTooltipText("Waypoint entry")
     waypointTargetCheckBox:setState(false)
+    updateToggleStates("W")
     if commandGenerator ~= nil then
       waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
     end
@@ -316,6 +353,32 @@ local function loadSharkPlanner()
     progressBar:setRange(1, #commands)
     progressBar:setVisible(true)
     statusStatic:setText("Transfer in progress...")
+  end
+
+  local function toggleStateChanged(self)
+    Logging.info("Changed: "..self:getText().." to "..tostring(self:getState()))
+    -- if state is changed true, we need to lower others
+    if self:getState() then
+      for k, v in pairs(toggleGroup) do
+        if self == v then
+        else
+          v:setState(false)
+        end
+      end
+    else
+      -- if set to false: we need to check the others
+      local overall_status = false
+      for k, v in pairs(toggleGroup) do
+        overall_status = overall_status or v:getState()
+      end
+      -- if none of the buttons is selected make sure that current is selected again
+      if overall_status == false then
+        self:setState(true)
+      end
+    end
+    -- unfocus!
+    self:setFocused(false)
+    updateWayPointUIState()
   end
 
   local function initializeUI()
@@ -370,7 +433,9 @@ local function loadSharkPlanner()
       end
     )
 
-
+    waypointToggle:addChangeCallback(toggleStateChanged)
+    fixpointToggle:addChangeCallback(toggleStateChanged)
+    targetPointToggle:addChangeCallback(toggleStateChanged)
 
     Logging.info("Adding hotkey callback")
     -- add open/close hotkey
