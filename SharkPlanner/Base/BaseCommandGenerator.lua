@@ -15,7 +15,7 @@ function BaseCommandGenerator:getMaximalTargetPointCount()
   return 0
 end
 
-function BaseCommandGenerator:generateCommands(waypoints, targets)
+function BaseCommandGenerator:generateCommands(waypoints, fixpoints, targets)
   return {}
 end
 

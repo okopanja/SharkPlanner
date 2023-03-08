@@ -28,6 +28,7 @@ local function loadSharkPlanner()
   local isMissionActive = false
   local aircraftModel = nil
   local wayPoints = nil
+  local fixPoints = nil
   local targets = nil
   local commandGenerator = nil
   local commands = nil
@@ -257,6 +258,10 @@ local function loadSharkPlanner()
     if wayPoints == nil then
       wayPoints = {}
     end
+    -- ensure fixPoints is created
+    if fixPoints == nil then
+      fixPoints = {}
+    end
     -- ensure targets are created
     if targets == nil then
       targets = {}
@@ -284,6 +289,7 @@ local function loadSharkPlanner()
       waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
     end
     wayPoints = {}
+    fixPoints = {}
     targets = {}
   end
 
@@ -305,7 +311,7 @@ local function loadSharkPlanner()
     Logging.info("Transfer")
     delayed_depress_commands = {}
     commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
-    commands = schedule_commands(commandGenerator:generateCommands(wayPoints, targets))
+    commands = schedule_commands(commandGenerator:generateCommands(wayPoints, fixPoints, targets))
     progressBar:setValue(1)
     progressBar:setRange(1, #commands)
     progressBar:setVisible(true)
