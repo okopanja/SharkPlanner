@@ -307,17 +307,21 @@ local function loadSharkPlanner()
     updateWayPointUIState()
   end
 
+  local function normalize()
+    if commandGenerator ~= nil then
+      waypointCounterStatic:setText(""..#waypoint.."/"..commandGenerator:getMaximalWaypointCount())
+    end
+    statusStatic:setText("")
+    updateToggleStates("W")
+  end
+
   local function reset()
     Logging.info("Reset")
     hideButton:setEnabled(true)
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
-    statusStatic:setText("")
-    updateToggleStates("W")
-    if commandGenerator ~= nil then
-      waypointCounterStatic:setText("0/"..commandGenerator:getMaximalWaypointCount())
-    end
+    normalize()
     wayPoints = {}
     fixPoints = {}
     targets = {}
@@ -431,7 +435,7 @@ local function loadSharkPlanner()
         function()
             Logging.info("Hotkey pressed!")
             local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
-            Logging.info("Current airframe: "..currentAircraftModel)
+            Logging.info("Current airframe: "..tostring(currentAircraftModel))
             if CommandGeneratorFactory.isSupported(currentAircraftModel) then
               Logging.info("Airframe is supported: "..currentAircraftModel)
             -- if isMissionActive then
@@ -475,7 +479,8 @@ local function loadSharkPlanner()
         else
           Logging.info("Command generator for was not created")
         end
-        reset()
+        -- reset()
+        normalize()
       else
         Logging.info("Airframe is not supported: "..aircraftModel)
       end
