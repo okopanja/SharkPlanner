@@ -11,6 +11,7 @@ local function loadSharkPlanner()
   package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
   local SharkPlanner = require("SharkPlanner")
   local Logging = SharkPlanner.Utils.Logging
+  local eventHandlers = {}
   local window = nil
   local crosshairWindow = nil
   local statusWindow = nil
@@ -281,17 +282,11 @@ local function loadSharkPlanner()
     local wp = Position:new{x = x, y = elevation, z = z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
     -- saveDump("geoCoordinates", geoCoordinates)
     -- ensure waypoints is created
-    if wayPoints == nil then
-      wayPoints = {}
-    end
+    if wayPoints == nil then wayPoints = {} end
     -- ensure fixPoints is created
-    if fixPoints == nil then
-      fixPoints = {}
-    end
+    if fixPoints == nil then fixPoints = {} end
     -- ensure targets are created
-    if targets == nil then
-      targets = {}
-    end
+    if targets == nil then targets = {} end
     if waypointToggle:getState() then
       wayPoints[#wayPoints + 1] = wp
       statusStatic:setText("Waypoint added.")
@@ -308,9 +303,14 @@ local function loadSharkPlanner()
   end
 
   local function normalize()
+    -- if waypoints/fixpoints/targets do not exist create them
+    if wayPoints == nil then wayPoints = {} end
+    if fixPoints == nil then fixPoints = {} end
+    if targets == nil then targets = {} end
+    -- display waypoints vs maximal waypoint count
     if commandGenerator ~= nil then
-      waypointCounterStatic:setText(""..#waypoint.."/"..commandGenerator:getMaximalWaypointCount())
-    end
+      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
+    end    
     statusStatic:setText("")
     updateToggleStates("W")
   end
@@ -321,10 +321,10 @@ local function loadSharkPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
-    normalize()
     wayPoints = {}
-    fixPoints = {}
     targets = {}
+    fixPoints = {}
+    normalize()
   end
 
   local function schedule_commands(commands)
@@ -434,6 +434,7 @@ local function loadSharkPlanner()
         "Ctrl+Shift+space",
         function()
             Logging.info("Hotkey pressed!")
+            Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
             local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
             Logging.info("Current airframe: "..tostring(currentAircraftModel))
             if CommandGeneratorFactory.isSupported(currentAircraftModel) then
@@ -458,8 +459,6 @@ local function loadSharkPlanner()
     Logging.info("Window creation completed")
   end
 
-  eventHandlers = {}
-
   function eventHandlers.onSimulationStart()
     Logging.info("Simulation started")
     isMissionActive = true
@@ -467,6 +466,7 @@ local function loadSharkPlanner()
         Logging.info("Windows is not yet created")
         initializeUI()
     end
+    Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
     aircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
     if aircraftModel ~= nil then
       Logging.info("Detected: "..aircraftModel)
@@ -498,7 +498,8 @@ local function loadSharkPlanner()
   function eventHandlers.onPlayerChangeSlot(id)
     local my_id = net.get_my_player_id()
     if id == my_id then
-      Logging.info("User has changed slot: "..SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe())
+      Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
+      Logging.info("User has changed slot: "..tostring(SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()))
       isMissionActive = false
       aircraftModel = nil
       commandGenerator = nil
@@ -521,7 +522,7 @@ local function loadSharkPlanner()
   local lastTime = DCS.getModelTime()
 
   function eventHandlers.onSimulationFrame()
-    -- ensure we run command checks at most every 10 miliseconds
+    -- ensure we run command checks at most every minimalInterval miliseconds
     local current_time = DCS.getModelTime()
     if( lastTime + minimalInterval <= current_time) then
       -- lastTime = current_time
@@ -590,6 +591,21 @@ local function loadSharkPlanner()
 
   Logging.info("Registering event handlers")
   DCS.setUserCallbacks(eventHandlers)
+  Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
+  local inspect = require("SharkPlanner.inspect")
+  local file = io.open(lfs.writedir().."Logs\\net.dump", "w")
+  file:write(inspect(net))
+  file:close()
+  file = io.open(lfs.writedir().."Logs\\lfs.dump", "w")
+  file:write(inspect(lfs))
+  file:close()
+  file = io.open(lfs.writedir().."Logs\\DCS.dump", "w")
+  file:write(inspect(lfs))
+  file:close()
+  file = io.open(lfs.writedir().."Logs\\Export.dump", "w")
+  file:write(inspect(lfs))
+  file:close()
+
 end
 
 local status, err = pcall(loadSharkPlanner)
