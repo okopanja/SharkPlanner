@@ -21,6 +21,7 @@ local function loadSharkPlanner()
   local addWaypointButton = nil
   local resetButton = nil
   local transferButton = nil
+  local waypointCounterStatic = nil
   local waypointToggle = nil
   local fixpointToggle = nil
   local targetPointToggle = nil
@@ -386,7 +387,6 @@ local function loadSharkPlanner()
     crosshairWindow = createCrosshairWindow()
     window = createControlWindow(crosshairWindow)
     statusWindow = createStatusWindow(crosshairWindow)
-
     -- register UI callbacks
     hideButton:addMouseDownCallback(
       function(self)
@@ -456,6 +456,7 @@ local function loadSharkPlanner()
 
     Logging.info("Hidding the window")
     hide()
+    reset()
     Logging.info("Window creation completed")
   end
 
