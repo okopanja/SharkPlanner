@@ -1,5 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local String = require("SharkPlanner.Utils.String")
+local GameState = require("SharkPlanner.Base.GameState")
+
 CommandGeneratorFactory = {}
 
 -- helper function to read list of subfolders of modules
@@ -46,16 +48,22 @@ end
 
 -- returns current airframe, the function searches through all modules
 function CommandGeneratorFactory.getCurrentAirframe()
+  local default_variant = nil
   local selfData = Export.LoGetSelfData()
-  if selfData == nil then return "nil" end
-  local default_variant = selfData["Name"]
+
+  if selfData == nil then 
+    if GameState.getGameState() == GameState.States.MultiplayerSimulationActive then
+      default_variant = "Combined Arms"
+    end
+  else
+    default_variant = selfData["Name"]
+  end
+
   local variant = nil
-  if selfData ~= nil then
-    for module_name, determineVariant in pairs(CommandGeneratorFactory.variantLookupFunctions) do
-      variant = determineVariant(selfData["Name"])
-      if variant ~= nil then
-        break
-      end
+  for module_name, determineVariant in pairs(CommandGeneratorFactory.variantLookupFunctions) do
+    variant = determineVariant(default_variant)
+    if variant ~= nil then
+      break
     end
   end
   if variant ~= nil then
@@ -75,6 +83,7 @@ function CommandGeneratorFactory.isSupported(name)
   return false
 end
 
+--create generator for supported module
 function CommandGeneratorFactory.createGenerator(module)
   Logging.info("Creating generator for: "..module)
   for k, v in pairs(CommandGeneratorFactory.supported) do

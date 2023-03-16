@@ -47,3 +47,5 @@ function KA50IICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX, 
     self:abrisPressButton5(commands, "Cycle mode")
   end
 end
+
+return KA50IICommandGenerator
