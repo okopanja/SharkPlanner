@@ -73,7 +73,7 @@ function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   if #waypoints > 0 then
     self:prepareABRISCommands(commands, waypoints)
   end
-  self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
+    self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   return commands
 end
 
