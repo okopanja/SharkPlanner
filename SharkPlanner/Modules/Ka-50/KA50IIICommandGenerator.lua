@@ -53,6 +53,10 @@ function KA50IIICommandGenerator:new(o)
   return o
 end
 
+function KA50IIICommandGenerator:getAircraftName()
+  return "Ka-50_3"
+end
+
 function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
