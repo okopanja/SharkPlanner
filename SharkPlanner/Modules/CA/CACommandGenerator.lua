@@ -21,6 +21,11 @@ function CACommandGenerator:new(o)
   return o
 end
 
+function CACommandGenerator:getAircraftName()
+  return "Combined Arms"
+end
+
+
 function CACommandGenerator:getMaximalWaypointCount()
   return 100
 end

@@ -7,6 +7,10 @@ function BaseCommandGenerator:new (o)
   return o
 end
 
+function BaseCommandGenerator:getAircraftName()
+  return "Unknown"
+end
+
 function BaseCommandGenerator:getMaximalWaypointCount()
   return 0
 end

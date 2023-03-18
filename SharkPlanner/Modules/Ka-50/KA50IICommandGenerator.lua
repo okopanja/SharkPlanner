@@ -2,6 +2,10 @@ local Logging = require("SharkPlanner.Utils.Logging")
 local KA50IIICommandGenerator = require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
 KA50IICommandGenerator = KA50IIICommandGenerator:new()
 
+function KA50IICommandGenerator:getAircraftName()
+  return "Ka-50"
+end
+
 function KA50IICommandGenerator:_determineNumberOfModePresses()
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)

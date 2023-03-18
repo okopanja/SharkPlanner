@@ -53,6 +53,10 @@ function KA50IIICommandGenerator:new(o)
   return o
 end
 
+function KA50IIICommandGenerator:getAircraftName()
+  return "Ka-50_3"
+end
+
 function KA50IIICommandGenerator:getMaximalWaypointCount()
   return 6
 end
@@ -73,7 +77,7 @@ function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   if #waypoints > 0 then
     self:prepareABRISCommands(commands, waypoints)
   end
-  self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
+    self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   return commands
 end
 

@@ -36,8 +36,16 @@ local function loadSharkPlanner()
   local fixPoints = nil
   local targets = nil
   local commandGenerator = nil
-  local commands = nil
-  local delayed_depress_commands = nil
+  local commands = {}
+  local delayed_depress_commands = {}
+  local ENTRY_STATES = {}
+  ENTRY_STATES.WAYPOINTS = "W"
+  ENTRY_STATES.FIXPOINTS = "F"
+  ENTRY_STATES.TARGET_POINTS = "T"
+  -- handle lua 5.4 deprecation
+  if table.unpack == nil then
+    table.unpack = unpack
+  end
   -- local keyboardLocked = true
 
   local function unlockKeyboardInput()
@@ -54,6 +62,108 @@ local function loadSharkPlanner()
       local keyboardEvents = Input.getDeviceKeys(Input.getKeyboardDeviceName())
       DCS.lockKeyboardInput(keyboardEvents)
       keyboardLocked = true
+  end
+  
+  local function getEntryState()
+    if waypointToggle:getState() then
+      return ENTRY_STATES.WAYPOINTS
+    end
+    if fixpointToggle:getState() then
+      return ENTRY_STATES.FIXPOINTS
+    end
+    if targetPointToggle:getState() then
+      return ENTRY_STATES.TARGET_POINTS
+    end
+    return nil
+  end
+
+  local function updateToggleStates(state)
+    local waypointState = false
+    local fixpointState = false
+    local targetPointState = false
+
+    if state == ENTRY_STATES.WAYPOINTS then
+      waypointState = true
+    elseif state == ENTRY_STATES.FIXPOINTS then
+      fixpointState = true
+    elseif state == ENTRY_STATES.TARGET_POINTS then
+      targetPointState = true
+    end
+
+    waypointToggle:setState(waypointState)
+    fixpointToggle:setState(fixpointState)
+    targetPointToggle:setState(targetPointState)
+  end
+
+  local function transferIsInactive()
+    -- Logging.info("Commands: "..#commands)
+    -- Logging.info("Depressed commands: "..#delayed_depress_commands)
+    return #commands == 0 and #delayed_depress_commands == 0
+  end
+
+  local function transferIsActive()
+    return not transferIsInactive()
+  end
+
+  local function updateWayPointUIState()
+    resetButton:setEnabled((#wayPoints > 0 or #fixPoints > 0 or #targets > 0) and transferIsInactive())
+    transferButton:setEnabled((#wayPoints > 0 or #fixPoints > 0 or #targets > 0) and transferIsInactive() and commandGenerator:getAircraftName() ~= "Combined Arms")
+    -- this thing is needed to ensure that transferButton does not capture the mouse. 
+    -- This appears to be a glitch in dxgui, where disabled and then enabled components reacts to mouse down events for all controls.
+    transferButton:releaseMouse()
+    if commandGenerator == nil then return end
+    local entryState = getEntryState()
+    if entryState == ENTRY_STATES.WAYPOINTS then
+      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
+      -- prevent further entry if maximal number reached
+      -- addWaypointButton:setEnabled(#wayPoints < commandGenerator:getMaximalWaypointCount())
+      -- statusStatic:setText("Selected waypoint entry.")
+      -- enable/disable
+      addWaypointButton:setEnabled((#wayPoints < commandGenerator:getMaximalWaypointCount()) and transferIsInactive())
+    elseif entryState == ENTRY_STATES.FIXPOINTS then
+      waypointCounterStatic:setText(""..#fixPoints.."/"..commandGenerator:getMaximalFixPointCount())
+      -- prevent further entry if maximal number reached
+      -- addWaypointButton:setEnabled(#fixPoints < commandGenerator:getMaximalFixPointCount())
+      -- statusStatic:setText("Selected fix point entry.")
+      addWaypointButton:setEnabled((#fixPoints < commandGenerator:getMaximalFixPointCount()) and transferIsInactive())
+    elseif entryState == ENTRY_STATES.TARGET_POINTS then
+      waypointCounterStatic:setText(""..#targets.."/"..commandGenerator:getMaximalTargetPointCount())
+      -- prevent further entry if maximal number reached
+      -- addWaypointButton:setEnabled(#targets < commandGenerator:getMaximalTargetPointCount())
+      -- statusStatic:setText("Selected target point entry.")
+      addWaypointButton:setEnabled((#targets < commandGenerator:getMaximalTargetPointCount()) and transferIsInactive())
+    end
+  end
+
+  local function normalize()
+    Logging.info("Normalizing data structures")
+    -- if waypoints/fixpoints/targets do not exist create them
+    if wayPoints == nil then wayPoints = {} end
+    if fixPoints == nil then fixPoints = {} end
+    if targets == nil then targets = {} end
+    -- no commandGenerator nothing to do
+    if commandGenerator == nil then return end
+    -- trim number of waypoints
+    Logging.info("Setting correct structure size")
+    if #wayPoints > commandGenerator:getMaximalWaypointCount() then
+      Logging.info("Prunning waypoints from "..#wayPoints.." to "..commandGenerator:getMaximalWaypointCount())
+      wayPoints = { table.unpack(wayPoints, 1, math.min(#wayPoints, commandGenerator:getMaximalWaypointCount())) }
+      Logging.info("Result: "..#wayPoints)
+    end
+    if #fixPoints > commandGenerator:getMaximalFixPointCount() then
+      Logging.info("Prunning fixpoints...")
+      fixPoints = { table.unpack(fixPoints, 1, math.min(#fixPoints, commandGenerator:getMaximalFixPointCount())) }
+    end
+    if #targets > commandGenerator:getMaximalTargetPointCount() then
+      Logging.info("Prunning target points...")
+      targets = { table.unpack(targets, 1, math.min(#targets, commandGenerator:getMaximalTargetPointCount())) }
+    end    
+    -- display waypoints vs maximal waypoint count
+    if commandGenerator ~= nil then
+      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
+    end
+    updateToggleStates(ENTRY_STATES.WAYPOINTS)
+    statusStatic:setText("Entered: "..SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe())
   end
 
   local function show()
@@ -81,6 +191,9 @@ local function loadSharkPlanner()
       widget:setVisible(true)
     end
 
+    -- normalize()
+    updateToggleStates(getEntryState())
+    updateWayPointUIState()
     -- DCS.unlockKeyboardInput(false)
     isHidden = false
   end
@@ -115,24 +228,6 @@ local function loadSharkPlanner()
     crosshairWindow:setVisible(false)
     -- unlockKeyboardInput()
     isHidden = true
-  end
-
-  local function updateToggleStates(state)
-    local waypointState = false
-    local fixpointState = false
-    local targetPointState = false
-
-    if state == "W" then
-      waypointState = true
-    elseif state == "F" then
-      fixpointState = true
-    elseif state == "T" then
-      targetPointState = true
-    end
-
-    waypointToggle:setState(waypointState)
-    fixpointToggle:setState(fixpointState)
-    targetPointToggle:setState(targetPointState)
   end
 
   local function createCrosshairWindow()
@@ -211,7 +306,7 @@ local function loadSharkPlanner()
     fixpointToggle = window.FixpointToggle
     targetPointToggle = window.TargetPointToggle
     toggleGroup = {waypointToggle, fixpointToggle, targetPointToggle}
-    updateToggleStates("W")
+    updateToggleStates(ENTRY_STATES.WAYPOINTS)
 
     Logging.info("Getting default skin")
     windowDefaultSkin = window:getSkin()
@@ -226,7 +321,7 @@ local function loadSharkPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(true)
     transferButton:setEnabled(false)
-    updateToggleStates("W")
+    updateToggleStates(ENTRY_STATES.WAYPOINTS)
   end
 
   local function isValidWaypoint(w)
@@ -240,25 +335,6 @@ local function loadSharkPlanner()
       "z={"..w['z']['x']..", z="..w['z']['y']..", z="..w['z']['z'].."}\n"..
       "p={"..w['p']['x']..", y="..w['p']['y']..", z="..w['p']['z'].."}\n}"
     )
-  end
-
-  local function updateWayPointUIState()
-    if waypointToggle:getState() then
-      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
-      -- prevent further entry if maximal number reached
-      addWaypointButton:setEnabled(#wayPoints < commandGenerator:getMaximalWaypointCount())
-      statusStatic:setText("Selected waypoint entry.")
-    elseif fixpointToggle:getState() then
-      waypointCounterStatic:setText(""..#fixPoints.."/"..commandGenerator:getMaximalFixPointCount())
-      -- prevent further entry if maximal number reached
-      addWaypointButton:setEnabled(#fixPoints < commandGenerator:getMaximalFixPointCount())
-      statusStatic:setText("Selected fix point entry.")
-    elseif targetPointToggle:getState() then
-      waypointCounterStatic:setText(""..#targets.."/"..commandGenerator:getMaximalTargetPointCount())
-      -- prevent further entry if maximal number reached
-      addWaypointButton:setEnabled(#targets < commandGenerator:getMaximalTargetPointCount())
-      statusStatic:setText("Selected target point entry.")
-    end
   end
 
   local function addWaypoint()
@@ -288,32 +364,19 @@ local function loadSharkPlanner()
     if fixPoints == nil then fixPoints = {} end
     -- ensure targets are created
     if targets == nil then targets = {} end
-    if waypointToggle:getState() then
+    local entryState = getEntryState()
+    if entryState == ENTRY_STATES.WAYPOINTS then
       wayPoints[#wayPoints + 1] = wp
       statusStatic:setText("Waypoint added.")
-    end
-    if fixpointToggle:getState() then
+    elseif entryState == ENTRY_STATES.FIXPOINTS then
       fixPoints[#fixPoints + 1] = wp
       statusStatic:setText("Fixpoint added.")
-    end
-    if targetPointToggle:getState() then
+    elseif entryState == ENTRY_STATES.TARGET_POINTS then
       targets[#targets + 1] = wp
       statusStatic:setText("Target added.")
+    else
     end
     updateWayPointUIState()
-  end
-
-  local function normalize()
-    -- if waypoints/fixpoints/targets do not exist create them
-    if wayPoints == nil then wayPoints = {} end
-    if fixPoints == nil then fixPoints = {} end
-    if targets == nil then targets = {} end
-    -- display waypoints vs maximal waypoint count
-    if commandGenerator ~= nil then
-      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
-    end    
-    statusStatic:setText("")
-    updateToggleStates("W")
   end
 
   local function reset()
@@ -326,6 +389,7 @@ local function loadSharkPlanner()
     targets = {}
     fixPoints = {}
     normalize()
+    updateWayPointUIState()
   end
 
   local function schedule_commands(commands)
@@ -344,13 +408,18 @@ local function loadSharkPlanner()
 
   local function transfer()
     Logging.info("Transfer")
+    addWaypointButton:setEnabled(false)
+    resetButton:setEnabled(false)
+    transferButton:setFocused(false)
+    transferButton:setEnabled(false)
     delayed_depress_commands = {}
-    commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
+    -- commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
     commands = schedule_commands(commandGenerator:generateCommands(wayPoints, fixPoints, targets))
     progressBar:setValue(1)
     progressBar:setRange(1, #commands)
     progressBar:setVisible(true)
     statusStatic:setText("Transfer in progress...")
+    updateWayPointUIState()
   end
 
   local function toggleStateChanged(self)
@@ -409,7 +478,7 @@ local function loadSharkPlanner()
       end
     )
     resetButton:addMouseUpCallback(
-      function(self)
+      function(self)        
         resetButton:setFocused(false)
       end
     )
@@ -527,7 +596,7 @@ local function loadSharkPlanner()
     local current_time = DCS.getModelTime()
     if( lastTime + minimalInterval <= current_time) then
       -- lastTime = current_time
-      if commands ~= nil then
+      if transferIsActive() then
         -- determine what can be depressed
         local last_command_due_for_depress = find_last_due_command_index(delayed_depress_commands, current_time)
         if last_command_due_for_depress > 0 then
@@ -577,14 +646,15 @@ local function loadSharkPlanner()
           end
           local min, max = progressBar:getRange()
           progressBar:setValue(max - #commands)
+        end
 
-          -- invalidate commands
-          if #commands == 0 then
-            Logging.info("Commands have been fully executed.")
-            statusStatic:setText("Transfer completed")
-            commands = nil
-            progressBar:setVisible(false)
-          end
+        if transferIsInactive() then
+          -- Transfer has stopped
+          Logging.info("Commands have been fully executed.")
+          statusStatic:setText("Transfer completed")
+          progressBar:setVisible(false)
+          -- transferButton:setEnabled(true)
+          updateWayPointUIState()
         end
       end
     end
@@ -593,20 +663,6 @@ local function loadSharkPlanner()
   Logging.info("Registering event handlers")
   DCS.setUserCallbacks(eventHandlers)
   Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
-  local inspect = require("SharkPlanner.inspect")
-  local file = io.open(lfs.writedir().."Logs\\net.dump", "w")
-  file:write(inspect(net))
-  file:close()
-  file = io.open(lfs.writedir().."Logs\\lfs.dump", "w")
-  file:write(inspect(lfs))
-  file:close()
-  file = io.open(lfs.writedir().."Logs\\DCS.dump", "w")
-  file:write(inspect(lfs))
-  file:close()
-  file = io.open(lfs.writedir().."Logs\\Export.dump", "w")
-  file:write(inspect(lfs))
-  file:close()
-
 end
 
 local status, err = pcall(loadSharkPlanner)
