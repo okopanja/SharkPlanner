@@ -157,10 +157,8 @@ local function loadSharkPlanner()
     window:setVisible(true)
     window:setSkin(windowDefaultSkin)
     window:setHasCursor(true)
-    statusWindow:setVisible(true)
     crosshairWindow.WaypointCrosshair:setVisible(true)
     crosshairWindow:setVisible(true)
-    waypointListWindow:show()
     -- show all widgets on control window
     local count = window:getWidgetCount()
   	for i = 1, count do
@@ -169,16 +167,8 @@ local function loadSharkPlanner()
       widget:setVisible(true)
     end
 
-    -- show all widgets on status window
-    local count = statusWindow:getWidgetCount()
-  	for i = 1, count do
-  		local index 		= i - 1
-  		local widget 		= window:getWidget(index)
-      widget:setVisible(true)
-    end
-
-    waypointListWindow:show()
-    
+    statusWindow:show()
+    waypointListWindow:show()    
     -- normalize()
     updateToggleStates(getEntryState())
     updateWayPointUIState()
@@ -192,7 +182,7 @@ local function loadSharkPlanner()
     -- do not: window:setVisible(false) it will remove the window from event loop
     -- window:setVisible(false) -- do not do this!!!
 
-    -- hide all widgets on conrol window
+    -- hide all widgets on control window
   	local count = window:getWidgetCount()
   	for i = 1, count do
   		local index 		= i - 1
@@ -202,19 +192,9 @@ local function loadSharkPlanner()
     end
     window:setHasCursor(false)
 
-    -- hide all widgets on conrol window
-  	local count = statusWindow:getWidgetCount()
-  	for i = 1, count do
-  		local index 		= i - 1
-  		local widget 		= window:getWidget(index)
-      widget:setVisible(false)
-      widget:setFocused(false)
-    end
-    statusWindow:setHasCursor(false)
-    statusWindow:setVisible(false)
+    statusWindow:hide()
 
     crosshairWindow:setVisible(false)
-    waypointListWindow:hide()
     waypointListWindow:hide()
     -- unlockKeyboardInput()
     isHidden = true

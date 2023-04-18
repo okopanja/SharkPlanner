@@ -42,9 +42,28 @@ function StatusWindow:new(o)
 end
 
 function StatusWindow:show()
+    self:setVisible(true)
+    -- show all widgets on status window
+    local count = self:getWidgetCount()
+  	for i = 1, count do
+      local index 		= i - 1
+  	  local widget 		= self:getWidget(index)
+      widget:setVisible(true)
+    end
 end
 
 function StatusWindow:hide()
+    -- hide all widgets on status window
+    local count = self:getWidgetCount()
+    for i = 1, count do
+        local index 		= i - 1
+        local widget 		= self:getWidget(index)
+    widget:setVisible(false)
+    widget:setFocused(false)
+  end
+  self:setHasCursor(false)
+  self:setVisible(false)
+
 end
 
 function StatusWindow:OnAddWaypoint(eventArgs)
