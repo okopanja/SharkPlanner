@@ -8,6 +8,7 @@ local function loadSharkPlanner()
   local Terrain = require('terrain')
   local Tools = require("tools")
   local U = require("me_utilities")
+  -- local FileDialog = require("FileDialog")
   package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
   local SharkPlanner = require("SharkPlanner")
   local Logging = SharkPlanner.Utils.Logging
@@ -15,6 +16,7 @@ local function loadSharkPlanner()
   local window = nil
   local crosshairWindow = nil
   local statusWindow = nil
+  local waypointListWindow = nil
   local windowDefaultSkin = nil
   local windowSkinHidden = Skin.windowSkinChatMin()
   local hideButton = nil
@@ -26,15 +28,10 @@ local function loadSharkPlanner()
   local fixpointToggle = nil
   local targetPointToggle = nil
   local toggleGroup = nil
-  local statusStatic = nil
-  local versionInfoStatic = nil
-  local progressBar = nil
   local isHidden = true
   local isMissionActive = false
   local aircraftModel = nil
-  local wayPoints = nil
-  local fixPoints = nil
-  local targets = nil
+  local coordinateData = SharkPlanner.Base.CoordinateData
   local commandGenerator = nil
   local commands = {}
   local delayed_depress_commands = {}
@@ -106,64 +103,53 @@ local function loadSharkPlanner()
   end
 
   local function updateWayPointUIState()
-    resetButton:setEnabled((#wayPoints > 0 or #fixPoints > 0 or #targets > 0) and transferIsInactive())
-    transferButton:setEnabled((#wayPoints > 0 or #fixPoints > 0 or #targets > 0) and transferIsInactive() and commandGenerator:getAircraftName() ~= "Combined Arms")
+    resetButton:setEnabled((#coordinateData.wayPoints > 0 or #coordinateData.fixPoints > 0 or #coordinateData.targetPoints > 0) and transferIsInactive())
+    transferButton:setEnabled((#coordinateData.wayPoints > 0 or #coordinateData.fixPoints > 0 or #coordinateData.targetPoints > 0) and transferIsInactive() and commandGenerator:getAircraftName() ~= "Combined Arms")
     -- this thing is needed to ensure that transferButton does not capture the mouse. 
     -- This appears to be a glitch in dxgui, where disabled and then enabled components reacts to mouse down events for all controls.
     transferButton:releaseMouse()
     if commandGenerator == nil then return end
     local entryState = getEntryState()
     if entryState == ENTRY_STATES.WAYPOINTS then
-      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
+      waypointCounterStatic:setText(""..#coordinateData.wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
       -- prevent further entry if maximal number reached
-      -- addWaypointButton:setEnabled(#wayPoints < commandGenerator:getMaximalWaypointCount())
-      -- statusStatic:setText("Selected waypoint entry.")
-      -- enable/disable
-      addWaypointButton:setEnabled((#wayPoints < commandGenerator:getMaximalWaypointCount()) and transferIsInactive())
+      addWaypointButton:setEnabled((#coordinateData.wayPoints < commandGenerator:getMaximalWaypointCount()) and transferIsInactive())
     elseif entryState == ENTRY_STATES.FIXPOINTS then
-      waypointCounterStatic:setText(""..#fixPoints.."/"..commandGenerator:getMaximalFixPointCount())
+      waypointCounterStatic:setText(""..#coordinateData.fixPoints.."/"..commandGenerator:getMaximalFixPointCount())
       -- prevent further entry if maximal number reached
-      -- addWaypointButton:setEnabled(#fixPoints < commandGenerator:getMaximalFixPointCount())
-      -- statusStatic:setText("Selected fix point entry.")
-      addWaypointButton:setEnabled((#fixPoints < commandGenerator:getMaximalFixPointCount()) and transferIsInactive())
+      addWaypointButton:setEnabled((#coordinateData.fixPoints < commandGenerator:getMaximalFixPointCount()) and transferIsInactive())
     elseif entryState == ENTRY_STATES.TARGET_POINTS then
-      waypointCounterStatic:setText(""..#targets.."/"..commandGenerator:getMaximalTargetPointCount())
+      waypointCounterStatic:setText(""..#coordinateData.targetPoints.."/"..commandGenerator:getMaximalTargetPointCount())
       -- prevent further entry if maximal number reached
-      -- addWaypointButton:setEnabled(#targets < commandGenerator:getMaximalTargetPointCount())
-      -- statusStatic:setText("Selected target point entry.")
-      addWaypointButton:setEnabled((#targets < commandGenerator:getMaximalTargetPointCount()) and transferIsInactive())
+      addWaypointButton:setEnabled((#coordinateData.targetPoints < commandGenerator:getMaximalTargetPointCount()) and transferIsInactive())
     end
   end
 
   local function normalize()
     Logging.info("Normalizing data structures")
-    -- if waypoints/fixpoints/targets do not exist create them
-    if wayPoints == nil then wayPoints = {} end
-    if fixPoints == nil then fixPoints = {} end
-    if targets == nil then targets = {} end
     -- no commandGenerator nothing to do
     if commandGenerator == nil then return end
     -- trim number of waypoints
     Logging.info("Setting correct structure size")
-    if #wayPoints > commandGenerator:getMaximalWaypointCount() then
-      Logging.info("Prunning waypoints from "..#wayPoints.." to "..commandGenerator:getMaximalWaypointCount())
-      wayPoints = { table.unpack(wayPoints, 1, math.min(#wayPoints, commandGenerator:getMaximalWaypointCount())) }
-      Logging.info("Result: "..#wayPoints)
+    if #coordinateData.wayPoints > commandGenerator:getMaximalWaypointCount() then
+      Logging.info("Prunning waypoints from "..#coordinateData.wayPoints.." to "..commandGenerator:getMaximalWaypointCount())
+      coordinateData.wayPoints = { table.unpack(coordinateData.wayPoints, 1, math.min(#coordinateData.wayPoints, commandGenerator:getMaximalWaypointCount())) }
+      Logging.info("Result: "..#coordinateData.wayPoints)
     end
-    if #fixPoints > commandGenerator:getMaximalFixPointCount() then
+    if #coordinateData.fixPoints > commandGenerator:getMaximalFixPointCount() then
       Logging.info("Prunning fixpoints...")
-      fixPoints = { table.unpack(fixPoints, 1, math.min(#fixPoints, commandGenerator:getMaximalFixPointCount())) }
+      coordinateData.fixPoints = { table.unpack(coordinateData.fixPoints, 1, math.min(#coordinateData.fixPoints, commandGenerator:getMaximalFixPointCount())) }
     end
-    if #targets > commandGenerator:getMaximalTargetPointCount() then
+    if #coordinateData.targetPoints > commandGenerator:getMaximalTargetPointCount() then
       Logging.info("Prunning target points...")
-      targets = { table.unpack(targets, 1, math.min(#targets, commandGenerator:getMaximalTargetPointCount())) }
+      coordinateData.targetPoints = { table.unpack(coordinateData.targetPoints, 1, math.min(#coordinateData.targetPoints, commandGenerator:getMaximalTargetPointCount())) }
     end    
     -- display waypoints vs maximal waypoint count
     if commandGenerator ~= nil then
-      waypointCounterStatic:setText(""..#wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
+      waypointCounterStatic:setText(""..#coordinateData.wayPoints.."/"..commandGenerator:getMaximalWaypointCount())
     end
     updateToggleStates(ENTRY_STATES.WAYPOINTS)
-    statusStatic:setText("Entered: "..SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe())
+    statusWindow.statusStatic:setText("Entered: "..SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe())
   end
 
   local function show()
@@ -174,7 +160,7 @@ local function loadSharkPlanner()
     statusWindow:setVisible(true)
     crosshairWindow.WaypointCrosshair:setVisible(true)
     crosshairWindow:setVisible(true)
-
+    waypointListWindow:show()
     -- show all widgets on control window
     local count = window:getWidgetCount()
   	for i = 1, count do
@@ -191,6 +177,8 @@ local function loadSharkPlanner()
       widget:setVisible(true)
     end
 
+    waypointListWindow:show()
+    
     -- normalize()
     updateToggleStates(getEntryState())
     updateWayPointUIState()
@@ -199,9 +187,9 @@ local function loadSharkPlanner()
   end
 
   local function hide()
-    -- do not: window:setVisible(false) it remove the window from event loop
     Logging.info("hide")
     window:setSkin(windowSkinHidden)
+    -- do not: window:setVisible(false) it will remove the window from event loop
     -- window:setVisible(false) -- do not do this!!!
 
     -- hide all widgets on conrol window
@@ -226,6 +214,8 @@ local function loadSharkPlanner()
     statusWindow:setVisible(false)
 
     crosshairWindow:setVisible(false)
+    waypointListWindow:hide()
+    waypointListWindow:hide()
     -- unlockKeyboardInput()
     isHidden = true
   end
@@ -251,31 +241,6 @@ local function loadSharkPlanner()
     Logging.info("Showing the crosshair window")
     crosshairWindow:setVisible(true)
     return crosshairWindow
-  end
-
-  local function createStatusWindow(crosshairWindow)
-    Logging.info("Creating status window")
-    local x, y, w, h = crosshairWindow:getBounds()
-    statusWindow = DialogLoader.spawnDialogFromFile(
-        lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\StatusWindow.dlg"
-    )
-
-    local skin = statusWindow.Status:getSkin()
-    skin.skinData.states.released[1].text.horzAlign.type = "min"
-    statusWindow.Status:setSkin(skin)
-
-    local screenWidth, screenHeight = dxgui.GetScreenSize()
-    Logging.info("StatusWindow: setting bounds below crosshair")
-    -- statusWindow:setBounds(x, y + h, w, 30)
-    statusWindow:setBounds(x, y + h, w, 110)
-    statusStatic = statusWindow.Status
-    versionInfoStatic = statusWindow.VersionInfo
-    progressBar = statusWindow.ProgressBar
-    -- progressBar:setText("Show me something")
-    versionInfoStatic:setText(SharkPlanner.VERSION_INFO)
-    Logging.info("Showing StatusWindow")
-    statusWindow:setVisible(true)
-    return statusWindow
   end
 
   local function createControlWindow(crosshairWindow)
@@ -330,10 +295,10 @@ local function loadSharkPlanner()
 
   local function logPosition(w)
     Logging.info( "cameraPosition: {\n"..
-      "x={"..w['x']['x']..", y="..w['x']['y']..", z="..w['x']['z'].."}\n"..
-      "y={"..w['y']['x']..", y="..w['y']['y']..", z="..w['y']['z'].."}\n"..
-      "z={"..w['z']['x']..", z="..w['z']['y']..", z="..w['z']['z'].."}\n"..
-      "p={"..w['p']['x']..", y="..w['p']['y']..", z="..w['p']['z'].."}\n}"
+      "x={x="..w['x']['x']..", y="..w['x']['y']..", z="..w['x']['z'].."}\n"..
+      "y={x="..w['y']['x']..", y="..w['y']['y']..", z="..w['y']['z'].."}\n"..
+      "z={x="..w['z']['x']..", z="..w['z']['y']..", z="..w['z']['z'].."}\n"..
+      "p={x="..w['p']['x']..", y="..w['p']['y']..", z="..w['p']['z'].."}\n}"
     )
   end
 
@@ -356,24 +321,24 @@ local function loadSharkPlanner()
     local z = cameraPosition['p']['z']
     local elevation = Export.LoGetAltitude(x, z)
     local geoCoordinates = Export.LoLoCoordinatesToGeoCoordinates(x, z)
-    local wp = Position:new{x = x, y = elevation, z = z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
+    for k, v in pairs(geoCoordinates) do
+      Logging.info("geoCoordinates k: "..tostring(k).." v: "..tostring(v))
+    end
+    local position = SharkPlanner.Base.Position:new{x = x, y = elevation, z = z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
     -- saveDump("geoCoordinates", geoCoordinates)
     -- ensure waypoints is created
-    if wayPoints == nil then wayPoints = {} end
-    -- ensure fixPoints is created
-    if fixPoints == nil then fixPoints = {} end
-    -- ensure targets are created
-    if targets == nil then targets = {} end
+    -- if coordinateData.wayPoints == nil then coordinateData.wayPoints = {} end
+    -- ensure coordinateData.fixPoints is created
+    if coordinateData.fixPoints == nil then coordinateData.fixPoints = {} end
+    -- ensure coordinateData.targetPoints are created
+    if coordinateData.targetPoints == nil then coordinateData.targetPoints = {} end
     local entryState = getEntryState()
     if entryState == ENTRY_STATES.WAYPOINTS then
-      wayPoints[#wayPoints + 1] = wp
-      statusStatic:setText("Waypoint added.")
+      coordinateData:addWaypoint(position)
     elseif entryState == ENTRY_STATES.FIXPOINTS then
-      fixPoints[#fixPoints + 1] = wp
-      statusStatic:setText("Fixpoint added.")
+      coordinateData:addFixpoint(position)
     elseif entryState == ENTRY_STATES.TARGET_POINTS then
-      targets[#targets + 1] = wp
-      statusStatic:setText("Target added.")
+      coordinateData:addTargetpoint(position)
     else
     end
     updateWayPointUIState()
@@ -385,9 +350,7 @@ local function loadSharkPlanner()
     addWaypointButton:setEnabled(true)
     resetButton:setEnabled(false)
     transferButton:setEnabled(false)
-    wayPoints = {}
-    targets = {}
-    fixPoints = {}
+    coordinateData:reset()
     normalize()
     updateWayPointUIState()
   end
@@ -414,11 +377,11 @@ local function loadSharkPlanner()
     transferButton:setEnabled(false)
     delayed_depress_commands = {}
     -- commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
-    commands = schedule_commands(commandGenerator:generateCommands(wayPoints, fixPoints, targets))
-    progressBar:setValue(1)
-    progressBar:setRange(1, #commands)
-    progressBar:setVisible(true)
-    statusStatic:setText("Transfer in progress...")
+    commands = schedule_commands(commandGenerator:generateCommands(coordinateData.wayPoints, coordinateData.fixPoints, coordinateData.targetPoints))
+    statusWindow.progressBar:setValue(1)
+    statusWindow.progressBar:setRange(1, #commands)
+    statusWindow.progressBar:setVisible(true)
+    statusWindow.statusStatic:setText("Transfer in progress...")
     updateWayPointUIState()
   end
 
@@ -455,7 +418,27 @@ local function loadSharkPlanner()
     end
     crosshairWindow = createCrosshairWindow()
     window = createControlWindow(crosshairWindow)
-    statusWindow = createStatusWindow(crosshairWindow)
+    statusWindow = SharkPlanner.UI.StatusWindow:new{crosshairWindow = crosshairWindow}
+    -- statusWindow = createStatusWindow(crosshairWindow)
+
+    waypointListWindow = SharkPlanner.UI.WaypointListWindow.createWaypointListWindow(crosshairWindow)
+    -- register waypointListWindow to receive events from coordanteData
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddWayPoint, waypointListWindow, waypointListWindow.OnAddWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveWayPoint, waypointListWindow, waypointListWindow.OnRemoveWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddFixPoint, waypointListWindow, waypointListWindow.OnAddFixpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveFixPoint, waypointListWindow, waypointListWindow.OnRemoveFixpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, waypointListWindow, waypointListWindow.OnAddTargetpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, waypointListWindow, waypointListWindow.OnRemoveTargetpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, waypointListWindow, waypointListWindow.OnReset)
+    -- register statusWindow to receive events fronm coordinateData
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddWayPoint, statusWindow, statusWindow.OnAddWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveWayPoint, statusWindow, statusWindow.OnRemoveWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddFixPoint, statusWindow, statusWindow.OnAddFixpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveFixPoint, statusWindow, statusWindow.OnRemoveFixpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, statusWindow, statusWindow.OnAddTargetpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, statusWindow, statusWindow.OnRemoveTargetpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, statusWindow, statusWindow.OnReset)
+
     -- register UI callbacks
     hideButton:addMouseDownCallback(
       function(self)
@@ -478,7 +461,7 @@ local function loadSharkPlanner()
       end
     )
     resetButton:addMouseUpCallback(
-      function(self)        
+      function(self)    
         resetButton:setFocused(false)
       end
     )
@@ -644,15 +627,16 @@ local function loadSharkPlanner()
           for i = 1, last_scheduled_command do
             table.remove(commands, 1)
           end
-          local min, max = progressBar:getRange()
-          progressBar:setValue(max - #commands)
+          local min, max = statusWindow.progressBar:getRange()
+          statusWindow.progressBar:setValue(max - #commands)
         end
 
         if transferIsInactive() then
           -- Transfer has stopped
           Logging.info("Commands have been fully executed.")
-          statusStatic:setText("Transfer completed")
-          progressBar:setVisible(false)
+          -- TODO: event handler
+          statusWindow.statusStatic:setText("Transfer completed")
+          statusWindow.progressBar:setVisible(false)
           -- transferButton:setEnabled(true)
           updateWayPointUIState()
         end

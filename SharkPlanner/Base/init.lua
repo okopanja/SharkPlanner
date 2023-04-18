@@ -4,5 +4,6 @@ return {
   Command = require("SharkPlanner.Base.Command"),
   BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator"),
   CommandGeneratorFactory = require("SharkPlanner.Base.CommandGeneratorFactory"),
-  GameState = require("SharkPlanner.Base.GameState")
+  GameState = require("SharkPlanner.Base.GameState"),
+  CoordinateData = require("SharkPlanner.Base.CoordinateData")
 }

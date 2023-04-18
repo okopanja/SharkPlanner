@@ -4,7 +4,7 @@ function Command:new (o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-  self.name = "UnknownDevice: Unkown command"
+  self.name = "UnknownDevice: Unknown command"
   self.comment = nil
   self.schedule = nil
   return o
