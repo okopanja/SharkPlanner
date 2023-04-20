@@ -12,53 +12,20 @@ local function loadSharkPlanner()
   package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
   local SharkPlanner = require("SharkPlanner")
   local Logging = SharkPlanner.Utils.Logging
-  local eventHandlers = {}
   local window = nil
   local crosshairWindow = nil
   local statusWindow = nil
   local waypointListWindow = nil
   local windowDefaultSkin = nil
   local windowSkinHidden = Skin.windowSkinChatMin()
-  local hideButton = nil
-  local addWaypointButton = nil
-  local resetButton = nil
-  local transferButton = nil
-  local waypointCounterStatic = nil
-  local waypointToggle = nil
-  local fixpointToggle = nil
-  local targetPointToggle = nil
-  local toggleGroup = nil
-  local isHidden = true
-  local isMissionActive = false
-  local aircraftModel = nil
   local coordinateData = SharkPlanner.Base.CoordinateData
   local commandGenerator = nil
-  local commands = {}
-  local delayed_depress_commands = {}
-  local ENTRY_STATES = {}
-  ENTRY_STATES.WAYPOINTS = "W"
-  ENTRY_STATES.FIXPOINTS = "F"
-  ENTRY_STATES.TARGET_POINTS = "T"
+  -- local commands = {}
+  -- local delayed_depress_commands = {}
+
   -- handle lua 5.4 deprecation
   if table.unpack == nil then
     table.unpack = unpack
-  end
-  -- local keyboardLocked = true
-
-  local function unlockKeyboardInput()
-      if keyboardLocked then
-          DCS.unlockKeyboardInput(true)
-          keyboardLocked = false
-      end
-  end
-
-  local function lockKeyboardInput()
-      if keyboardLocked then
-          return
-      end
-      local keyboardEvents = Input.getDeviceKeys(Input.getKeyboardDeviceName())
-      DCS.lockKeyboardInput(keyboardEvents)
-      keyboardLocked = true
   end
   
   local function getEntryState()
@@ -170,8 +137,8 @@ local function loadSharkPlanner()
     statusWindow:show()
     waypointListWindow:show()    
     -- normalize()
-    updateToggleStates(getEntryState())
-    updateWayPointUIState()
+    -- updateToggleStates(getEntryState())
+    -- updateWayPointUIState()
     -- DCS.unlockKeyboardInput(false)
     isHidden = false
   end
@@ -227,7 +194,7 @@ local function loadSharkPlanner()
     Logging.info("Creating window")
     local x, y, w, h = crosshairWindow:getBounds()
     window = DialogLoader.spawnDialogFromFile(
-        lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\Window.dlg"
+        lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\ControlWindow.dlg"
     )
 
     -- calculate actual width
@@ -258,15 +225,6 @@ local function loadSharkPlanner()
     Logging.info("Showing the control window")
     window:setVisible(true)
     return window
-  end
-
-  local function startWaypointEntry()
-    Logging.info("Start waypoint entry")
-    hideButton:setEnabled(true)
-    addWaypointButton:setEnabled(true)
-    resetButton:setEnabled(true)
-    transferButton:setEnabled(false)
-    updateToggleStates(ENTRY_STATES.WAYPOINTS)
   end
 
   local function isValidWaypoint(w)
@@ -305,13 +263,10 @@ local function loadSharkPlanner()
       Logging.info("geoCoordinates k: "..tostring(k).." v: "..tostring(v))
     end
     local position = SharkPlanner.Base.Position:new{x = x, y = elevation, z = z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
-    -- saveDump("geoCoordinates", geoCoordinates)
-    -- ensure waypoints is created
-    -- if coordinateData.wayPoints == nil then coordinateData.wayPoints = {} end
-    -- ensure coordinateData.fixPoints is created
-    if coordinateData.fixPoints == nil then coordinateData.fixPoints = {} end
-    -- ensure coordinateData.targetPoints are created
-    if coordinateData.targetPoints == nil then coordinateData.targetPoints = {} end
+    -- -- ensure coordinateData.fixPoints is created
+    -- if coordinateData.fixPoints == nil then coordinateData.fixPoints = {} end
+    -- -- ensure coordinateData.targetPoints are created
+    -- if coordinateData.targetPoints == nil then coordinateData.targetPoints = {} end
     local entryState = getEntryState()
     if entryState == ENTRY_STATES.WAYPOINTS then
       coordinateData:addWaypoint(position)
@@ -335,20 +290,6 @@ local function loadSharkPlanner()
     updateWayPointUIState()
   end
 
-  local function schedule_commands(commands)
-    -- introduce 100ms delay at start
-    local schedule_time = DCS.getModelTime() + 0.100
-    Logging.info("Expected schedule start: "..schedule_time)
-    for k, command in pairs(commands) do
-      command:setSchedule(schedule_time)
-      Logging.info(command:getText())
-      -- adjust the schedule_time by delay caused by current command. (causes all remaning to be delayed)
-      schedule_time = schedule_time + (command:getDelay() / 1000)
-    end
-    Logging.info("Expected schedule end: "..schedule_time)
-    return commands
-  end
-
   local function transfer()
     Logging.info("Transfer")
     addWaypointButton:setEnabled(false)
@@ -357,7 +298,10 @@ local function loadSharkPlanner()
     transferButton:setEnabled(false)
     delayed_depress_commands = {}
     -- commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
-    commands = schedule_commands(commandGenerator:generateCommands(coordinateData.wayPoints, coordinateData.fixPoints, coordinateData.targetPoints))
+    -- TODO: transfer to new processor
+    -- commands = schedule_commands(commandGenerator:generateCommands(coordinateData.wayPoints, coordinateData.fixPoints, coordinateData.targetPoints))
+    SharkPlanner.Base.DCSEventHandlers.transfer(commandGenerator:generateCommands(coordinateData.wayPoints, coordinateData.fixPoints, coordinateData.targetPoints))
+    -- TODO: handle in event handler
     statusWindow.progressBar:setValue(1)
     statusWindow.progressBar:setRange(1, #commands)
     statusWindow.progressBar:setVisible(true)
@@ -397,20 +341,10 @@ local function loadSharkPlanner()
       return
     end
     crosshairWindow = createCrosshairWindow()
-    window = createControlWindow(crosshairWindow)
-    statusWindow = SharkPlanner.UI.StatusWindow:new{crosshairWindow = crosshairWindow}
-    -- statusWindow = createStatusWindow(crosshairWindow)
 
-    waypointListWindow = SharkPlanner.UI.WaypointListWindow.createWaypointListWindow(crosshairWindow)
-    -- register waypointListWindow to receive events from coordanteData
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddWayPoint, waypointListWindow, waypointListWindow.OnAddWaypoint)
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveWayPoint, waypointListWindow, waypointListWindow.OnRemoveWaypoint)
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddFixPoint, waypointListWindow, waypointListWindow.OnAddFixpoint)
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveFixPoint, waypointListWindow, waypointListWindow.OnRemoveFixpoint)
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, waypointListWindow, waypointListWindow.OnAddTargetpoint)
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, waypointListWindow, waypointListWindow.OnRemoveTargetpoint)
-    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, waypointListWindow, waypointListWindow.OnReset)
-    -- register statusWindow to receive events fronm coordinateData
+    -- create status window
+    statusWindow = SharkPlanner.UI.StatusWindow:new{crosshairWindow = crosshairWindow}
+    -- register statusWindow to receive events from coordinateData
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddWayPoint, statusWindow, statusWindow.OnAddWaypoint)
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveWayPoint, statusWindow, statusWindow.OnRemoveWaypoint)
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddFixPoint, statusWindow, statusWindow.OnAddFixpoint)
@@ -418,214 +352,68 @@ local function loadSharkPlanner()
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, statusWindow, statusWindow.OnAddTargetpoint)
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, statusWindow, statusWindow.OnRemoveTargetpoint)
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, statusWindow, statusWindow.OnReset)
+    -- register statusWindow to receive events from DCS
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.TransferStarted, statusWindow, statusWindow.OnTransferStarted)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.TransferFinished, statusWindow, statusWindow.OnTransferFinished)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.TransferProgressUpdated, statusWindow, statusWindow.OnTransferProgressUpdated)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, statusWindow, statusWindow.OnPlayerEnteredSupportedVehicle)
 
-    -- register UI callbacks
-    hideButton:addMouseDownCallback(
-      function(self)
-        hide()
-      end
-    )
-    addWaypointButton:addMouseDownCallback(
-      function(self)
-        addWaypoint()
-      end
-    )
-    addWaypointButton:addMouseUpCallback(
-      function(self)
-        addWaypointButton:setFocused(false)
-      end
-    )
-    resetButton:addMouseDownCallback(
-      function(self)
-        reset()
-      end
-    )
-    resetButton:addMouseUpCallback(
-      function(self)    
-        resetButton:setFocused(false)
-      end
-    )
-    transferButton:addMouseDownCallback(
-      function(self)
-        transfer()
-      end
-    )
-    transferButton:addMouseUpCallback(
-      function(self)
-        transferButton:setFocused(false)
-      end
-    )
+    -- create waypoint list window
+    waypointListWindow = SharkPlanner.UI.WaypointListWindow:new{crosshairWindow = crosshairWindow}
+    -- register waypointListWindow to receive events from coordinateData
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddWayPoint, waypointListWindow, waypointListWindow.OnAddWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveWayPoint, waypointListWindow, waypointListWindow.OnRemoveWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddFixPoint, waypointListWindow, waypointListWindow.OnAddFixpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveFixPoint, waypointListWindow, waypointListWindow.OnRemoveFixpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, waypointListWindow, waypointListWindow.OnAddTargetpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, waypointListWindow, waypointListWindow.OnRemoveTargetpoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, waypointListWindow, waypointListWindow.OnReset)
 
-    waypointToggle:addChangeCallback(toggleStateChanged)
-    fixpointToggle:addChangeCallback(toggleStateChanged)
-    targetPointToggle:addChangeCallback(toggleStateChanged)
-
-    Logging.info("Adding hotkey callback")
-    -- add open/close hotkey
-    window:addHotKeyCallback(
-        "Ctrl+Shift+space",
-        function()
-            Logging.info("Hotkey pressed!")
-            Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
-            local currentAircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
-            Logging.info("Current airframe: "..tostring(currentAircraftModel))
-            if CommandGeneratorFactory.isSupported(currentAircraftModel) then
-              Logging.info("Airframe is supported: "..currentAircraftModel)
-            -- if isMissionActive then
-              if isHidden == true then
-                  if currentAircraftModel ~= aircraftModel then
-                    eventHandlers.onSimulationStart()
-                  end
-                  show()
-              else
-                  hide()
-              end
-            else
-              Logging.info("Airframe is not supported: "..currentAircraftModel)
-            end
-        end
-    )
+    -- create control window, and pass other windows
+    window = SharkPlanner.UI.ControlWindow:new{
+      crosshairWindow = crosshairWindow,
+      statusWindow = statusWindow,
+      waypointListWindow = waypointListWindow,
+      coordinateData = coordinateData
+    }
+    -- register window to receive vents from coordinateData
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddWayPoint, window, window.OnAddWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveWayPoint, window, window.OnRemoveWaypoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddFixPoint, window, window.OnAddFixPoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveFixPoint, window, window.OnRemoveFixPoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, window, window.OnAddTargetPoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, window, window.OnRemoveTargetPoint)
+    coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, window, window.OnReset)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, window, window.OnPlayerEnteredSupportedVehicle)
 
     Logging.info("Hidding the window")
-    hide()
-    reset()
+    window:hide()
+
     Logging.info("Window creation completed")
   end
 
-  function eventHandlers.onSimulationStart()
-    Logging.info("Simulation started")
-    isMissionActive = true
-    if not window then
-        Logging.info("Windows is not yet created")
-        initializeUI()
-    end
-    Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
-    aircraftModel = SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()
-    if aircraftModel ~= nil then
-      Logging.info("Detected: "..aircraftModel)
-      if CommandGeneratorFactory.isSupported(aircraftModel) then
-        Logging.info("Airframe is supported: "..aircraftModel)
-        Logging.info("Creating command generator")
-        commandGenerator = SharkPlanner.Base.CommandGeneratorFactory.createGenerator(aircraftModel)
-        if commandGenerator ~= nil then
-          Logging.info("Command generator for was created")
-        else
-          Logging.info("Command generator for was not created")
-        end
-        -- reset()
-        normalize()
-      else
-        Logging.info("Airframe is not supported: "..aircraftModel)
-      end
-    end
-  end
+  -- function eventHandlers.onSimulationStop()
+  --   Logging.info("Simulation stopped")
+  --   aircraftModel = nil
+  --   commandGenerator = nil
+  --   hide()
+  -- end
 
-  function eventHandlers.onSimulationStop()
-    Logging.info("Simulation stopped")
-    isMissionActive = false
-    aircraftModel = nil
-    commandGenerator = nil
-    hide()
-  end
-
-  function eventHandlers.onPlayerChangeSlot(id)
-    local my_id = net.get_my_player_id()
-    if id == my_id then
-      Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
-      Logging.info("User has changed slot: "..tostring(SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()))
-      isMissionActive = false
-      aircraftModel = nil
-      commandGenerator = nil
-      hide()
-    end
-  end
-
-  function find_last_due_command_index(command_list, reference_time)
-    local last_due_command_index = 0
-    for k, command in pairs(command_list) do
-      if command:getSchedule() > reference_time then
-        return k - 1
-      end
-      last_due_command_index = k
-    end
-    return last_due_command_index
-  end
-
-  local minimalInterval = 0.001
-  local lastTime = DCS.getModelTime()
-
-  function eventHandlers.onSimulationFrame()
-    -- ensure we run command checks at most every minimalInterval miliseconds
-    local current_time = DCS.getModelTime()
-    if( lastTime + minimalInterval <= current_time) then
-      -- lastTime = current_time
-      if transferIsActive() then
-        -- determine what can be depressed
-        local last_command_due_for_depress = find_last_due_command_index(delayed_depress_commands, current_time)
-        if last_command_due_for_depress > 0 then
-          Logging.info("Last command due for depress: "..last_command_due_for_depress)
-          -- depress all matching
-          for i = 1, last_command_due_for_depress do
-            local command = delayed_depress_commands[i]
-            Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), 0)
-          end
-          -- remove depressed commands
-          for i = 1, last_command_due_for_depress do
-            table.remove(delayed_depress_commands, 1)
-          end
-          -- if the delayed_depress_commands is still not empty we need to wait further, and not proceed with scheduled!
-          if #delayed_depress_commands > 0 then
-            return
-          end
-        end
-
-        -- determine commands that have reach the point for execition
-        local last_scheduled_command = find_last_due_command_index(commands, current_time)
-        if last_scheduled_command > 0 then
-          Logging.info("Commands found: "..last_scheduled_command)
-          for i = 1, last_scheduled_command do
-            local command = commands[i]
-            Logging.info(command:getText())
-            Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), command:getIntensity())
-            Logging.info("Pressed")
-            -- check if the command needs depress
-            if command:getDepress() then
-              -- check for Delay
-              if command:getDelay() == 0 then
-                -- if the delay is 0, the command can be immidiatly depressed
-                Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), 0)
-                Logging.info("Depressed")
-              else
-                -- Delayed commands can not be depressed now
-                command:setSchedule(current_time + (command:getDelay() / 1000))
-                delayed_depress_commands[#delayed_depress_commands + 1] = command
-                Logging.info("Queued for delayed depress")
-              end
-            end
-          end
-          -- remove depressed commands (includes both depressed and those that were moved to delayed depress queue)
-          for i = 1, last_scheduled_command do
-            table.remove(commands, 1)
-          end
-          local min, max = statusWindow.progressBar:getRange()
-          statusWindow.progressBar:setValue(max - #commands)
-        end
-
-        if transferIsInactive() then
-          -- Transfer has stopped
-          Logging.info("Commands have been fully executed.")
-          -- TODO: event handler
-          statusWindow.statusStatic:setText("Transfer completed")
-          statusWindow.progressBar:setVisible(false)
-          -- transferButton:setEnabled(true)
-          updateWayPointUIState()
-        end
-      end
-    end
-  end
+  -- function eventHandlers.onPlayerChangeSlot(id)
+  --   local my_id = net.get_my_player_id()
+  --   if id == my_id then
+  --     Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
+  --     Logging.info("User has changed slot: "..tostring(SharkPlanner.Base.CommandGeneratorFactory.getCurrentAirframe()))
+  --     aircraftModel = nil
+  --     commandGenerator = nil
+  --     hide()
+  --   end
+  -- end
 
   Logging.info("Registering event handlers")
-  DCS.setUserCallbacks(eventHandlers)
+  -- DCS.setUserCallbacks(eventHandlers)
+  SharkPlanner.Base.DCSEventHandlers.register()
+  initializeUI()
   Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
 end
 

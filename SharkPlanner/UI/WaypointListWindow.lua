@@ -50,8 +50,8 @@ function WaypointListWindow:new(o)
   local x, y, w, h = o.crosshairWindow:getBounds()
 
   local width, height = self.scrollGrid:getSize()
-  self.scrollGrid:setBounds(0, 0, width, h)
-  self:setBounds(x + w, y, width, h)
+  o.scrollGrid:setBounds(0, 0, width, h)
+  o:setBounds(x + w, y, width, h)
   return o
 end
 
@@ -78,7 +78,7 @@ function WaypointListWindow:hide()
 end
 
 function WaypointListWindow:OnAddWaypoint(eventArgs)
-  self:_createPositionRow(POINT_TYPES.Waypoint, eventArgs.wayPointIndex, eventArgs.wayPoint)
+  self:_createPositionRow(eventArgs.wayPointIndex, eventArgs.wayPoint, coordinateData.removeWaypoint)
 end
 
 function WaypointListWindow:OnRemoveWaypoint(eventArgs)
@@ -95,7 +95,7 @@ function WaypointListWindow:OnRemoveWaypoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddFixpoint(eventArgs)
-  self:_createPositionRow(POINT_TYPES.Fixpoint, eventArgs.fixPointIndex, eventArgs.fixPoint)
+  self:_createPositionRow(eventArgs.fixPointIndex, eventArgs.fixPoint, coordinateData.removeFixpoint)
 end
 
 function WaypointListWindow:OnRemoveFixpoint(eventArgs)
@@ -112,7 +112,7 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddTargetpoint(eventArgs)
-  self:_createPositionRow(POINT_TYPES.Targetpoint, eventArgs.targetPointIndex, eventArgs.targetPoint)
+  self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.targetWaypoint)
 end
 
 function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
@@ -132,7 +132,7 @@ function WaypointListWindow:OnReset(eventArgs)
   self.scrollGrid:removeAllRows()
 end
 
-function WaypointListWindow:_createPositionRow(pointType, row_number, position)
+function WaypointListWindow:_createPositionRow(row_number, position, removalFunction)
   -- add row number
   self.scrollGrid:insertRow(30)
   -- create row number
@@ -169,28 +169,14 @@ function WaypointListWindow:_createPositionRow(pointType, row_number, position)
   button.row_number = row_number
   -- record the position for later use
   button.position = position
-  -- record point type
-  button.pointType = pointType
+  -- record point function
+  button.removalFunction = removalFunction
   button:addChangeCallback(
     function(self)
-      if self.pointType == POINT_TYPES.Waypoint then
-        coordinateData:removeWaypoint(self.row_number)
-      elseif self.pointType == POINT_TYPES.Fixpoint  then
-        coordinateData:removeFixpoint(self.row_number)
-      elseif self.pointType == POINT_TYPES.Targetpoint  then
-        coordinateData:removeTargetpoint(self.row_number)
-      end
+      self.removalFunction(coordinateData, self.row_number)
     end
   )
   self.scrollGrid:setCell(4, row_number - 1, button)
 end
 
--- TODO: get rid of this function and return class only!
-local function createWaypointListWindow(crosshairWindow)
-  return WaypointListWindow:new{crosshairWindow = crosshairWindow}
-end
-
-return {
-  createWaypointListWindow = createWaypointListWindow,
-  WaypointListWindow = WaypointListWindow
-}
+return  WaypointListWindow

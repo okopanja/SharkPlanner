@@ -30,6 +30,7 @@ function StatusWindow:new(o)
     Logging.info("StatusWindow: setting bounds below crosshair")
     -- statusWindow:setBounds(x, y + h, w, 30)
     self:setBounds(x, y + h, w, 110)
+    -- TODO: remove this and update external references
     self.statusStatic = self.Status
     self.versionInfoStatic = self.VersionInfo
     self.progressBar = self.ProgressBar
@@ -37,7 +38,6 @@ function StatusWindow:new(o)
     self.versionInfoStatic:setText(require("SharkPlanner.VersionInfo"))
     Logging.info("Showing StatusWindow")
     self:setVisible(true)
-
     return o
 end
 
@@ -48,7 +48,9 @@ function StatusWindow:show()
   	for i = 1, count do
       local index 		= i - 1
   	  local widget 		= self:getWidget(index)
-      widget:setVisible(true)
+      if widget ~= self.ProgressBar then
+        widget:setVisible(true)
+      end
     end
 end
 
@@ -63,7 +65,6 @@ function StatusWindow:hide()
   end
   self:setHasCursor(false)
   self:setVisible(false)
-
 end
 
 function StatusWindow:OnAddWaypoint(eventArgs)
@@ -91,7 +92,27 @@ function StatusWindow:OnRemoveTargetpoint(eventArgs)
 end
 
 function StatusWindow:OnReset(eventArgs)
-    self.statusStatic:setText("Reseted all waypoints, fix points and target points") 
+    self.statusStatic:setText("Reseted all captued data.") 
+end
+
+function StatusWindow:OnTransferStarted(eventArgs)
+    self.statusStatic:setText("Transfer in progress...")
+    self.progressBar:setValue(1)
+    self.progressBar:setRange(1, #eventArgs.commands)
+    self.progressBar:setVisible(true)
+end
+
+function StatusWindow:OnTransferFinished(eventArgs)
+    self.statusStatic:setText("Transfer completed")
+    self.progressBar:setVisible(false)
+end
+
+function StatusWindow:OnTransferProgressUpdated(eventArgs)
+    self.progressBar:setValue(eventArgs.totalCommandsCount - eventArgs.currentCommandCount)
+end
+
+function StatusWindow:OnPlayerEnteredSupportedVehicle(eventArg)
+    self.Status:setText("Entered: "..eventArg.aircraftModel)
 end
 
 return StatusWindow

@@ -17,10 +17,10 @@ function CoordinateData:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
-    self.wayPoints = {}
-    self.fixPoints = {}
-    self.targetPoints = {}
-    self.eventHandlers = {
+    o.wayPoints = {}
+    o.fixPoints = {}
+    o.targetPoints = {}
+    o.eventHandlers = {
         [EventTypes.AddWayPoint] = {},
         [EventTypes.RemoveWayPoint] = {},
         [EventTypes.AddFixPoint] = {},
@@ -113,8 +113,6 @@ end
 -- the dispatchEvent for now executes directly the event handlers
 function CoordinateData:dispatchEvent(eventType, eventArg)
     for k, eventHandlerInfo in pairs(self.eventHandlers[eventType]) do
-        Logging.info("eventHandlerInfo.object "..tostring(eventHandlerInfo.object))
-        Logging.info("eventHandlerInfo.eventHandler "..tostring(eventHandlerInfo.eventHandler))
         eventHandlerInfo.eventHandler(eventHandlerInfo.object, eventArg)
     end
 end

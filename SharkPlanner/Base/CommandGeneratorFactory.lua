@@ -74,7 +74,7 @@ end
 
 -- check if it is supported
 function CommandGeneratorFactory.isSupported(name)
-  Logging.info("Checking for support for: "..name)
+  Logging.info("Checking for support for: "..tostring(name))
   for k, v in pairs(CommandGeneratorFactory.supported) do
     if k == name then
       return true
