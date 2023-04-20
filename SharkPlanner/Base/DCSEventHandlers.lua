@@ -1,5 +1,6 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local GameState = require("SharkPlanner.Base.GameState")
+local coordinateData = require("SharkPlanner.Base.CoordinateData")
 local CommandGeneratorFactory = require("SharkPlanner.Base.CommandGeneratorFactory")
 local DCSEventHandlers = {}
 
@@ -123,6 +124,7 @@ function DCSEventHandlers.onSimulationStart()
             aircraftModel = DCSEventHandlers.aircraftModel,
             commandGenerator = DCSEventHandlers.commandGenerator
           }
+          coordinateData:normalize(DCSEventHandlers.commandGenerator)
           DCSEventHandlers.dispatchEvent(EventTypes.PlayerEnteredSupportedVehicle, eventArgs)
         else
           Logging.info("Command generator for was not created")

@@ -172,6 +172,7 @@ function ControlWindow:show()
   self.crosshairWindow:setVisible(true)
   self.statusWindow:show()
   self.waypointListWindow:show()
+  self:updateUIState()
 end
 
 function ControlWindow:hide()
@@ -232,6 +233,7 @@ end
 
 function ControlWindow:transfer()
   DCSEventHandlers.transfer(self.commandGenerator:generateCommands(coordinateData.wayPoints, coordinateData.fixPoints, coordinateData.targetPoints))
+  self:updateUIState()
 end
 
 function ControlWindow:getEntryState()
@@ -248,80 +250,89 @@ function ControlWindow:getEntryState()
 end
 
 function ControlWindow:OnAddWaypoint(eventArg)
-  -- disable if too many
-  if #eventArg.wayPoints >= self.commandGenerator:getMaximalWaypointCount() then
-    self.AddWaypointButton:setEnabled(false)
-  end
-  -- display count if in proper entry state
-  self:updateWaypointCounter()
+  -- -- disable if too many
+  -- if #eventArg.wayPoints >= self.commandGenerator:getMaximalWaypointCount() then
+  --   self.AddWaypointButton:setEnabled(false)
+  -- end
+  -- -- display count if in proper entry state
+  -- self:updateWaypointCounter()
 
-  self.TransferButton:setEnabled(true)
-  self.ResetButton:setEnabled(true)
+  -- self.TransferButton:setEnabled(true)
+  -- self.ResetButton:setEnabled(true)
+  self:updateUIState()
 end
 
 function ControlWindow:OnRemoveWaypoint(eventArg)
-  if #eventArg.wayPoints < self.commandGenerator:getMaximalWaypointCount() then
-    self.AddWaypointButton:setEnabled(true)
-  end
-  -- display count if in proper entry state
-  self:updateWaypointCounter()
+  -- if #eventArg.wayPoints < self.commandGenerator:getMaximalWaypointCount() then
+  --   self.AddWaypointButton:setEnabled(true)
+  -- end
+  -- -- display count if in proper entry state
+  -- self:updateWaypointCounter()
+  self:updateUIState()
 end
 
 function ControlWindow:OnAddFixPoint(eventArg)
-  if #eventArg.fixPoints >= self.commandGenerator:getMaximalFixPointCount() then
-    self.AddWaypointButton:setEnabled(false)
-  end
-  -- display count if in proper entry state
-  self:updateWaypointCounter()
+  -- if #eventArg.fixPoints >= self.commandGenerator:getMaximalFixPointCount() then
+  --   self.AddWaypointButton:setEnabled(false)
+  -- end
+  -- -- display count if in proper entry state
+  -- self:updateWaypointCounter()
 
-  self.TransferButton:setEnabled(true)
-  self.ResetButton:setEnabled(true)
+  -- self.TransferButton:setEnabled(true)
+  -- self.ResetButton:setEnabled(true)
+  self:updateUIState()
 end
 
 function ControlWindow:OnRemoveFixPoint(eventArg)
-  if #eventArg.fixPoints < self.commandGenerator:getMaximalFixPointCount() then
-    self.AddWaypointButton:setEnabled(true)
-  end
+  -- if #eventArg.fixPoints < self.commandGenerator:getMaximalFixPointCount() then
+  --   self.AddWaypointButton:setEnabled(true)
+  -- end
 
-  self:updateWaypointCounter()
+  -- self:updateWaypointCounter()
+  self:updateUIState()
 end
 
 function ControlWindow:OnAddTargetPoint(eventArg)
-  if #eventArg.targetPoints >= self.commandGenerator:getMaximalTargetPointCount() then
-    self.AddWaypointButton:setEnabled(false)
-  end
-  -- display count if in proper entry state
-  self:updateWaypointCounter()
+  -- if #eventArg.targetPoints >= self.commandGenerator:getMaximalTargetPointCount() then
+  --   self.AddWaypointButton:setEnabled(false)
+  -- end
+  -- -- display count if in proper entry state
+  -- self:updateWaypointCounter()
 
-  self.TransferButton:setEnabled(true)
-  self.ResetButton:setEnabled(true)
+  -- self.TransferButton:setEnabled(true)
+  -- self.ResetButton:setEnabled(true)
+  self:updateUIState()
 end
 
 function ControlWindow:OnRemoveTargetPoint(eventArg)
-  if #eventArg.targetPoints < self.commandGenerator:getMaximalTargetPointCount() then
-    self.AddWaypointButton:setEnabled(true)
-  end
-  -- display count if in proper entry state
-  self:updateWaypointCounter()
+  -- if #eventArg.targetPoints < self.commandGenerator:getMaximalTargetPointCount() then
+  --   self.AddWaypointButton:setEnabled(true)
+  -- end
+  -- -- display count if in proper entry state
+  -- self:updateWaypointCounter()
+  self:updateUIState()
 end
 
 function ControlWindow:OnReset(eventArgs)
-  Logging.info("Reset: setting controls")
-  self:updateToggleStates(ENTRY_STATES.WAYPOINTS)
-  self.HideButton:setEnabled(true)
-  self.AddWaypointButton:setEnabled(true)
-  self.ResetButton:setEnabled(false)
-  self.TransferButton:setEnabled(false)
-  -- display count if in proper entry state
-  self:updateWaypointCounter()
+  -- Logging.info("Reset: setting controls")
+  -- self:updateToggleStates(ENTRY_STATES.WAYPOINTS)
+  -- self.HideButton:setEnabled(true)
+  -- self.AddWaypointButton:setEnabled(true)
+  -- self.ResetButton:setEnabled(false)
+  -- self.TransferButton:setEnabled(false)
+  -- -- display count if in proper entry state
+  -- self:updateWaypointCounter()
+  self:updateUIState()
 end
 
 function ControlWindow:OnPlayerEnteredSupportedVehicle(eventArgs)
   self.commandGenerator = eventArgs.commandGenerator
   self:updateToggleStates(ENTRY_STATES.WAYPOINTS)
-  self:updateWaypointCounter()
-  self.ResetButton:setEnabled(false)
-  self.TransferButton:setEnabled(false)
+  local eventArgs = {
+    entryState = self:getEntryState()
+  }
+  self:dispatchEvent(EventTypes.EntryModeChanged, eventArgs)
+  self:updateUIState()
 end
 
 function ControlWindow:OnSimulationStarted(eventArgs)
@@ -330,10 +341,14 @@ end
 function ControlWindow:OnPlayerChangeSlot(eventArgs)
   self:hide()
 end
+
 function ControlWindow:OnSimulationStopped(eventArgs)
   self:hide()
 end
 
+function ControlWindow:OnTransferFinished(eventArgs)
+  self:updateUIState()
+end
 
 function ControlWindow:OnToggleStateChanged(button)
   Logging.info("Changed: "..button:getText().." to "..tostring(button:getState()))
@@ -408,6 +423,29 @@ function ControlWindow:updateWaypointCounter()
   end
   if self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
     self.WaypointCounter:setText(""..#self.coordinateData.targetPoints.."/"..self.commandGenerator:getMaximalTargetPointCount())
+  end
+end
+
+function ControlWindow:updateUIState()
+  self.ResetButton:setEnabled((#coordinateData.wayPoints > 0 or #coordinateData.fixPoints > 0 or #coordinateData.targetPoints > 0) and DCSEventHandlers.transferIsInactive())
+  self.TransferButton:setEnabled((#coordinateData.wayPoints > 0 or #coordinateData.fixPoints > 0 or #coordinateData.targetPoints > 0) and DCSEventHandlers.transferIsInactive() and self.commandGenerator:getAircraftName() ~= "Combined Arms")
+  -- this thing is needed to ensure that transferButton does not capture the mouse. 
+  -- This appears to be a glitch in dxgui, where disabled and then enabled components reacts to mouse down events for all controls.
+  self.TransferButton:releaseMouse()
+  if self.commandGenerator == nil then return end
+  local entryState = self:getEntryState()
+  if entryState == ENTRY_STATES.WAYPOINTS then
+    self.WaypointCounter:setText(""..#coordinateData.wayPoints.."/"..self.commandGenerator:getMaximalWaypointCount())
+    -- prevent further entry if maximal number reached
+    self.AddWaypointButton:setEnabled((#coordinateData.wayPoints < self.commandGenerator:getMaximalWaypointCount()) and DCSEventHandlers.transferIsInactive())
+  elseif entryState == ENTRY_STATES.FIXPOINTS then
+    self.WaypointCounter:setText(""..#coordinateData.fixPoints.."/"..self.commandGenerator:getMaximalFixPointCount())
+    -- prevent further entry if maximal number reached
+    self.AddWaypointButton:setEnabled((#coordinateData.fixPoints < self.commandGenerator:getMaximalFixPointCount()) and DCSEventHandlers.transferIsInactive())
+  elseif entryState == ENTRY_STATES.TARGET_POINTS then
+    self.WaypointCounter:setText(""..#coordinateData.targetPoints.."/"..self.commandGenerator:getMaximalTargetPointCount())
+    -- prevent further entry if maximal number reached
+    self.AddWaypointButton:setEnabled((#coordinateData.targetPoints < self.commandGenerator:getMaximalTargetPointCount()) and DCSEventHandlers.transferIsInactive())
   end
 end
 

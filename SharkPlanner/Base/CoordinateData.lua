@@ -1,4 +1,8 @@
 local Logging = require("SharkPlanner.Utils.Logging")
+-- handle lua 5.4 deprecation
+if table.unpack == nil then
+table.unpack = unpack
+end
 
 local CoordinateData = {}
 local EventTypes = {
@@ -114,6 +118,38 @@ end
 function CoordinateData:dispatchEvent(eventType, eventArg)
     for k, eventHandlerInfo in pairs(self.eventHandlers[eventType]) do
         eventHandlerInfo.eventHandler(eventHandlerInfo.object, eventArg)
+    end
+end
+
+function CoordinateData:normalize(commandGenerator)
+    Logging.info("Normalizing data structures")
+    -- no commandGenerator nothing to do
+    if commandGenerator == nil then return end
+    -- trim number of waypoints
+    Logging.info("Setting correct structure size")
+    if #self.wayPoints > commandGenerator:getMaximalWaypointCount() then
+        Logging.info("Prunning waypoints from "..#self.wayPoints.." to "..commandGenerator:getMaximalWaypointCount())        
+        -- self.wayPoints = { table.unpack(self.wayPoints, 1, math.min(#self.wayPoints, commandGenerator:getMaximalWaypointCount())) }
+        for i = #self.wayPoints, commandGenerator:getMaximalWaypointCount() + 1, -1 do
+            self:removeWaypoint(i)
+        end
+        Logging.info("Result: "..#self.wayPoints)
+    end
+    if #self.fixPoints > commandGenerator:getMaximalFixPointCount() then
+        Logging.info("Prunning fixpoints...")
+        -- self.fixPoints = { table.unpack(self.fixPoints, 1, math.min(#self.fixPoints, commandGenerator:getMaximalFixPointCount())) }
+        for i = #self.fixPoints, commandGenerator:getMaximalFixPointCount() + 1, -1 do
+            self:removeFixpoint(i)
+        end
+        Logging.info("Result: "..#self.fixPoints)
+    end
+    if #self.targetPoints > commandGenerator:getMaximalTargetPointCount() then
+        Logging.info("Prunning target points...")
+        -- self.targetPoints = { table.unpack(self.targetPoints, 1, math.min(#self.targetPoints, commandGenerator:getMaximalTargetPointCount())) }
+        for i = #self.targetPoints, commandGenerator:getMaximalTargetPointCount() + 1, -1 do
+            self:removeTargetpoint(i)
+        end
+        Logging.info("Result: "..#self.targetPoints)
     end
 end
 
