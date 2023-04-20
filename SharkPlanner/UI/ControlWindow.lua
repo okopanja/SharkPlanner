@@ -18,9 +18,14 @@ local ENTRY_STATES = {
   TARGET_POINTS = "T"
 }
 
+EventTypes = {
+  EntryModeChanged = 1
+}
+
 local ControlWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\ControlWindow.dlg"
 )
+ControlWindow.EventTypes = EventTypes
 
 -- Constructor
 function ControlWindow:new(o)
@@ -48,6 +53,7 @@ function ControlWindow:new(o)
       self.FixpointToggle,
       self.TargetPointToggle
     }
+
     self.WaypointToggle:addChangeCallback(
       function(button)
         o:OnToggleStateChanged(button)
@@ -110,7 +116,7 @@ function ControlWindow:new(o)
     o.TransferButton:addChangeCallback(
       function(button)
         Logging.info("Transfering...")
-        -- transfer()
+        o:transfer()
       end
     )
     o.TransferButton:addMouseUpCallback(
@@ -142,6 +148,9 @@ function ControlWindow:new(o)
             end
         end
     )
+    o.eventHandlers = {
+      [EventTypes.EntryModeChanged] = {},
+    }
     o.commandGenerator = nil
     return o
 end
@@ -221,6 +230,10 @@ function ControlWindow:reset()
   self.coordinateData:reset()
 end
 
+function ControlWindow:transfer()
+  DCSEventHandlers.transfer(self.commandGenerator:generateCommands(coordinateData.wayPoints, coordinateData.fixPoints, coordinateData.targetPoints))
+end
+
 function ControlWindow:getEntryState()
   if self.WaypointToggle:getState() then
     return ENTRY_STATES.WAYPOINTS
@@ -240,9 +253,8 @@ function ControlWindow:OnAddWaypoint(eventArg)
     self.AddWaypointButton:setEnabled(false)
   end
   -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.WAYPOINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.wayPoints.."/"..self.commandGenerator:getMaximalWaypointCount())
-  end
+  self:updateWaypointCounter()
+
   self.TransferButton:setEnabled(true)
   self.ResetButton:setEnabled(true)
 end
@@ -252,9 +264,7 @@ function ControlWindow:OnRemoveWaypoint(eventArg)
     self.AddWaypointButton:setEnabled(true)
   end
   -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.WAYPOINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.wayPoints.."/"..self.commandGenerator:getMaximalWaypointCount())
-  end
+  self:updateWaypointCounter()
 end
 
 function ControlWindow:OnAddFixPoint(eventArg)
@@ -262,9 +272,8 @@ function ControlWindow:OnAddFixPoint(eventArg)
     self.AddWaypointButton:setEnabled(false)
   end
   -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.FIXPOINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.fixPoints.."/"..self.commandGenerator:getMaximalFixPointCount())
-  end
+  self:updateWaypointCounter()
+
   self.TransferButton:setEnabled(true)
   self.ResetButton:setEnabled(true)
 end
@@ -273,10 +282,8 @@ function ControlWindow:OnRemoveFixPoint(eventArg)
   if #eventArg.fixPoints < self.commandGenerator:getMaximalFixPointCount() then
     self.AddWaypointButton:setEnabled(true)
   end
-  -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.FIXPOINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.fixPoints.."/"..self.commandGenerator:getMaximalFixPointCount())
-  end
+
+  self:updateWaypointCounter()
 end
 
 function ControlWindow:OnAddTargetPoint(eventArg)
@@ -284,9 +291,8 @@ function ControlWindow:OnAddTargetPoint(eventArg)
     self.AddWaypointButton:setEnabled(false)
   end
   -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.targetPoints.."/"..self.commandGenerator:getMaximalTargetPointCount())
-  end
+  self:updateWaypointCounter()
+
   self.TransferButton:setEnabled(true)
   self.ResetButton:setEnabled(true)
 end
@@ -296,9 +302,7 @@ function ControlWindow:OnRemoveTargetPoint(eventArg)
     self.AddWaypointButton:setEnabled(true)
   end
   -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.targetPoints.."/"..self.commandGenerator:getMaximalTargetPointCount())
-  end
+  self:updateWaypointCounter()
 end
 
 function ControlWindow:OnReset(eventArgs)
@@ -309,18 +313,27 @@ function ControlWindow:OnReset(eventArgs)
   self.ResetButton:setEnabled(false)
   self.TransferButton:setEnabled(false)
   -- display count if in proper entry state
-  if self:getEntryState() == ENTRY_STATES.WAYPOINTS then
-    self.WaypointCounter:setText(""..#self.coordinateData.wayPoints.."/"..self.commandGenerator:getMaximalWaypointCount())
-  end
+  self:updateWaypointCounter()
 end
 
-function ControlWindow:OnPlayerEnteredSupportedVehicle(eventArg)
-  self.commandGenerator = eventArg.commandGenerator
+function ControlWindow:OnPlayerEnteredSupportedVehicle(eventArgs)
+  self.commandGenerator = eventArgs.commandGenerator
   self:updateToggleStates(ENTRY_STATES.WAYPOINTS)
-  self.WaypointCounter:setText(""..#self.coordinateData.wayPoints.."/"..self.commandGenerator:getMaximalWaypointCount())
+  self:updateWaypointCounter()
   self.ResetButton:setEnabled(false)
   self.TransferButton:setEnabled(false)
 end
+
+function ControlWindow:OnSimulationStarted(eventArgs)
+end
+
+function ControlWindow:OnPlayerChangeSlot(eventArgs)
+  self:hide()
+end
+function ControlWindow:OnSimulationStopped(eventArgs)
+  self:hide()
+end
+
 
 function ControlWindow:OnToggleStateChanged(button)
   Logging.info("Changed: "..button:getText().." to "..tostring(button:getState()))
@@ -345,6 +358,13 @@ function ControlWindow:OnToggleStateChanged(button)
   end
   -- unfocus!
   button:setFocused(false)
+
+  self:updateWaypointCounter()
+
+  local eventArgs = {
+    entryState = self:getEntryState()
+  }
+  self:dispatchEvent(EventTypes.EntryModeChanged, eventArgs)
   -- updateWayPointUIState()
 end
 
@@ -356,7 +376,6 @@ function ControlWindow:logPosition(w)
     "p={x="..w['p']['x']..", y="..w['p']['y']..", z="..w['p']['z'].."}\n}"
   )
 end
-
 
 function ControlWindow:isValidWaypoint(w)
   return w['x']['x'] == 0 and w['x']['y'] == -1 and w['x']['z'] == 0 and w['y']['x'] == 1 and w['y']['y'] == 0 and w['y']['z'] == 0 and w['z']['x'] == 0 and w['z']['y'] == 0 and w['z']['z'] == 1
@@ -379,5 +398,29 @@ function ControlWindow:updateToggleStates(state)
   self.FixpointToggle:setState(fixpointState)
   self.TargetPointToggle:setState(targetPointState)
 end
+
+function ControlWindow:updateWaypointCounter()
+  if self:getEntryState() == ENTRY_STATES.WAYPOINTS then
+    self.WaypointCounter:setText(""..#self.coordinateData.wayPoints.."/"..self.commandGenerator:getMaximalWaypointCount())
+  end
+  if self:getEntryState() == ENTRY_STATES.FIXPOINTS then
+    self.WaypointCounter:setText(""..#self.coordinateData.fixPoints.."/"..self.commandGenerator:getMaximalFixPointCount())
+  end
+  if self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
+    self.WaypointCounter:setText(""..#self.coordinateData.targetPoints.."/"..self.commandGenerator:getMaximalTargetPointCount())
+  end
+end
+
+function ControlWindow:addEventHandler(eventType, object, eventHandler)
+  self.eventHandlers[eventType][#self.eventHandlers[eventType] + 1] = { object = object, eventHandler = eventHandler }
+end
+
+-- the dispatchEvent for now executes directly the event handlers
+function ControlWindow:dispatchEvent(eventType, eventArg)
+  for k, eventHandlerInfo in pairs(self.eventHandlers[eventType]) do
+      eventHandlerInfo.eventHandler(eventHandlerInfo.object, eventArg)
+  end
+end
+
 
 return ControlWindow

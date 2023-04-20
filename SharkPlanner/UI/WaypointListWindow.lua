@@ -132,6 +132,29 @@ function WaypointListWindow:OnReset(eventArgs)
   self.scrollGrid:removeAllRows()
 end
 
+function WaypointListWindow:OnEntryModeChanged(eventArgs)
+  Logging.info("Entry mode changed!")
+  self.scrollGrid:removeAllRows()
+  local positions = nil
+  local removalFunction = nil
+  if eventArgs.entryState == "W" then
+    positions = coordinateData.wayPoints
+    removalFunction = coordinateData.removeWaypoint
+  elseif eventArgs.entryState == "F" then
+    positions = coordinateData.fixPoints
+    removalFunction = coordinateData.removeFixpoint
+  elseif eventArgs.entryState == "T" then
+    positions = coordinateData.targetPoints
+    removalFunction = coordinateData.removeTargetpoint
+  else
+    return
+  end
+  for i = 1, #positions do
+    Logging.info(tostring(i))
+    self:_createPositionRow(i, positions[i], removalFunction)
+  end
+end
+
 function WaypointListWindow:_createPositionRow(row_number, position, removalFunction)
   -- add row number
   self.scrollGrid:insertRow(30)

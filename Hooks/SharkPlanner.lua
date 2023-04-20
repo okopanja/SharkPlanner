@@ -384,7 +384,13 @@ local function loadSharkPlanner()
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.AddTargetPoint, window, window.OnAddTargetPoint)
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.RemoveTargetPoint, window, window.OnRemoveTargetPoint)
     coordinateData:addEventHandler(SharkPlanner.Base.CoordinateData.EventTypes.Reset, window, window.OnReset)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.SimulationStarted, window, window.OnSimulationStarted)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.PlayerChangeSlot, window, window.OnPlayerChangeSlot)
     SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, window, window.OnPlayerEnteredSupportedVehicle)
+    SharkPlanner.Base.DCSEventHandlers.addEventHandler(SharkPlanner.Base.DCSEventHandlers.EventTypes.SimulationStopped, window, window.OnSimulationStopped)
+
+    -- register waypointListWindow to receive events from controlWindow    
+    window:addEventHandler(SharkPlanner.UI.ControlWindow.EventTypes.EntryModeChanged, waypointListWindow, waypointListWindow.OnEntryModeChanged)
 
     Logging.info("Hidding the window")
     window:hide()
