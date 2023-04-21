@@ -342,7 +342,8 @@ function ControlWindow:OnToggleStateChanged(button)
   button:setFocused(false)
 
   self:updateWaypointCounter()
-
+  self:updateUIState()
+  
   local eventArgs = {
     entryState = self:getEntryState()
   }
