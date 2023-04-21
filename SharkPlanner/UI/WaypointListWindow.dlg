@@ -41,7 +41,7 @@ dialog = {
                 ["bounds"] = {
                     ["x"] = 0,
                     ["y"] = 0,
-                    ["w"] = 390 + 15,
+                    ["w"] = 390 + 16,
                     ["h"] = 390
                 },
                 ["columnMouseResizing"] = true,
