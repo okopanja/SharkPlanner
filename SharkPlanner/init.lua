@@ -10,7 +10,7 @@ local crosshairWindow = nil
 local statusWindow = nil
 local waypointListWindow = nil
 local coordinateData = Base.CoordinateData
-
+local SkinHelper = require("SharkPlanner.UI.SkinHelper")
 Logging.info("Registering event handlers")
 Base.DCSEventHandlers.register()
 

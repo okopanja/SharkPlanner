@@ -6,6 +6,7 @@ local GameState = require("SharkPlanner.Base.GameState")
 local CommandGeneratorFactory = require("SharkPlanner.Base.CommandGeneratorFactory")
 local DCSEventHandlers = require("SharkPlanner.Base.DCSEventHandlers")
 local Position = require("SharkPlanner.Base.Position")
+local SkinHelper = require("SharkPlanner.UI.SkinHelper")
 local dxgui = require('dxgui')
 local Input = require("Input")
 local lfs = require("lfs")
@@ -157,6 +158,11 @@ function ControlWindow:new(o)
       [EventTypes.EntryModeChanged] = {},
     }
     o.commandGenerator = nil
+    local localSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerEntry")
+    o.HideButton:setSkin(localSkin)
+    o.AddWaypointButton:setSkin(localSkin)
+    o.ResetButton:setSkin(localSkin)
+    o.TransferButton:setSkin(localSkin)
 
     return o
 end

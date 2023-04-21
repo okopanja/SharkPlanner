@@ -39,9 +39,9 @@ dialog = {
             ["params"] = {
                 ["bounds"] = {
                     ["x"] = 0,
-                    ["y"] = 0,
+                    ["y"] = 2,
                     ["w"] = 50,
-                    ["h"] = 30,
+                    ["h"] = 26,
                 },
                 ["enabled"] = true,
                 ["tabOrder"] = 0,
@@ -61,9 +61,9 @@ dialog = {
             ["params"] = {
                 ["bounds"] = {
                     ["x"] = 50,
-                    ["y"] = 0,
+                    ["y"] = 2,
                     ["w"] = 50,
-                    ["h"] = 30,
+                    ["h"] = 26,
                 },
                 ["enabled"] = true,
                 ["tabOrder"] = 0,
@@ -83,9 +83,9 @@ dialog = {
             ["params"] = {
                 ["bounds"] = {
                     ["x"] = 100,
-                    ["y"] = 0,
+                    ["y"] = 2,
                     ["w"] = 50,
-                    ["h"] = 30,
+                    ["h"] = 26,
                 },
                 ["enabled"] = true,
                 ["tabOrder"] = 0,
@@ -105,9 +105,9 @@ dialog = {
             ["params"] = {
                 ["bounds"] = {
                     ["x"] = 150,
-                    ["y"] = 0,
+                    ["y"] = 2,
                     ["w"] = 70,
-                    ["h"] = 30,
+                    ["h"] = 26,
                 },
                 ["enabled"] = true,
                 ["tabOrder"] = 0,
@@ -182,7 +182,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -217,7 +217,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -254,7 +254,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -289,7 +289,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -329,7 +329,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive_pressed.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -364,7 +364,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active_pressed.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -404,7 +404,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -432,7 +432,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -497,7 +497,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -532,7 +532,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -569,7 +569,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -604,7 +604,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -644,7 +644,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive_pressed.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -679,7 +679,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active_pressed.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -719,7 +719,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -747,7 +747,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -812,7 +812,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -847,7 +847,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -884,7 +884,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -919,7 +919,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -959,7 +959,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive_pressed.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -994,7 +994,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active_pressed.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -1034,7 +1034,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -1062,7 +1062,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
