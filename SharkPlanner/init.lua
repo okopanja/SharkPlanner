@@ -1,9 +1,77 @@
 local VERSION_INFO = require("SharkPlanner.VersionInfo")
 local Utils = require("SharkPlanner.Utils")
-Utils.Logging.info("Version: "..VERSION_INFO)
+local Logging = Utils.Logging
+Logging.info("Version: "..VERSION_INFO)
 local Base = require("SharkPlanner.Base")
 local Modules = require("SharkPlanner.Modules")
 local UI = require("SharkPlanner.UI")
+local window = nil
+local crosshairWindow = nil
+local statusWindow = nil
+local waypointListWindow = nil
+local coordinateData = Base.CoordinateData
+
+Logging.info("Registering event handlers")
+Base.DCSEventHandlers.register()
+
+crosshairWindow = UI.CrosshairWindow:new{}
+
+-- create status window
+statusWindow = UI.StatusWindow:new{crosshairWindow = crosshairWindow}
+-- register statusWindow to receive events from coordinateData
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, statusWindow, statusWindow.OnAddWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveWayPoint, statusWindow, statusWindow.OnRemoveWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddFixPoint, statusWindow, statusWindow.OnAddFixpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveFixPoint, statusWindow, statusWindow.OnRemoveFixpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddTargetPoint, statusWindow, statusWindow.OnAddTargetpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint, statusWindow, statusWindow.OnRemoveTargetpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, statusWindow, statusWindow.OnReset)
+-- register statusWindow to receive events from DCS
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferStarted, statusWindow, statusWindow.OnTransferStarted)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferFinished, statusWindow, statusWindow.OnTransferFinished)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferProgressUpdated, statusWindow, statusWindow.OnTransferProgressUpdated)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, statusWindow, statusWindow.OnPlayerEnteredSupportedVehicle)
+
+-- create waypoint list window
+waypointListWindow = UI.WaypointListWindow:new{crosshairWindow = crosshairWindow}
+-- register waypointListWindow to receive events from coordinateData
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, waypointListWindow, waypointListWindow.OnAddWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveWayPoint, waypointListWindow, waypointListWindow.OnRemoveWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddFixPoint, waypointListWindow, waypointListWindow.OnAddFixpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveFixPoint, waypointListWindow, waypointListWindow.OnRemoveFixpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddTargetPoint, waypointListWindow, waypointListWindow.OnAddTargetpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint, waypointListWindow, waypointListWindow.OnRemoveTargetpoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, waypointListWindow, waypointListWindow.OnReset)
+
+-- create control window, and pass other windows
+window = UI.ControlWindow:new{
+crosshairWindow = crosshairWindow,
+statusWindow = statusWindow,
+waypointListWindow = waypointListWindow,
+coordinateData = coordinateData
+}
+-- register window to receive vents from coordinateData
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, window, window.OnAddWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveWayPoint, window, window.OnRemoveWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddFixPoint, window, window.OnAddFixPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveFixPoint, window, window.OnRemoveFixPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddTargetPoint, window, window.OnAddTargetPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint, window, window.OnRemoveTargetPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, window, window.OnReset)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.SimulationStarted, window, window.OnSimulationStarted)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerChangeSlot, window, window.OnPlayerChangeSlot)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, window, window.OnPlayerEnteredSupportedVehicle)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.SimulationStopped, window, window.OnSimulationStopped)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferFinished, window, window.OnTransferFinished)
+
+-- register waypointListWindow to receive events from controlWindow    
+window:addEventHandler(UI.ControlWindow.EventTypes.EntryModeChanged, waypointListWindow, waypointListWindow.OnEntryModeChanged)
+
+Logging.info("Hidding the window")
+window:hide()
+
+Logging.info("Window creation completed")
+Logging.info("Game state: "..Base.GameState.getGameState())
 
 -- make Base, Modules Utils, and VERSION_INFO available
 return {
