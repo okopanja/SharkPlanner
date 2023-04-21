@@ -99,11 +99,11 @@ local function loadSharkPlanner()
 
     Logging.info("Window creation completed")
   end
-
   Logging.info("Registering event handlers")
   -- DCS.setUserCallbacks(eventHandlers)
   SharkPlanner.Base.DCSEventHandlers.register()
   initializeUI()
+
   Logging.info("Game state: "..SharkPlanner.Base.GameState.getGameState())
 end
 

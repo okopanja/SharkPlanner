@@ -56,7 +56,7 @@ dialog = {
                         [1] = {
                             ["picture"] = {
                                 ["color"] = "0xffffffff",
-                                ["file"] = "Scripts\\SharkPlanner\\UI\\Crosshair.png"
+                                ["file"] = "Scripts\\SharkPlanner\\UI\\images\\Crosshair.png"
                             }
                         }
                     }
