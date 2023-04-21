@@ -25,6 +25,7 @@ EventTypes = {
 local ControlWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\ControlWindow.dlg"
 )
+
 ControlWindow.EventTypes = EventTypes
 
 -- Constructor
@@ -53,6 +54,10 @@ function ControlWindow:new(o)
       self.FixpointToggle,
       self.TargetPointToggle
     }
+    
+    for k, v in pairs(o.toggleGroup) do
+      self:fixToggleSkin(v)
+    end
 
     self.WaypointToggle:addChangeCallback(
       function(button)
@@ -152,7 +157,21 @@ function ControlWindow:new(o)
       [EventTypes.EntryModeChanged] = {},
     }
     o.commandGenerator = nil
+
     return o
+end
+
+function ControlWindow:fixToggleSkin(toggle)
+  local skin = toggle:getSkin()
+  skin.skinData.states.released[1].picture.file = lfs.writedir()..skin.skinData.states.released[1].picture.file
+  skin.skinData.states.released[2].picture.file = lfs.writedir()..skin.skinData.states.released[2].picture.file
+  skin.skinData.states.disabled[1].picture.file = lfs.writedir()..skin.skinData.states.disabled[1].picture.file
+  skin.skinData.states.disabled[2].picture.file = lfs.writedir()..skin.skinData.states.disabled[2].picture.file
+  skin.skinData.states.hover[1].picture.file = lfs.writedir()..skin.skinData.states.hover[1].picture.file
+  skin.skinData.states.hover[2].picture.file = lfs.writedir()..skin.skinData.states.hover[2].picture.file
+  skin.skinData.states.pressed[1].picture.file = lfs.writedir()..skin.skinData.states.pressed[1].picture.file
+  skin.skinData.states.pressed[2].picture.file = lfs.writedir()..skin.skinData.states.pressed[2].picture.file
+  toggle:setSkin(skin)
 end
 
 function ControlWindow:show()

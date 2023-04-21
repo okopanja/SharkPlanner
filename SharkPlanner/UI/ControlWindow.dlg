@@ -182,7 +182,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -217,7 +217,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -254,7 +254,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -289,7 +289,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -308,7 +308,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -329,7 +329,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -364,7 +364,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -383,7 +383,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -404,7 +404,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -432,7 +432,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -451,7 +451,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -459,10 +459,6 @@ dialog = {
           },
           ["type"] = "ToggleButton",
         },
-
-
-
-
         ["FixpointToggle"] = {
           ["params"] = {
             ["bounds"] = {
@@ -501,7 +497,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -536,7 +532,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -573,7 +569,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -608,7 +604,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -627,7 +623,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -648,7 +644,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -683,7 +679,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -702,7 +698,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -723,7 +719,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -751,7 +747,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -770,7 +766,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -816,7 +812,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -851,7 +847,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffff80",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -888,7 +884,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -923,7 +919,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -942,7 +938,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -963,7 +959,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -998,7 +994,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffcc",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active_pressed.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -1017,7 +1013,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
@@ -1038,7 +1034,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngray.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_inactive.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -1066,7 +1062,7 @@ dialog = {
                   },
                   ["picture"] = {
                     ["color"] = "0xffffffff",
-                    ["file"] = "dxgui\\skins\\skinme\\images\\Buttons\\buttons(new)\\released\\btngreen.png",
+                    ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_btn_active.png",
                     ["horzAlign"] = {
                       ["offset"] = 0,
                       ["type"] = "middle",
@@ -1085,7 +1081,7 @@ dialog = {
                     },
                   },
                   ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
+                    ["color"] = "0xffffffff",
                   },
                 },
               },
