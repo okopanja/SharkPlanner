@@ -1,6 +1,7 @@
 -- provide sub-packages and modules
 local Logging = require("SharkPlanner.Utils.Logging")
 local coordinateData = require("SharkPlanner.Base.CoordinateData")
+local SkinHelper = require("SharkPlanner.UI.SkinHelper")
 local DialogLoader = require("DialogLoader")
 local dxgui = require('dxgui')
 local Input = require("Input")
@@ -52,6 +53,7 @@ function WaypointListWindow:new(o)
   local width, height = self.scrollGrid:getSize()
   o.scrollGrid:setBounds(0, 0, width, h)
   o:setBounds(x + w, y, width, h)
+  o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerEntry")
   return o
 end
 
@@ -112,7 +114,7 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddTargetpoint(eventArgs)
-  self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.targetWaypoint)
+  self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.removeTargetpoint)
 end
 
 function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
@@ -180,13 +182,16 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   static = Static.new()
   static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  
   self.scrollGrid:setCell(3, row_number - 1, static)
 
   -- add delete button
   local button = Button.new()
-  button:setSkin(Skin.getSkin("buttonSkinAwacs"))
+
+  -- button:setSkin(Skin.getSkin("buttonSkinAwacs"))
+  button:setSkin(self.removeButtonSkin)
   button:setText("X")
-  button:setBounds(0, 0, 30, 30)
+  button:setBounds(2, 2, 26, 26)
   button:setVisible(true)
   -- record the row_number for later use
   button.row_number = row_number

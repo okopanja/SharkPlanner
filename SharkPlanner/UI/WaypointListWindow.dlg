@@ -550,6 +550,12 @@ dialog = {
                             ["w"] = 30,
                             ["h"] = 30,
                         },
+                        ["insets"] = {
+                            ["x"] = 2,
+                            ["y"] = 2,
+                            ["w"] = 26,
+                            ["h"] = 26,
+                        },
                         ["draggable"] = true,
                         ["enabled"] = true,
                         ["layout"] = {
