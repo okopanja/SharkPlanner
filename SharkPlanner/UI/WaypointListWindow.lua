@@ -53,7 +53,7 @@ function WaypointListWindow:new(o)
   local width, height = self.scrollGrid:getSize()
   o.scrollGrid:setBounds(0, 0, width, h)
   o:setBounds(x + w, y, width, h)
-  o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerEntry")
+  o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   return o
 end
 

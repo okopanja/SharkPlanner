@@ -59,6 +59,7 @@ function ControlWindow:new(o)
     for k, v in pairs(o.toggleGroup) do
       self:fixToggleSkin(v)
     end
+    self:fixToggleSkin(self.WaypointCounter)
 
     self.WaypointToggle:addChangeCallback(
       function(button)
@@ -75,6 +76,13 @@ function ControlWindow:new(o)
         o:OnToggleStateChanged(button)
       end
     )
+
+    self.WaypointCounter:addChangeCallback(
+      function(button)
+        o:OnWayPointCounterChanged(button)
+      end
+    )
+
     -- self.updateToggleStates(ENTRY_STATES.WAYPOINTS)
 
     Logging.info("Getting default skin")
@@ -158,11 +166,13 @@ function ControlWindow:new(o)
       [EventTypes.EntryModeChanged] = {},
     }
     o.commandGenerator = nil
-    local localSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerEntry")
-    o.HideButton:setSkin(localSkin)
-    o.AddWaypointButton:setSkin(localSkin)
-    o.ResetButton:setSkin(localSkin)
-    o.TransferButton:setSkin(localSkin)
+    local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
+    o.HideButton:setSkin(buttonAmberSkin)
+    o.AddWaypointButton:setSkin(buttonAmberSkin)
+    o.ResetButton:setSkin(buttonAmberSkin)
+    o.TransferButton:setSkin(buttonAmberSkin)
+    local buttonGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerGreen")
+    o.WaypointCounter:setSkin(buttonGreenSkin)
 
     return o
 end
@@ -196,7 +206,9 @@ function ControlWindow:show()
 
   self.crosshairWindow:setVisible(true)
   self.statusWindow:show()
-  self.waypointListWindow:show()
+  if self.WaypointCounter:getState() then
+    self.waypointListWindow:show()
+  end
   self:updateUIState()
 end
 
@@ -355,6 +367,16 @@ function ControlWindow:OnToggleStateChanged(button)
   }
   self:dispatchEvent(EventTypes.EntryModeChanged, eventArgs)
 end
+
+function ControlWindow:OnWayPointCounterChanged(button)
+  if button:getState() then
+    self.waypointListWindow:show()
+  else
+    self.waypointListWindow:hide()
+  end
+  button:setFocused(false)
+end
+
 
 function ControlWindow:logPosition(w)
   Logging.info( "cameraPosition: {\n"..
