@@ -26,7 +26,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffff80",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_released_inactive.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_released_inactive.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"
@@ -93,7 +93,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffff80",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_released_active.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_released_active.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"
@@ -143,7 +143,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffffff",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_released_inactive.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_released_inactive.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"
@@ -194,7 +194,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffffff",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_released_active.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_released_active.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"
@@ -247,7 +247,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffffff",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_pressed_inactive.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_pressed_inactive.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"
@@ -295,7 +295,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffffff",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_pressed_active.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_pressed_active.png",
             ["horzAlign"] = { 
               ["offset"] = 0,
               ["type"] = "left" 
@@ -348,7 +348,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffffff",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_released_inactive.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_released_inactive.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"
@@ -392,7 +392,7 @@ local skin = {
           },
           ["picture"] = {
             ["color"] = "0xffffffff",
-            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_long_green_released_active.png",
+            ["file"] = "Scripts\\SharkPlanner\\UI\\images\\PVI-800_toggle_short_green_released_active.png",
             ["horzAlign"] = {
               ["offset"] = 0,
               ["type"] = "left"

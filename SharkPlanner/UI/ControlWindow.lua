@@ -55,11 +55,6 @@ function ControlWindow:new(o)
       self.FixpointToggle,
       self.TargetPointToggle
     }
-    
-    for k, v in pairs(o.toggleGroup) do
-      self:fixToggleSkin(v)
-    end
-    -- self:fixToggleSkin(self.WaypointCounter)
 
     self.WaypointToggle:addChangeCallback(
       function(button)
@@ -166,28 +161,23 @@ function ControlWindow:new(o)
       [EventTypes.EntryModeChanged] = {},
     }
     o.commandGenerator = nil
+
+    -- loading of own skins skins
     local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
     o.HideButton:setSkin(buttonAmberSkin)
     o.AddWaypointButton:setSkin(buttonAmberSkin)
     o.ResetButton:setSkin(buttonAmberSkin)
     o.TransferButton:setSkin(buttonAmberSkin)
+
+
     local toggleLongGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerLongGreen")
     o.WaypointCounter:setSkin(toggleLongGreenSkin)
 
+    local toggleShortGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerShortGreen")
+    for i, toggle in pairs(o.toggleGroup) do
+      toggle:setSkin(toggleShortGreenSkin)
+    end
     return o
-end
-
-function ControlWindow:fixToggleSkin(toggle)
-  local skin = toggle:getSkin()
-  skin.skinData.states.released[1].picture.file = lfs.writedir()..skin.skinData.states.released[1].picture.file
-  skin.skinData.states.released[2].picture.file = lfs.writedir()..skin.skinData.states.released[2].picture.file
-  skin.skinData.states.disabled[1].picture.file = lfs.writedir()..skin.skinData.states.disabled[1].picture.file
-  skin.skinData.states.disabled[2].picture.file = lfs.writedir()..skin.skinData.states.disabled[2].picture.file
-  skin.skinData.states.hover[1].picture.file = lfs.writedir()..skin.skinData.states.hover[1].picture.file
-  skin.skinData.states.hover[2].picture.file = lfs.writedir()..skin.skinData.states.hover[2].picture.file
-  skin.skinData.states.pressed[1].picture.file = lfs.writedir()..skin.skinData.states.pressed[1].picture.file
-  skin.skinData.states.pressed[2].picture.file = lfs.writedir()..skin.skinData.states.pressed[2].picture.file
-  toggle:setSkin(skin)
 end
 
 function ControlWindow:show()

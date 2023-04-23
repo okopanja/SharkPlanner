@@ -12,8 +12,13 @@ end
 
 local namesFilename = getFullSkinPath('skin_names.lua')
 local names = {}
+local skins = {}
+
 
 local function loadSkin(skinName)
+    if skins[skinName] ~= nil then
+        return skins[skinName]
+    end
     local result = nil
     local skinFileName = getFullSkinPath(names[skinName])
     Logging.info("Loading skin file: ".. skinFileName)
@@ -46,6 +51,8 @@ local function loadSkin(skinName)
     else
         Logging.info('Cannot load skin: '..err)
     end
+    -- record skin for future use
+    skins[skinName] = result
     return result
 end
 
