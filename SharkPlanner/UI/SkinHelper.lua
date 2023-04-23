@@ -20,26 +20,29 @@ local function loadSkin(skinName)
     local f, err = loadfile(skinFileName)
     if f then
         result = f()
+        -- dxgui pictures by default searches within the main installation. 
+        -- To workaround that the relative paths of the mode need to be adjusted to absolute paths within user's Saved Games
         for stateName, state in pairs(result.skinData.states) do
-            for i, style in pairs(state) do
+            Logging.info("State: "..stateName)
+            for i, style in pairs(state) do                
                 if style.bkg then
                     if style.bkg.file then
-                        if Utils.String.starts_with(style.bkg.file, "dxgui") == false then
+                        if Utils.String.starts_with(style.bkg.file, "dxgui") == false and style.bkg.file ~= "$nil$"  then
+                            Logging.info("Correcting path to: "..lfs.writedir() .. style.bkg.file)
                             style.bkg.file = lfs.writedir() .. style.bkg.file
+                        end
+                    end
+                end
+                if style.picture then
+                    if style.picture.file then
+                        if Utils.String.starts_with(style.picture.file, "dxgui") == false and style.picture.file ~= "$nil$"  then
+                            Logging.info("Correcting path to: "..lfs.writedir() .. style.picture.file)
+                            style.picture.file = lfs.writedir() .. style.picture.file
                         end
                     end
                 end
             end
         end
-        -- if result and result.skinData.skins then
-        --     for widgetName, widgetSkin in pairs(result.skinData.skins) do
-        --         -- FIXME: remove
-        --         if type(widgetSkin) == 'string' then
-        --             result.skinData.skins[widgetName] = getSkin(widgetSkin)
-        --         end
-        --     end
-        -- end
-
     else
         Logging.info('Cannot load skin: '..err)
     end

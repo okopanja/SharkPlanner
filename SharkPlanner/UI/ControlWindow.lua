@@ -59,7 +59,7 @@ function ControlWindow:new(o)
     for k, v in pairs(o.toggleGroup) do
       self:fixToggleSkin(v)
     end
-    self:fixToggleSkin(self.WaypointCounter)
+    -- self:fixToggleSkin(self.WaypointCounter)
 
     self.WaypointToggle:addChangeCallback(
       function(button)
@@ -171,8 +171,8 @@ function ControlWindow:new(o)
     o.AddWaypointButton:setSkin(buttonAmberSkin)
     o.ResetButton:setSkin(buttonAmberSkin)
     o.TransferButton:setSkin(buttonAmberSkin)
-    local buttonGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerGreen")
-    o.WaypointCounter:setSkin(buttonGreenSkin)
+    local toggleLongGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerLongGreen")
+    o.WaypointCounter:setSkin(toggleLongGreenSkin)
 
     return o
 end
