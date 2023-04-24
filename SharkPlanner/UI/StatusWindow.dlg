@@ -1,149 +1,124 @@
 dialog = {
-    ["type"] = "Window",
-    ["params"] = {
-        ["bounds"] = {
-            [1] = {
-                ["x"] = 0,
-                ["y"] = 0,
-                ["w"] = 400,
-                ["h"] = 50
-            }
-        },
-        ["draggable"] = false,
-        ["enabled"] = true,
-        ["hasCursor"] = true,
-        ["lockFlow"] = false,
-        ["modal"] = false,
-        ["offscreen"] = false,
-        ["resizable"] = false,
-        ["zOrder"] = 150,
-        ["text"] = "Crosshair"
+  ["type"] = "Window",
+  ["params"] = {
+    ["bounds"] = {
+      [1] = {
+        ["x"] = 0,
+        ["y"] = 0,
+        ["w"] = 400,
+        ["h"] = 50
+      }
     },
-    ["skin"] = {
+    ["draggable"] = false,
+    ["enabled"] = true,
+    ["hasCursor"] = true,
+    ["lockFlow"] = false,
+    ["modal"] = false,
+    ["offscreen"] = false,
+    ["resizable"] = false,
+    ["zOrder"] = 150,
+    ["text"] = "Status Window"
+  },
+  ["skin"] = {
+    ["params"] = {
+      ["headerHeight"] = 0,
+      ["name"] = "windowSkin"
+    },
+    ["states"] = {
+      ["released"] = {
+        [1] = {
+          ["bkg"] = {
+            ["center_center"] = "0x00000000"
+          }
+        }
+      }
+    }
+  },
+  ["children"] = {
+    ["Status"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 0,
+          ["y"] = 0,
+          ["h"] = 20,
+          ["w"] = 340,
+        },
+        ["enabled"] = true,
+        ["text"] = "",
+        ["tooltip"] = "",
+        ["visible"] = true,
+        ["zindex"] = 0,
+      },
+      -- ["skin"] = {
+      --   ["params"] = {
+      --     ["name"] = "buttonSkinAwacs",
+      --   },
+      -- },
+      ["type"] = "Static",
+    },
+    ["VersionInfo"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 341,
+          ["y"] = 0,
+          ["h"] = 20,
+          ["w"] = 59,
+        },
+        ["enabled"] = false,
+        ["text"] = "",
+        ["tooltip"] = "",
+        ["visible"] = true,
+        ["zindex"] = 0,
+      },
+      ["skin"] = {
         ["params"] = {
-			       ["headerHeight"] = 0,
-             ["name"] = "windowSkin"
+          ["name"] = "buttonSkinAwacs",
+          -- ["name"] = "staticSkin_ME",
+        },
+      },
+      ["type"] = "Static",
+    },
+    ["ProgressBar"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 0,
+          ["y"] = 20,
+          ["w"] = 400,
+          ["h"] = 30,
+        },
+        ["enabled"] = true,
+        ["range"] = {
+          ["max"] = 100,
+          ["min"] = 0,
+        },
+        ["step"] = 1,
+        ["text"] = "horzProgressBar0",
+        ["tooltip"] = "",
+        ["value"] = 0,
+        ["visible"] = false,
+        ["zindex"] = 1,
+      },
+      ["skin"] = {
+        ["params"] = {
+          ["name"] = "horzProgressBarStartDialogSkin",
         },
         ["states"] = {
-            ["released"] = {
-                [1] = {
-                    ["bkg"] = {
-                        ["center_center"] = "0x00000000"
-                    }
-                }
-            }
-        }
+          ["released"] = {
+            [1] = {
+              ["bkg"] = {
+                ["center_center"] = "$nil$",
+              },
+              ["picture"] = {
+                ["color"] = "0xffffffff",
+                ["vertAlign"] = {
+                  ["type"] = "middle",
+                },
+              },
+            },
+          },
+        },
+      },
+      ["type"] = "HorzProgressBar",
     },
-    ["children"] = {
-        ["Status"] = {
-            ["params"] = {
-                ["bounds"] = {
-                    ["x"] = 0,
-                    ["y"] = 0,
-                    ["h"] = 20,
-                    ["w"] = 340,
-                },
-                ["enabled"] = true,
-                ["text"] = "",
-                ["tooltip"] = "",
-                ["visible"] = true,
-                ["zindex"] = 0,
-            },
-            ["skin"] = {
-                ["params"] = {
-                    ["name"] = "buttonSkinAwacs",
-                    -- ["name"] = "staticSkin_ME",
-                    -- ["states"] = {
-                    --   ["released"] = {
-                    --     [1] = {
-                    --
-                    --
-                    --       ["text"] = {
-                    --         ["blur"] = 0,
-                		-- 				["color"] = "0xffffffff",
-                		-- 				["font"] = "DejaVuLGCSansCondensed-Bold.ttf",
-                		-- 				["fontSize"] = 28,
-                		-- 				["horzAlign"] = {
-                		-- 					["type"] = "min",
-                		-- 				},
-                		-- 				["shadowOffset"] = {
-                		-- 					["horz"] = 0,
-                		-- 					["vert"] = 0,
-                		-- 				},
-                		-- 				["vertAlign"] = {
-                		-- 					["type"] = "min",
-                		-- 				}
-                    --       }
-                    --     }
-                    --   }
-                    -- }
-                },
-            },
-            ["type"] = "Static",
-    	   },
-         ["VersionInfo"] = {
-             ["params"] = {
-                 ["bounds"] = {
-                     ["x"] = 340,
-                     ["y"] = 0,
-                     ["h"] = 20,
-                     ["w"] = 60,
-                 },
-                 ["enabled"] = true,
-                 ["text"] = "",
-                 ["tooltip"] = "",
-                 ["visible"] = true,
-                 ["zindex"] = 0,
-             },
-             ["skin"] = {
-                 ["params"] = {
-                     ["name"] = "buttonSkinAwacs",
-                     -- ["name"] = "staticSkin_ME",
-                 },
-             },
-             ["type"] = "Static",
-     	   },
-         ["ProgressBar"] = {
-     			["params"] = {
-     				["bounds"] = {
-     					["x"] = 0,
-     					["y"] = 20,
-              ["w"] = 400,
-              ["h"] = 30,
-     				},
-     				["enabled"] = true,
-     				["range"] = {
-     					["max"] = 100,
-     					["min"] = 0,
-     				},
-     				["step"] = 1,
-     				["text"] = "horzProgressBar0",
-     				["tooltip"] = "",
-     				["value"] = 0,
-     				["visible"] = false,
-     				["zindex"] = 1,
-     			},
-     			["skin"] = {
-     				["params"] = {
-     					["name"] = "horzProgressBarStartDialogSkin",
-     				},
-     				["states"] = {
-     					["released"] = {
-     						[1] = {
-     							["bkg"] = {
-     								["center_center"] = "$nil$",
-     							},
-     							["picture"] = {
-                    ["color"] = "0xffffffff",
-     								["vertAlign"] = {
-     									["type"] = "middle",
-     								},
-     							},
-     						},
-     					},
-     				},
-     			},
-     			["type"] = "HorzProgressBar",
-     		},
-    }
+  }
 }

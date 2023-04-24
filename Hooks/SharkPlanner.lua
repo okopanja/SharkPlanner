@@ -1,7 +1,11 @@
+
 local function loadSharkPlanner()
   local lfs = require("lfs")
   -- local FileDialog = require("FileDialog")
-  package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua"
+
+  package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua;"
+
+  
   local SharkPlanner = require("SharkPlanner")
 end
 

@@ -10,9 +10,41 @@ local crosshairWindow = nil
 local statusWindow = nil
 local waypointListWindow = nil
 local coordinateData = Base.CoordinateData
-local SkinHelper = require("SharkPlanner.UI.SkinHelper")
+-- local http = require("socket.http")
 Logging.info("Registering event handlers")
 Base.DCSEventHandlers.register()
+
+function checkForUpdates()
+    Logging.info("Checking for latest version")
+    local response, code, headers, status = socket.http.request {
+        method = "GET",
+        url = "https://api.github.com/repos/okopanja/SharkPlanner/releases/latest",
+        headers = {
+            ["Host"] = "api.github.com",
+            ["User-Agent"] = "curl/7.87.0",
+            ["accept"] = "*/*",
+            ["Upgrade-Insecure-Requests"] = "1",
+            ["DNT"] = "1",
+        }
+      }
+    Logging.info("Status: "..status)
+    for k, v in pairs(headers) do
+        Logging.info(k..": "..v)
+    end
+    local tag_location = "https://github.com/okopanja/SharkPlanner/releases/tag/"
+    Logging.info("Response: "..response)
+    Logging.info("Got: "..tostring(code))
+    if code == 301 or code == 302 then
+        Logging.info("Redirect location: " .. headers.location)
+        if headers.location then
+            Logging.info("checking")      
+            if Utils.String.starts_with(headers.location, tag_location) then
+                local latestVersion = string.strsub(headers.location, string.strlen(tag_location))
+                Logging("Latest version: "..latestVersion)
+            end
+        end
+    end
+end
 
 crosshairWindow = UI.CrosshairWindow:new{}
 

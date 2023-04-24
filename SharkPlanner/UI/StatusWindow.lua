@@ -1,13 +1,9 @@
 -- provide sub-packages and modules
 local Logging = require("SharkPlanner.Utils.Logging")
-local coordinateData = require("SharkPlanner.Base.CoordinateData")
 local DialogLoader = require("DialogLoader")
 local dxgui = require('dxgui')
-local Input = require("Input")
 local lfs = require("lfs")
-local Skin = require("Skin")
-local SkinUtils = require("SkinUtils")
-local window = nil
+local SkinHelper = require("SharkPlanner.UI.SkinHelper")
 
 local StatusWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\StatusWindow.dlg"
@@ -22,22 +18,26 @@ function StatusWindow:new(o)
     local x, y, w, h = o.crosshairWindow:getBounds()
 
     -- modify horizontal alignment
-    local skin = self.Status:getSkin()
-    skin.skinData.states.released[1].text.horzAlign.type = "min"
-    self.Status:setSkin(skin)
-
+    -- local skin = self.Status:getSkin()
+    -- skin.skinData.states.released[1].text.horzAlign.type = "min"
+    -- self.Status:setSkin(skin)
+    local statusSkin = SkinHelper.loadSkin("staticSkinSharkPlannerStatus")
+    o.Status:setSkin(statusSkin)
+    local versionSkin = SkinHelper.loadSkin("staticSkinSharkPlannerVersion")
+    o.VersionInfo:setSkin(versionSkin)
     local screenWidth, screenHeight = dxgui.GetScreenSize()
     Logging.info("StatusWindow: setting bounds below crosshair")
     -- statusWindow:setBounds(x, y + h, w, 30)
     self:setBounds(x, y + h, w, 110)
     -- TODO: remove this and update external references
-    self.statusStatic = self.Status
-    self.versionInfoStatic = self.VersionInfo
-    self.progressBar = self.ProgressBar
+    o.statusStatic = self.Status
+    o.versionInfoStatic = self.VersionInfo
+    o.progressBar = self.ProgressBar
     -- self.versionInfoStatic:setText(SharkPlanner.VERSION_INFO)
-    self.versionInfoStatic:setText(require("SharkPlanner.VersionInfo"))
+    o.versionInfoStatic:setText(require("SharkPlanner.VersionInfo"))
     Logging.info("Showing StatusWindow")
-    self:setVisible(true)
+    o:setVisible(true)
+
     return o
 end
 
