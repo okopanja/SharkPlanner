@@ -11,6 +11,7 @@ local SkinUtils = require("SkinUtils")
 local window = nil
 local Static = require('Static')
 local Button = require('Button')
+local Panel = require('Panel')
 local math = require('math')
 local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
 
@@ -227,6 +228,8 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   
   self.scrollGrid:setCell(3, row_number - 1, static)
 
+  local panel = Panel.new()
+  panel:setVisible(true)
   -- add delete button
   local button = Button.new()
 
@@ -246,7 +249,9 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
       self.removalFunction(coordinateData, self.row_number)
     end
   )
-  self.scrollGrid:setCell(4, row_number - 1, button)
+  panel:insertWidget(button, 1)
+  -- self.scrollGrid:setCell(4, row_number - 1, button)
+  self.scrollGrid:setCell(4, row_number - 1, panel)
 end
 
 return  WaypointListWindow
