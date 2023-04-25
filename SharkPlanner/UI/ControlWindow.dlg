@@ -126,9 +126,9 @@ dialog = {
     ["WaypointCounter"] = {
       ["params"] = {
         ["bounds"] = {
-          ["x"] = 220,
+          ["x"] = 219,
           ["y"] = 0,
-          ["w"] = 50,
+          ["w"] = 51,
           ["h"] = 26,
         },
         ["enabled"] = true,
