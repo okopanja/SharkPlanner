@@ -28,8 +28,9 @@ dialog = {
       ["released"] = {
         [1] = {
           ["bkg"] = {
-            ["center_center"] = "0x40404077"
-            --                        ["center_center"] = "0x00000000"
+            --["center_center"] = "0x40404077"
+            -- ["center_center"] = "0x1b202370"
+            ["center_center"] = "0x00000000"
           }
         }
       }
@@ -100,7 +101,7 @@ dialog = {
               ["w"] = 40,
               ["h"] = 30
             },
-            ["draggable"] = true,
+            ["draggable"] = false,
             ["enabled"] = true,
             ["layout"] = {
             },
@@ -108,108 +109,6 @@ dialog = {
             ["tooltip"] = "",
             ["visible"] = true,
             ["zindex"] = 0,
-          },
-          ["skin"] = {
-            ["params"] = {
-              ["name"] = "gridHeaderCellSkin2New__",
-              ["useEllipsis"] = true,
-            },
-            ["states"] = {
-              ["hover"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["pressed"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                      ["type"] = "min",
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["released"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-            },
           },
           ["type"] = "GridHeaderCell",
         },
@@ -230,108 +129,6 @@ dialog = {
             ["visible"] = true,
             ["zindex"] = 1,
           },
-          ["skin"] = {
-            ["params"] = {
-              ["name"] = "gridHeaderCellSkin2New__",
-              ["useEllipsis"] = true,
-            },
-            ["states"] = {
-              ["hover"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["pressed"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                      ["type"] = "min",
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["released"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-            },
-          },
           ["type"] = "GridHeaderCell",
         },
         ["gridHeaderCellLongitude"] = {
@@ -351,108 +148,6 @@ dialog = {
             ["visible"] = true,
             ["zindex"] = 2,
           },
-          ["skin"] = {
-            ["params"] = {
-              ["name"] = "gridHeaderCellSkin2New__",
-              ["useEllipsis"] = true,
-            },
-            ["states"] = {
-              ["hover"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["pressed"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                      ["type"] = "min",
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["released"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-            },
-          },
           ["type"] = "GridHeaderCell",
         },
         ["gridHeaderCellAltitude"] = {
@@ -471,108 +166,6 @@ dialog = {
             ["tooltip"] = "",
             ["visible"] = true,
             ["zindex"] = 3,
-          },
-          ["skin"] = {
-            ["params"] = {
-              ["name"] = "gridHeaderCellSkin2New__",
-              ["useEllipsis"] = true,
-            },
-            ["states"] = {
-              ["hover"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["pressed"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                      ["type"] = "min",
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["released"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-            },
           },
           ["type"] = "GridHeaderCell",
         },
@@ -599,108 +192,6 @@ dialog = {
             ["visible"] = true,
             ["zindex"] = 4,
           },
-          ["skin"] = {
-            ["params"] = {
-              ["name"] = "gridHeaderCellSkin2New__",
-              ["useEllipsis"] = true,
-            },
-            ["states"] = {
-              ["hover"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["pressed"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                      ["type"] = "min",
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-              ["released"] = {
-                [1] = {
-                  ["bkg"] = {
-                    ["center_center"] = "$nil$",
-                  },
-                  ["picture"] = {
-                    ["color"] = "$nil$",
-                    ["file"] = "$nil$",
-                    ["horzAlign"] = {
-                      ["offset"] = 0,
-                    },
-                    ["rect"] = {
-                      ["x1"] = "$nil$",
-                      ["x2"] = "$nil$",
-                      ["y1"] = "$nil$",
-                      ["y2"] = "$nil$",
-                    },
-                    ["size"] = {
-                      ["horz"] = "$nil$",
-                      ["vert"] = "$nil$",
-                    },
-                    ["userTexSampler"] = "$nil$",
-                    ["vertAlign"] = {
-                      ["offset"] = "$nil$",
-                    },
-                  },
-                  ["text"] = {
-                    ["color"] = "0x6ed8f3ff",
-                  },
-                },
-              },
-            },
-          },
           ["type"] = "GridHeaderCell",
         }
       },
@@ -718,7 +209,8 @@ dialog = {
                 ["released"] = {
                   [1] = {
                     ["bkg"] = {
-                      ["center_center"] = "0xffffff26",
+                      -- ["center_center"] = "0xffffff26",
+                      ["center_center"] = "0x1b202390",
                     },
                   },
                 },
@@ -1141,6 +633,17 @@ dialog = {
             },
           },
         },
+        ["states"] = {
+          ["disabled"] = {
+          },
+          ["released"] = {
+            [1] = {
+              ["bkg"] = {
+                ["center_center"] = "0x1b202350",
+              },
+            },
+          },
+        },        
       },
       ["type"] = "Grid"
     }

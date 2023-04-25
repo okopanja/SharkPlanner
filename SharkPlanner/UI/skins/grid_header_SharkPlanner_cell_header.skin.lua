@@ -97,8 +97,7 @@ local skin = {
 			["hover"] = {
 				[1] = {
 					["bkg"] = {
-						["center_bottom"] = "0x00000000",
-						["center_center"] = "0xffffff40",
+						["center_center"] = "$nil$",
 						["center_top"] = "0x00000000",
 						["file"] = "",
 						["insets"] = {
@@ -117,33 +116,32 @@ local skin = {
 						["right_center"] = "0x00000040",
 					},
 					["picture"] = {
-						["color"] = "0xdcdcdcff",
-						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\scroll\\down_hover.png",
+						["color"] = "$nil$",
+						["file"] = "$nil$",
 						["horzAlign"] = {
-							["offset"] = -10,
+							["offset"] = 0,
 							["type"] = "max",
 						},
 						["rect"] = {
-							["x1"] = 0,
-							["x2"] = 0,
-							["y1"] = 0,
-							["y2"] = 0,
+							["x1"] = "$nil$",
+							["x2"] = "$nil$",
+							["y1"] = "$nil$",
+							["y2"] = "$nil$",
 						},
 						["size"] = {
-							["horz"] = 0,
-							["vert"] = 0,
+							["horz"] = "$nil$",
+							["vert"] = "$nil$",
 						},
-						["userTexSampler"] = 0,
+						["userTexSampler"] = "$nil$",
 						["vertAlign"] = {
-							["offset"] = 0,
+							["offset"] = "$nil$",
 							["type"] = "middle",
 						},
 					},
 					["text"] = {
-						["bkgColor"] = "0x00000000",
+						["color"] = "0xffffffff",
 						["blur"] = 0,
 						["blurColor"] = "0x00000000",
-						["color"] = "0xffffffff",
 						["font"] = "DejaVuLGCSansCondensed.ttf",
 						["fontSize"] = 13,
 						["horzAlign"] = {
@@ -168,8 +166,7 @@ local skin = {
 			["pressed"] = {
 				[1] = {
 					["bkg"] = {
-						["center_bottom"] = "0x00000000",
-						["center_center"] = "0xffffff1a",
+						["center_center"] = "$nil$",
 						["center_top"] = "0x00000000",
 						["file"] = "",
 						["insets"] = {
@@ -190,33 +187,32 @@ local skin = {
 						["right_top"] = "0x00000000",
 					},
 					["picture"] = {
-						["color"] = "0x969696ff",
-						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\scroll\\down_hover.png",
+						["color"] = "$nil$",
+						["file"] = "$nil$",
 						["horzAlign"] = {
-							["offset"] = -10,
-							["type"] = "max",
+							["offset"] = 0,
+							["type"] = "min",
 						},
 						["rect"] = {
-							["x1"] = 0,
-							["x2"] = 0,
-							["y1"] = 0,
-							["y2"] = 0,
+							["x1"] = "$nil$",
+							["x2"] = "$nil$",
+							["y1"] = "$nil$",
+							["y2"] = "$nil$",
 						},
 						["size"] = {
-							["horz"] = 0,
-							["vert"] = 0,
+							["horz"] = "$nil$",
+							["vert"] = "$nil$",
 						},
 						["userTexSampler"] = 0,
 						["vertAlign"] = {
-							["offset"] = 0,
+							["offset"] = "$nil$",
 							["type"] = "middle",
 						},
 					},
 					["text"] = {
-						["bkgColor"] = "0x00000000",
+						["color"] = "0xffffffff",
 						["blur"] = 0,
 						["blurColor"] = "0x00000000",
-						["color"] = "0xc8c8c8ff",
 						["font"] = "DejaVuLGCSansCondensed.ttf",
 						["fontSize"] = 13,
 						["horzAlign"] = {
@@ -241,8 +237,7 @@ local skin = {
 			["released"] = {
 				[1] = {
 					["bkg"] = {
-						["center_bottom"] = "0x00000000",
-						["center_center"] = "0xffffff26",
+						["center_center"] = "$nil$",
 						["center_top"] = "0x00000000",
 						["file"] = "",
 						["insets"] = {
@@ -261,33 +256,32 @@ local skin = {
 						["right_center"] = "0x00000040",
 					},
 					["picture"] = {
-						["color"] = "0xffffffff",
-						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\scroll\\down_hover.png",
+						["color"] = "$nil$",
+						["file"] = "$nil$",
 						["horzAlign"] = {
-							["offset"] = -10,
+							["offset"] = 0,
 							["type"] = "max",
 						},
 						["rect"] = {
-							["x1"] = 0,
-							["x2"] = 0,
-							["y1"] = 0,
-							["y2"] = 0,
+							["x1"] = "$nil$",
+							["x2"] = "$nil$",
+							["y1"] = "$nil$",
+							["y2"] = "$nil$",
 						},
 						["size"] = {
-							["horz"] = 0,
-							["vert"] = 0,
+							["horz"] = "$nil$",
+							["vert"] = "$nil$",
 						},
-						["userTexSampler"] = 0,
+						["userTexSampler"] = "$nil$",
 						["vertAlign"] = {
-							["offset"] = 0,
+							["offset"] = "$nil$",
 							["type"] = "middle",
 						},
 					},
 					["text"] = {
-						["bkgColor"] = "0x00000000",
+						["color"] = "0xffffffff",
 						["blur"] = 0,
 						["blurColor"] = "0x00000000",
-						["color"] = "0xffffffff",
 						["font"] = "DejaVuLGCSansCondensed.ttf",
 						["fontSize"] = 13,
 						["horzAlign"] = {
