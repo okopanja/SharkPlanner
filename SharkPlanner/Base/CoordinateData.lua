@@ -140,6 +140,7 @@ end
 function CoordinateData:load(filePath)
     local fp = io.open(filePath, "r")
     if fp then
+        self:reset()
         local rawBuffer = fp:read("*all")
         local flightPathInput = JSON:decode(rawBuffer)
         if flightPathInput.wayPoints then

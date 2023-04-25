@@ -17,24 +17,14 @@ function StatusWindow:new(o)
     self.__index = self
     local x, y, w, h = o.crosshairWindow:getBounds()
 
-    -- modify horizontal alignment
-    -- local skin = self.Status:getSkin()
-    -- skin.skinData.states.released[1].text.horzAlign.type = "min"
-    -- self.Status:setSkin(skin)
     local statusSkin = SkinHelper.loadSkin("staticSkinSharkPlannerStatus")
     o.Status:setSkin(statusSkin)
     local versionSkin = SkinHelper.loadSkin("staticSkinSharkPlannerVersion")
     o.VersionInfo:setSkin(versionSkin)
     local screenWidth, screenHeight = dxgui.GetScreenSize()
     Logging.info("StatusWindow: setting bounds below crosshair")
-    -- statusWindow:setBounds(x, y + h, w, 30)
     self:setBounds(x, y + h, w, 110)
-    -- TODO: remove this and update external references
-    o.statusStatic = self.Status
-    o.versionInfoStatic = self.VersionInfo
-    o.progressBar = self.ProgressBar
-    -- self.versionInfoStatic:setText(SharkPlanner.VERSION_INFO)
-    o.versionInfoStatic:setText(require("SharkPlanner.VersionInfo"))
+    o.VersionInfo:setText(require("SharkPlanner.VersionInfo"))
     Logging.info("Showing StatusWindow")
     o:setVisible(true)
 
@@ -68,47 +58,47 @@ function StatusWindow:hide()
 end
 
 function StatusWindow:OnAddWaypoint(eventArgs)
-    self.statusStatic:setText("Waypoint added.")
+    self.Status:setText("Waypoint added.")
 end
 
 function StatusWindow:OnRemoveWaypoint(eventArgs)
-    self.statusStatic:setText("Waypoint removed.")
+    self.Status:setText("Waypoint removed.")
 end
 
 function StatusWindow:OnAddFixpoint(eventArgs)
-    self.statusStatic:setText("Fixpoint added.")
+    self.Status:setText("Fixpoint added.")
 end
 
 function StatusWindow:OnRemoveFixpoint(eventArgs)
-    self.statusStatic:setText("Fixpoint removed.")
+    self.Status:setText("Fixpoint removed.")
 end
 
 function StatusWindow:OnAddTargetpoint(eventArgs)
-    self.statusStatic:setText("Target added.") 
+    self.Status:setText("Target added.") 
 end
 
 function StatusWindow:OnRemoveTargetpoint(eventArgs)
-    self.statusStatic:setText("Target removed.") 
+    self.Status:setText("Target removed.") 
 end
 
 function StatusWindow:OnReset(eventArgs)
-    self.statusStatic:setText("Reseted all captued data.") 
+    self.Status:setText("Reseted all captued data.") 
 end
 
 function StatusWindow:OnTransferStarted(eventArgs)
-    self.statusStatic:setText("Transfer in progress...")
-    self.progressBar:setValue(1)
-    self.progressBar:setRange(1, #eventArgs.commands)
-    self.progressBar:setVisible(true)
+    self.Status:setText("Transfer in progress...")
+    self.ProgressBar:setValue(1)
+    self.ProgressBar:setRange(1, #eventArgs.commands)
+    self.ProgressBar:setVisible(true)
 end
 
 function StatusWindow:OnTransferFinished(eventArgs)
-    self.statusStatic:setText("Transfer completed")
-    self.progressBar:setVisible(false)
+    self.Status:setText("Transfer completed")
+    self.ProgressBar:setVisible(false)
 end
 
 function StatusWindow:OnTransferProgressUpdated(eventArgs)
-    self.progressBar:setValue(eventArgs.totalCommandsCount - eventArgs.currentCommandCount)
+    self.ProgressBar:setValue(eventArgs.totalCommandsCount - eventArgs.currentCommandCount)
 end
 
 function StatusWindow:OnPlayerEnteredSupportedVehicle(eventArg)
