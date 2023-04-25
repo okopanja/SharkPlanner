@@ -115,4 +115,12 @@ function StatusWindow:OnPlayerEnteredSupportedVehicle(eventArg)
     self.Status:setText("Entered: "..eventArg.aircraftModel)
 end
 
+function StatusWindow:OnFlightPlanSaved(eventArgs)
+    self.Status:setText("Flight plan is saved.")
+end
+
+function StatusWindow:OnFlightPlanLoaded(eventArgs)
+    self.Status:setText("Flight plan is loaded.")
+end
+
 return StatusWindow

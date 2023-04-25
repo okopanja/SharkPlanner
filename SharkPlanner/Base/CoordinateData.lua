@@ -15,7 +15,9 @@ local EventTypes = {
     RemoveFixPoint = 4,
     AddTargetPoint = 5,
     RemoveTargetPoint = 6,
-    Reset = 7
+    Reset = 7,
+    FlightPlanSaved = 8,
+    FlightPlanLoaded = 9,
 }
 -- make event types visible to users
 CoordinateData.EventTypes = EventTypes
@@ -35,6 +37,8 @@ function CoordinateData:new(o)
         [EventTypes.AddTargetPoint] = {},
         [EventTypes.RemoveTargetPoint] = {},
         [EventTypes.Reset] = {},
+        [EventTypes.FlightPlanSaved] = {},
+        [EventTypes.FlightPlanLoaded] = {},
     }
     return o
 end
@@ -125,6 +129,11 @@ function CoordinateData:save(filePath)
             )
         )
         fp:close()
+        local eventArg = {
+            -- leave empty for now
+        }
+        Logging.info("Flight plan is saved.")
+        self:dispatchEvent(EventTypes.FlightPlanSaved, eventArg)
     end
 end
 
@@ -152,6 +161,11 @@ function CoordinateData:load(filePath)
             end
         end
         fp:close()
+        local eventArg = {
+            -- leave empty for now
+        }
+        Logging.info("Flight plan is loaded.")
+        self:dispatchEvent(EventTypes.FlightPlanLoaded, eventArg)
     end
 end
 

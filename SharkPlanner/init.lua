@@ -58,6 +58,9 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveFixPoint, st
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddTargetPoint, statusWindow, statusWindow.OnAddTargetpoint)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint, statusWindow, statusWindow.OnRemoveTargetpoint)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, statusWindow, statusWindow.OnReset)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, statusWindow, statusWindow.OnFlightPlanSaved)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, statusWindow, statusWindow.OnFlightPlanLoaded)
+
 -- register statusWindow to receive events from DCS
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferStarted, statusWindow, statusWindow.OnTransferStarted)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferFinished, statusWindow, statusWindow.OnTransferFinished)
