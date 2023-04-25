@@ -36,11 +36,45 @@ dialog = {
     }
   },
   ["children"] = {
-    ["scrollGrid"] = {
+    ["LoadButton"] = {
       ["params"] = {
         ["bounds"] = {
           ["x"] = 0,
           ["y"] = 0,
+          ["w"] = 50,
+          ["h"] = 26,
+        },
+        ["enabled"] = true,
+        ["tabOrder"] = 0,
+        ["text"] = "Load",
+        ["tooltip"] = "Load",
+        ["visible"] = true,
+        ["zindex"] = 1
+      },
+      ["type"] = "Button"
+    },
+    ["SaveButton"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 50,
+          ["y"] = 0,
+          ["w"] = 50,
+          ["h"] = 26,
+        },
+        ["enabled"] = true,
+        ["tabOrder"] = 0,
+        ["text"] = "Save",
+        ["tooltip"] = "Save",
+        ["visible"] = true,
+        ["zindex"] = 1
+      },
+      ["type"] = "Button"
+    },
+    ["scrollGrid"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 0,
+          ["y"] = 26,
           ["w"] = 390 + 16,
           ["h"] = 390
         },

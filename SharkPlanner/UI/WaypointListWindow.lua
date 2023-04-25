@@ -12,6 +12,7 @@ local window = nil
 local Static = require('Static')
 local Button = require('Button')
 local math = require('math')
+local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
 
 -- Boilercode to load templates for dynamicly created controls
 local templateDialog	= DialogLoader.spawnDialogFromFile(lfs.writedir() .. 'Scripts\\SharkPlanner\\UI\\WaypointListWindowTemplates.dlg')
@@ -51,9 +52,32 @@ function WaypointListWindow:new(o)
   local x, y, w, h = o.crosshairWindow:getBounds()
 
   local width, height = self.scrollGrid:getSize()
-  o.scrollGrid:setBounds(0, 0, width, h)
-  o:setBounds(x + w, y, width, h)
+  o.scrollGrid:setSize(width, h)
+  o:setBounds(x + w, y - 26, width, h + 26 + 26)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
+  local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
+  o.LoadButton:setSkin(buttonAmberSkin)
+  o.LoadButton:addChangeCallback(
+    function(button)
+      self:loadPositions()
+    end
+  )
+  o.LoadButton:addMouseUpCallback(
+    function(button)
+      button:setFocused(false)
+    end
+  )
+  o.SaveButton:setSkin(buttonAmberSkin)
+  o.SaveButton:addChangeCallback(
+    function(button)
+      self:savePositions()
+    end
+  )
+  o.SaveButton:addMouseUpCallback(
+    function(button)
+      button:setFocused(false)
+    end
+  )
   return o
 end
 
@@ -76,6 +100,24 @@ function WaypointListWindow:hide()
     local index 		= i - 1
     local widget 		= self:getWidget(index)
     widget:setVisible(false)
+  end
+end
+
+function WaypointListWindow:loadPositions()
+  Logging.info("Loading positions")
+  local filePath = FileDialog.open(lfs.writedir(), {{'Flight Paths'			, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
+  if filePath ~= nil then
+    Logging.info("Selected load path: "..filePath)
+    coordinateData:load(filePath)
+  end
+end
+
+function WaypointListWindow:savePositions()
+  Logging.info("Saving positions")
+  local filePath = FileDialog.save(lfs.writedir(), {{'Flight Paths'			, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
+  if filePath ~= nil then
+    Logging.info("Selected save path: "..filePath)
+    coordinateData:save(filePath)
   end
 end
 

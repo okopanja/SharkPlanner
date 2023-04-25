@@ -1,12 +1,9 @@
 
 local function loadSharkPlanner()
   local lfs = require("lfs")
-  -- local FileDialog = require("FileDialog")
-
   package.path = package.path .. lfs.writedir() .. "Scripts\\?\\init.lua;"
-
-  
   local SharkPlanner = require("SharkPlanner")
+  -- local FileDialog = require("FileDialog")
 end
 
 local status, err = pcall(loadSharkPlanner)

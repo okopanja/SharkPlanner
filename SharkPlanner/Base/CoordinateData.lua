@@ -1,4 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
+local JSON = require("JSON")
+local Position = require("SharkPlanner.Base.Position")
+
 -- handle lua 5.4 deprecation
 if table.unpack == nil then
 table.unpack = unpack
@@ -108,6 +111,48 @@ function CoordinateData:reset()
         -- reserved for future use
     }
     self:dispatchEvent(EventTypes.Reset, eventArg)
+end
+
+function CoordinateData:save(filePath)
+    local fp = io.open(filePath, 'w')
+    if fp then
+        fp:write(JSON:encode_pretty(
+                {
+                    ['wayPoints'] = self.wayPoints,
+                    ['fixPoints'] = self.fixPoints,
+                    ['targetPoints'] = self.targetPoints
+                }
+            )
+        )
+        fp:close()
+    end
+end
+
+function CoordinateData:load(filePath)
+    local fp = io.open(filePath, "r")
+    if fp then
+        local rawBuffer = fp:read("*all")
+        local flightPathInput = JSON:decode(rawBuffer)
+        if flightPathInput.wayPoints then
+            for i, v in ipairs(flightPathInput.wayPoints) do
+                local position = Position:new(v)
+                self:addWaypoint(position)
+            end
+        end
+        if flightPathInput.fixPoints then
+            for i, v in ipairs(flightPathInput.fixPoints) do
+                local position = Position:new(v)
+                self:addFixpoint(position)
+            end
+        end
+        if flightPathInput.targetPoints then
+            for i, v in ipairs(flightPathInput.targetPoints) do
+                local position = Position:new(v)
+                self:addTargetpoint(position)
+            end
+        end
+        fp:close()
+    end
 end
 
 function CoordinateData:addEventHandler(eventType, object, eventHandler)

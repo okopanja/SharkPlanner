@@ -49,7 +49,7 @@ function ControlWindow:new(o)
     -- calculate offset to make it center aligned
     local offsetX = (w - totalWidth) / 2
     Logging.info("Setting bounds")
-    o:setBounds(x + offsetX, y - 30, w, 30)
+    o:setBounds(x + offsetX, y - 26, w, 26)
     o.toggleGroup = {
       self.WaypointToggle,
       self.FixpointToggle,
@@ -344,6 +344,14 @@ function ControlWindow:OnToggleStateChanged(button)
     -- if none of the buttons is selected make sure that current is selected again
     if overall_status == false then
       button:setState(true)
+    end
+
+    if self:getEntryState() == ENTRY_STATES.WAYPOINTS then
+      self.AddWaypointButton:getTooltipText("Add waypoint")
+    elseif self:getEntryState() == ENTRY_STATES.FIXPOINTS then
+      self.AddWaypointButton:getTooltipText("Add fix point")
+    elseif self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
+      self.AddWaypointButton:getTooltipText("Add target point")
     end
   end
   -- unfocus!
