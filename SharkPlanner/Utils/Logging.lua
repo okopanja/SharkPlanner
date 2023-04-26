@@ -12,7 +12,6 @@ local verbosity = LOG_LEVELS.INFO
 -- logs message into log file with info severity
 local function log(level, message)
   fp:write(os.date("%Y-%m-%d %H:%M:%S").." "..level.." "..message.."\n")
-  fp:flush()
   -- net.log("[SharkPlanner] "..message)
 end
 
@@ -41,7 +40,7 @@ local function debug(message)
   end
 end
 
-function setLogLevel(logLevel)
+local function setLogLevel(logLevel)
   verbosity = logLevel
 end
 
