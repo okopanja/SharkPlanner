@@ -298,9 +298,11 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   self:abrisZoomToRange(commands, range:getLevel())
   local rotationsZ = range:toRotationsZ(deltaZ)
   -- ABRIS: rotate dial for Z
-  self:abrisRotateEx(commands, rotationsZ, 20, true,"Rotate Z")
-  -- ABRIS: switch to X entry
-  self:abrisPressRotateButton(commands, "Switch to X entry", 1)
+  self:abrisRotateEx(commands, rotationsZ, 100, true,"Rotate Z")
+  -- ABRIS: zoom to level 0 to avoid snapping
+  self:abrisZoomToRange(commands, 0)
+  -- ABRIS: switch to X entry  
+  self:abrisPressRotateButton(commands, "Switch to X entry")
   -- determine the smallest bounding X range
   range = self:findSmallestBoundingXRange(previous, waypoint);
   Logging.info("Smallest X range: "..range:getLevel())
@@ -309,7 +311,9 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   -- calculate number of dial rotations
   local rotationsX = range:toRotationsX(deltaX)
   -- ABRIS: rotate dial for X
-  self:abrisRotateEx(commands, rotationsX, 20, true,"Rotate X")
+  self:abrisRotateEx(commands, rotationsX, 100, true,"Rotate X")
+  -- ABRIS: zoom to level 0 to avoid snapping
+  self:abrisZoomToRange(commands, 0)
   -- ABRIS: complete entry of waypoint
   self:abrisStartNextWaypoint(commands)
 end
