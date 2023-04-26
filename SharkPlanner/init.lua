@@ -14,7 +14,8 @@ local coordinateData = Base.CoordinateData
 Logging.info("Registering event handlers")
 Base.DCSEventHandlers.register()
 
-function checkForUpdates()
+-- TODO: think about how to get HTTPS support. It appears LuaRocks attempts to switch to port 80, which causes github to response 301 permanent redirect toward HTTPS
+local function checkForUpdates()
     Logging.info("Checking for latest version")
     local response, code, headers, status = socket.http.request {
         method = "GET",
