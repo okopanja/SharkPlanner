@@ -113,25 +113,39 @@ end
 
 function WaypointListWindow:loadPositions()
   Logging.info("Loading positions")
+  self:disableKeyboardCommands()
   local filePath = FileDialog.open(lfs.writedir(), {{'Flight Paths'			, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
   if filePath ~= nil then
     Logging.info("Selected load path: "..filePath)
     coordinateData:load(filePath)
   end
+  self:enableKeyboardCommands()
 end
 
 function WaypointListWindow:savePositions()
   Logging.info("Saving positions")
+  self:disableKeyboardCommands()
   local filePath = FileDialog.save(lfs.writedir(), {{'Flight Paths'			, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
   if filePath ~= nil then
     Logging.info("Selected save path: "..filePath)
     coordinateData:save(filePath)
   end
+  self:enableKeyboardCommands()
 end
 
 function WaypointListWindow:OnAddWaypoint(eventArgs)
   self:_createPositionRow(eventArgs.wayPointIndex, eventArgs.wayPoint, coordinateData.removeWaypoint)
 end
+
+function WaypointListWindow:disableKeyboardCommands()
+	local keyboardEvents	= Input.getDeviceKeys(Input.getKeyboardDeviceName())
+	DCS.lockKeyboardInput(keyboardEvents)
+end
+
+function WaypointListWindow:enableKeyboardCommands()
+  DCS.unlockKeyboardInput(false)
+end
+
 
 function WaypointListWindow:OnRemoveWaypoint(eventArgs)
   Logging.info("Removing: "..eventArgs.wayPointIndex)
