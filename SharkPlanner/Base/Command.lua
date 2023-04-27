@@ -1,4 +1,4 @@
-Command = {}
+local Command = {}
 
 function Command:new (o)
   o = o or {}
