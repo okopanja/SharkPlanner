@@ -2,7 +2,7 @@ local Logging = require("SharkPlanner.Utils.Logging")
 local String = require("SharkPlanner.Utils.String")
 local GameState = require("SharkPlanner.Base.GameState")
 
-CommandGeneratorFactory = {}
+local CommandGeneratorFactory = {}
 
 -- helper function to read list of subfolders of modules
 local function getListOfModules()
