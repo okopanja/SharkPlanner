@@ -285,9 +285,6 @@ function KA50IIICommandGenerator:abrisEnterRouteWaypoints(commands, waypoints, s
 end
 
 function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, isNotFirst)
-  -- Calculate deltaX and deltaZ to the prior coordinate
-  local deltaX = waypoint:getX() - previous:getX()
-  local deltaZ = waypoint:getZ() - previous:getZ()
   -- first waypoint does not need edit/insert
   if isNotFirst then
     self:abrisStartNextWaypoint(commands)
@@ -301,9 +298,17 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
   self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
-  local rotationsZ = range:toRotationsZ(deltaZ)
   -- ABRIS: rotate dial for Z
-  self:abrisRotateEx(commands, rotationsZ, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate Z")
+  if isNotFirst == true then
+    -- just create regular static command
+    local deltaZ = waypoint:getZ() - previous:getZ()
+    -- calculate number of dial rotations
+    local rotationsZ = range:toRotationsZ(deltaZ)
+    self:abrisRotateEx(commands, rotationsZ, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate Z")
+  else
+    -- only first waypoint to be updated in realtime, reasons: aircraft moves!
+    self:abrisRotateZ(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate Z", { range = range, previous = previous, waypoint = waypoint })
+  end
   -- ABRIS: zoom to level 0 to avoid snapping
   self:abrisZoomToRange(commands, 0)
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -315,12 +320,19 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   Logging.info("Smallest X range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
-  -- calculate number of dial rotations
-  local rotationsX = range:toRotationsX(deltaX)
   -- ABRIS: wait for 100ms for ABRIS to settle
   self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: rotate dial for X
-  self:abrisRotateEx(commands, rotationsX, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate X")
+  if isNotFirst == true then
+    -- Calculate deltaX and deltaZ to the prior coordinate
+    local deltaX = waypoint:getX() - previous:getX()
+    -- calculate number of dial rotations
+    local rotationsX = range:toRotationsX(deltaX)
+    self:abrisRotateEx(commands, rotationsX, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate X")
+  else
+    -- only first waypoint to be updated in realtime, reasons: aircraft moves!
+    self:abrisRotateX(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate X", { range = range, previous = previous, waypoint = waypoint })
+  end
   -- ABRIS: zoom to level 0 to avoid snapping
   self:abrisZoomToRange(commands, 0)
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -404,6 +416,14 @@ function KA50IIICommandGenerator:abrisRotateEx(commands, intensity, delay, depre
   commands[#commands + 1] = Command:new():setName("ABRIS: rotate"):setComment(comment):setDevice(9):setCode(3006):setDelay(delay):setIntensity(intensity):setDepress(depress)
 end
 
+function KA50IIICommandGenerator:abrisRotateZ(commands, delay, depress, comment, updateParameters)
+  commands[#commands + 1] = Command:new():setName("ABRIS: rotate first Z"):setComment(comment):setDevice(9):setCode(3006):setDelay(delay):setIntensity(0):setDepress(depress):setIntensityUpdateCallback(self, self.abrisUpdateRotateZCommand, updateParameters)
+end
+
+function KA50IIICommandGenerator:abrisRotateX(commands, delay, depress, comment, updateParameters)
+  commands[#commands + 1] = Command:new():setName("ABRIS: rotate first X"):setComment(comment):setDevice(9):setCode(3006):setDelay(delay):setIntensity(0):setDepress(depress):setIntensityUpdateCallback(self, self.abrisUpdateRotateXCommand, updateParameters)
+end
+
 function KA50IIICommandGenerator:abrisPressRotateButton(commands, comment)
   commands[#commands + 1] = Command:new():setName("ABRIS: press rotate button"):setComment(comment):setDevice(9):setCode(3007):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
@@ -450,6 +470,24 @@ function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
   end
   self.zoomLevel = math.min(self.zoomLevel + relativeZoomLevel, #self._ranges)
   Logging.info("abrisZoomOut Zoom Level: "..self.zoomLevel)
+end
+
+function KA50IIICommandGenerator:abrisUpdateRotateZCommand(command, updateParameters)
+  -- just create regular static command
+  local deltaZ = updateParameters.waypoint:getZ() - Export.LoGetSelfData()["Position"]["z"]
+  -- calculate number of dial rotations
+  local rotationsZ = updateParameters.range:toRotationsZ(deltaZ)
+  -- update intensity
+  command:setIntensity(rotationsZ)
+end
+
+function KA50IIICommandGenerator:abrisUpdateRotateXCommand(command, updateParameters)
+  -- just create regular static command
+  local deltaX = updateParameters.waypoint:getX() - Export.LoGetSelfData()["Position"]["x"]
+  -- calculate number of dial rotations
+  local rotationsX = updateParameters.range:toRotationsZ(deltaX)
+  -- update intensity
+  command:setIntensity(rotationsX)
 end
 
 function KA50IIICommandGenerator:_determineNumberOfModePresses()
