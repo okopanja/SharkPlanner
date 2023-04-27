@@ -5,15 +5,16 @@ local Position = require("SharkPlanner.Base.Position")
 local ABRISZoomRange = require("SharkPlanner.Modules.Ka-50.ABRISZoomRange")
 require("math")
 
--- require("net")
-
-
 local default_delay = 100 -- default delay in ms
 
 
--- KA50IIICommandGenerator = {}
 KA50IIICommandGenerator = BaseCommandGenerator:new()
-
+-- zoom depress delay
+KA50IIICommandGenerator.DELAY_ABRIS_ZOOM = 40
+-- pause made during waypoint entry (should allow ABRIS to settle down)
+KA50IIICommandGenerator.DELAY_ABRIS_SETTLE = 0
+-- rotation depress delay
+KA50IIICommandGenerator.DELAY_ABRIS_ROTATE = 100
 
 function KA50IIICommandGenerator:new(o)
   --o = BaseCommandGenerator:new()
@@ -70,7 +71,7 @@ function KA50IIICommandGenerator:getMaximalTargetPointCount()
 end
 
 function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
-  commands = {}
+  local commands = {}
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   Logging.info("ABRIS mode: "..mode)
@@ -290,17 +291,23 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   -- first waypoint does not need edit/insert
   if isNotFirst then
     self:abrisStartNextWaypoint(commands)
+    -- ABRIS: wait for 100ms for ABRIS to settle
+    self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   end
   -- determine the smallest bounding Z range
   local range = self:findSmallestBoundingZRange(previous, waypoint)
   Logging.info("Smallest Z range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   local rotationsZ = range:toRotationsZ(deltaZ)
   -- ABRIS: rotate dial for Z
-  self:abrisRotateEx(commands, rotationsZ, 100, true,"Rotate Z")
+  self:abrisRotateEx(commands, rotationsZ, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate Z")
   -- ABRIS: zoom to level 0 to avoid snapping
   self:abrisZoomToRange(commands, 0)
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: switch to X entry  
   self:abrisPressRotateButton(commands, "Switch to X entry")
   -- determine the smallest bounding X range
@@ -310,10 +317,14 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   self:abrisZoomToRange(commands, range:getLevel())
   -- calculate number of dial rotations
   local rotationsX = range:toRotationsX(deltaX)
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: rotate dial for X
-  self:abrisRotateEx(commands, rotationsX, 100, true,"Rotate X")
+  self:abrisRotateEx(commands, rotationsX, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate X")
   -- ABRIS: zoom to level 0 to avoid snapping
   self:abrisZoomToRange(commands, 0)
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: complete entry of waypoint
   self:abrisStartNextWaypoint(commands)
 end
@@ -356,6 +367,10 @@ function KA50IIICommandGenerator:abrisCompleteRouteEntry(commands)
   self:abrisPressButton4(commands, "Activate the route", 0)
 end
 -- Utility functions for ABRIS
+function KA50IIICommandGenerator:nop(commands, comment, delay)
+  commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay):setIntensity(nil):setDepress(false)
+end
+
 function KA50IIICommandGenerator:abrisPressButton1(commands, comment, delay)
   delay = delay or default_delay
   commands[#commands + 1] = Command:new():setName("ABRIS: press button 1"):setComment(comment):setDevice(9):setCode(3001):setDelay(delay):setIntensity(1):setDepress(true)
@@ -418,7 +433,7 @@ function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
     return
   end
   for i = 1, relativeZoomLevel do
-    self:abrisPressButton3(commands, "ZoomIn", 20)
+    self:abrisPressButton3(commands, "ZoomIn", KA50IIICommandGenerator.DELAY_ABRIS_ZOOM)
   end
   self.zoomLevel = math.max(self.zoomLevel - relativeZoomLevel, 0)
   Logging.info("abrisZoomIn Zoom Level: "..self.zoomLevel)
@@ -431,7 +446,7 @@ function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
     return
   end
   for i = 1, relativeZoomLevel do
-    self:abrisPressButton4(commands, "ZoomOut", 20)
+    self:abrisPressButton4(commands, "ZoomOut", KA50IIICommandGenerator.DELAY_ABRIS_ZOOM)
   end
   self.zoomLevel = math.min(self.zoomLevel + relativeZoomLevel, #self._ranges)
   Logging.info("abrisZoomOut Zoom Level: "..self.zoomLevel)
