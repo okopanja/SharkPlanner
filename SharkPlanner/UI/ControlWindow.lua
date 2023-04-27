@@ -161,7 +161,7 @@ function ControlWindow:new(o)
       [EventTypes.EntryModeChanged] = {},
     }
     o.commandGenerator = nil
-
+    o:addEventHandler(ControlWindow.EventTypes.EntryModeChanged, o, o.OnEntryModeChanged)
     -- loading of own skins skins
     local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
     o.HideButton:setSkin(buttonAmberSkin)
@@ -345,14 +345,6 @@ function ControlWindow:OnToggleStateChanged(button)
     if overall_status == false then
       button:setState(true)
     end
-
-    if self:getEntryState() == ENTRY_STATES.WAYPOINTS then
-      self.AddWaypointButton:getTooltipText("Add waypoint")
-    elseif self:getEntryState() == ENTRY_STATES.FIXPOINTS then
-      self.AddWaypointButton:getTooltipText("Add fix point")
-    elseif self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
-      self.AddWaypointButton:getTooltipText("Add target point")
-    end
   end
   -- unfocus!
   button:setFocused(false)
@@ -365,6 +357,20 @@ function ControlWindow:OnToggleStateChanged(button)
   }
   self:dispatchEvent(EventTypes.EntryModeChanged, eventArgs)
 end
+
+function ControlWindow:OnEntryModeChanged(eventArgs)
+  if eventArgs.entryState == ENTRY_STATES.WAYPOINTS then
+    Logging.info("Updated tooltip: waypoint")
+    self.AddWaypointButton:setTooltipText("Add waypoint")
+  elseif self:getEntryState() == ENTRY_STATES.FIXPOINTS then
+    Logging.info("Updated tooltip: fix point")
+    self.AddWaypointButton:setTooltipText("Add fix point")
+  elseif self:getEntryState() == ENTRY_STATES.TARGET_POINTS then
+    Logging.info("Updated tooltip: target point")
+    self.AddWaypointButton:setTooltipText("Add target point")
+  end
+end
+
 
 function ControlWindow:OnWayPointCounterChanged(button)
   if button:getState() then
