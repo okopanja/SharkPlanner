@@ -152,9 +152,9 @@ function WaypointListWindow:OnRemoveWaypoint(eventArgs)
   self.scrollGrid:removeRow(eventArgs.wayPointIndex - 1)
   -- renumber later waypoints
   for i = eventArgs.wayPointIndex, #eventArgs.wayPoints  do
-    Logging.info("Removing: "..tostring(i))
+    Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
-    self.scrollGrid:getCell(4, i - 1).row_number = i
+    self.scrollGrid:getCell(4, i - 1):getWidget(0).row_number = i
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
@@ -169,7 +169,7 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
   self.scrollGrid:removeRow(eventArgs.fixPointIndex - 1)
   -- renumber later fixpoints
   for i = eventArgs.fixPointIndex, #eventArgs.fixPoints  do
-    Logging.info("Removing: "..tostring(i))
+    Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
     self.scrollGrid:getCell(4, i - 1).row_number = i
     -- renumber visible ordinal
@@ -186,7 +186,7 @@ function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
   self.scrollGrid:removeRow(eventArgs.targetPointIndex - 1)
   -- renumber later targetpoints
   for i = eventArgs.targetPointIndex, #eventArgs.targetPoints  do
-    Logging.info("Removing: "..tostring(i))
+    Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
     self.scrollGrid:getCell(4, i - 1).row_number = i
     -- renumber visible ordinal
@@ -267,7 +267,7 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   button.removalFunction = removalFunction
   button:addChangeCallback(
     function(self)
-      self.removalFunction(coordinateData, self.row_number)
+      button.removalFunction(coordinateData, button.row_number)
     end
   )
   panel:insertWidget(button, 1)
