@@ -131,6 +131,7 @@ function CoordinateData:save(filePath)
         fp:close()
         local eventArg = {
             -- leave empty for now
+            filePath = filePath
         }
         Logging.info("Flight plan is saved.")
         self:dispatchEvent(EventTypes.FlightPlanSaved, eventArg)
@@ -164,6 +165,7 @@ function CoordinateData:load(filePath)
         fp:close()
         local eventArg = {
             -- leave empty for now
+            filePath = filePath
         }
         Logging.info("Flight plan is loaded.")
         self:dispatchEvent(EventTypes.FlightPlanLoaded, eventArg)

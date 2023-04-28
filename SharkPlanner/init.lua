@@ -78,6 +78,8 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveFixPoint, wa
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddTargetPoint, waypointListWindow, waypointListWindow.OnAddTargetpoint)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint, waypointListWindow, waypointListWindow.OnRemoveTargetpoint)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, waypointListWindow, waypointListWindow.OnReset)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, waypointListWindow, waypointListWindow.OnFlightPlanLoaded)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, waypointListWindow, waypointListWindow.OnFlightPlanSaved)
 
 -- create control window, and pass other windows
 window = UI.ControlWindow:new{

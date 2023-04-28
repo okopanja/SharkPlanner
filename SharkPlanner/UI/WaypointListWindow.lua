@@ -12,6 +12,7 @@ local window = nil
 local Static = require('Static')
 local Button = require('Button')
 local Panel = require('Panel')
+local Utils = require("SharkPlanner.Utils")
 local math = require('math')
 local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
 
@@ -64,6 +65,7 @@ function WaypointListWindow:new(o)
   o:setBounds(x + w, y - 26, width, h + 26 + 26)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
+  o.filePath = nil
   o.LoadButton:setSkin(buttonAmberSkin)
   o.LoadButton:addChangeCallback(
     function(button)
@@ -78,7 +80,11 @@ function WaypointListWindow:new(o)
   o.SaveButton:setSkin(buttonAmberSkin)
   o.SaveButton:addChangeCallback(
     function(button)
-      self:savePositions()
+      if o.filePath == nil then
+        self:savePositionsAs()
+      else
+        self:savePositions(o.filePath)
+      end
     end
   )
   o.SaveButton:addMouseUpCallback(
@@ -86,6 +92,18 @@ function WaypointListWindow:new(o)
       button:setFocused(false)
     end
   )
+  o.SaveAsButton:setSkin(buttonAmberSkin)
+  o.SaveAsButton:addChangeCallback(
+    function(button)
+      self:savePositionsAs()
+    end
+  )
+  o.SaveAsButton:addMouseUpCallback(
+    function(button)
+      button:setFocused(false)
+    end
+  )
+  o.FileNameStatic:setSkin(SkinHelper.loadSkin("staticSharkPlannerStatusRectangular"))
   return o
 end
 
@@ -114,7 +132,7 @@ end
 function WaypointListWindow:loadPositions()
   Logging.info("Loading positions")
   self:disableKeyboardCommands()
-  local filePath = FileDialog.open(lfs.writedir(), {{'Flight Paths'			, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
+  local filePath = FileDialog.open(lfs.writedir(), {{'Flight Paths'	, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
   if filePath ~= nil then
     Logging.info("Selected load path: "..filePath)
     coordinateData:load(filePath)
@@ -122,10 +140,20 @@ function WaypointListWindow:loadPositions()
   self:enableKeyboardCommands()
 end
 
-function WaypointListWindow:savePositions()
-  Logging.info("Saving positions")
+function WaypointListWindow:savePositions(filePath)
+  if filePath ~= nil then
+    Logging.info("Saving positions")
+    Logging.info("Existing save path: "..filePath)
+    coordinateData:save(filePath)
+  end
+end
+
+function WaypointListWindow:savePositionsAs()
+  Logging.info("Saving positions As")
   self:disableKeyboardCommands()
-  local filePath = FileDialog.save(lfs.writedir(), {{'Flight Paths'			, '(*.fpl.json)'}}, "Save Flight Plan", "*.fpl.json", "")
+  local filePath = self.filePath
+  if filePath == nil then filePath = "" end
+  filePath = FileDialog.save(lfs.writedir(), {{'Flight Paths'	, '(*.fpl.json)'}}, "Save Flight Plan As", "*.fpl.json", "")
   if filePath ~= nil then
     Logging.info("Selected save path: "..filePath)
     coordinateData:save(filePath)
@@ -137,6 +165,17 @@ function WaypointListWindow:OnAddWaypoint(eventArgs)
   self:_createPositionRow(eventArgs.wayPointIndex, eventArgs.wayPoint, coordinateData.removeWaypoint)
 end
 
+function WaypointListWindow:OnFlightPlanLoaded(eventArgs)
+  self.filePath = eventArgs.filePath
+  self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
+end
+
+
+function WaypointListWindow:OnFlightPlanSaved(eventArgs)
+  self.filePath = eventArgs.filePath
+  self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
+end
+
 function WaypointListWindow:disableKeyboardCommands()
 	local keyboardEvents	= Input.getDeviceKeys(Input.getKeyboardDeviceName())
 	DCS.lockKeyboardInput(keyboardEvents)
@@ -145,7 +184,6 @@ end
 function WaypointListWindow:enableKeyboardCommands()
   DCS.unlockKeyboardInput(false)
 end
-
 
 function WaypointListWindow:OnRemoveWaypoint(eventArgs)
   Logging.info("Removing: "..eventArgs.wayPointIndex)
@@ -196,6 +234,8 @@ end
 
 function WaypointListWindow:OnReset(eventArgs)
   self.scrollGrid:removeAllRows()
+  self.filePath = nil
+  self.FileNameStatic:setText("")
 end
 
 function WaypointListWindow:OnEntryModeChanged(eventArgs)

@@ -71,6 +71,40 @@ dialog = {
       },
       ["type"] = "Button"
     },
+    ["SaveAsButton"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 100,
+          ["y"] = 0,
+          ["w"] = 80,
+          ["h"] = 26,
+        },
+        ["enabled"] = true,
+        ["tabOrder"] = 0,
+        ["text"] = "Save As...",
+        ["tooltip"] = "Save As...",
+        ["visible"] = true,
+        ["zindex"] = 1
+      },
+      ["type"] = "Button"
+    },
+    ["FileNameStatic"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 180,
+          ["y"] = 0,
+          ["w"] = 400,
+          ["h"] = 26,
+        },
+        ["enabled"] = true,
+        ["tabOrder"] = 0,
+        ["text"] = "",
+        ["tooltip"] = "Filename",
+        ["visible"] = true,
+        ["zindex"] = 1
+      },
+      ["type"] = "Static"
+    },
     ["scrollGrid"] = {
       ["params"] = {
         ["bounds"] = {
