@@ -1,0 +1,357 @@
+dialog = {
+    ["type"] = "Window",
+    ["params"] = {
+        ["bounds"] = {
+            [1] = {
+                ["x"] = 0,
+                ["y"] = 0,
+                ["w"] = 800,
+                ["h"] = 800
+            }
+        },
+        ["draggable"] = false,
+        ["enabled"] = true,
+        ["hasCursor"] = true,
+        ["lockFlow"] = false,
+        ["modal"] = false,
+        ["offscreen"] = false,
+        ["resizable"] = false,
+        ["zOrder"] = 150,
+        ["text"] = "Waypoint list",
+        ["visible"] = false
+    },
+    ["skin"] = {
+        ["params"] = {
+			       ["headerHeight"] = 0,
+             ["name"] = "windowSkin"
+        },
+        ["states"] = {
+            ["released"] = {
+                [1] = {
+                    ["bkg"] = {
+                        ["center_center"] = "0x40404077"
+--                        ["center_center"] = "0x00000000"
+                    }
+                }
+            }
+        }
+    },
+    ["children"] = {
+        ["buttonTemplate"] = {
+            ["params"] = {
+                ["bounds"] = {
+                    ["x"] = 0,
+                    ["y"] = 0,
+                    ["w"] = 26,
+                    ["h"] = 26,
+                },
+                ["enabled"] = true,
+                ["tabOrder"] = 0,
+                ["text"] = "X",
+                ["tooltip"] = "Remove point",
+                ["visible"] = false,
+                ["zindex"] = 1
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "buttonSkinAwacs"
+                }
+            },
+            ["type"] = "Button"
+        },
+        ["staticCellValidNotSelectedTemplate"] = {
+            ["params"] = {
+                ["angle"] = 0,
+                ["bounds"] = {
+                    ["x"] = 75,
+                    ["y"] = 358,
+                    ["w"] = 100,
+                    ["h"] = 20,
+                },
+                ["enabled"] = true,
+                ["pivotPoint"] = {
+                    ["x"] = 0,
+                    ["y"] = 0,
+                },
+                ["text"] = "static0",
+                ["tooltip"] = "",
+                ["visible"] = false,
+                ["zindex"] = 0,
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "staticSkin",
+                    ["rowColors"] = {
+                        [1] = {
+                            ["a"] = 0.8,
+                            ["b"] = 0.16862745098039,
+                            ["g"] = 0.16862745098039,
+                            ["r"] = 0.16862745098039,
+                        },
+                    },
+                },
+                ["states"] = {
+                    ["disabled"] = {
+                        [1] = {
+                            ["text"] = {
+                                ["bkgColor"] = "0x00000000",
+                                ["blurColor"] = "0x00000000",
+                                ["color"] = "0x808080dc",
+                                ["font"] = "DejaVuLGCSansCondensed.ttf",
+                                ["fontSize"] = 13,
+                                ["horzAlign"] = {
+                                    ["offset"] = 15,
+                                },
+                                ["lineHeight"] = 0,
+                                ["lineThroughColor"] = "0x00000000",
+                                ["lineThroughHeight"] = 1,
+                                ["shadowColor"] = "0x00000000",
+                                ["vertAlign"] = {
+                                    ["type"] = "middle",
+                                },
+                            },
+                        },
+                    },
+                    ["released"] = {
+                        [1] = {
+                            ["bkg"] = {
+                                ["center_bottom"] = "0x00000033",
+                                ["center_center"] = "0x5b5b5b00",
+                                ["center_top"] = "0x00000033",
+                                ["left_bottom"] = "0x00000033",
+                                ["left_center"] = "0x00000033",
+                                ["left_top"] = "0x00000033",
+                                ["right_bottom"] = "0x00000033",
+                                ["right_center"] = "0x00000033",
+                                ["right_top"] = "0x00000033",
+                            },
+                            ["text"] = {
+                                ["color"] = "0xffffffdc",
+                                ["font"] = "DejaVuLGCSansCondensed.ttf",
+                                ["fontSize"] = 13,
+                                ["horzAlign"] = {
+                                    ["offset"] = 15,
+                                },
+                                ["lineHeight"] = 0,
+                                ["vertAlign"] = {
+                                    ["type"] = "middle",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            ["type"] = "Static",
+        },
+        ["staticCellValidSelected"] = {
+            ["params"] = {
+                ["angle"] = 0,
+                ["bounds"] = {
+                    ["h"] = 20,
+                    ["w"] = 100,
+                    ["x"] = 346,
+                    ["y"] = 287,
+                },
+                ["enabled"] = true,
+                ["pivotPoint"] = {
+                    ["x"] = 0,
+                    ["y"] = 0,
+                },
+                ["text"] = "static0",
+                ["tooltip"] = "",
+                ["visible"] = false,
+                ["zindex"] = 0,
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "staticSkin",
+                },
+                ["states"] = {
+                    ["disabled"] = {
+                        [1] = {
+                            ["bkg"] = {
+                                ["center_bottom"] = "0xffffffff",
+                                ["center_center"] = "0x00000000",
+                                ["center_top"] = "0xffffffff",
+                                ["file"] = "",
+                                ["insets"] = {
+                                    ["bottom"] = 1,
+                                    ["left"] = 1,
+                                    ["right"] = 1,
+                                    ["top"] = 1,
+                                },
+                                ["left_bottom"] = "0xffffffff",
+                                ["left_center"] = "0xffffffff",
+                                ["left_top"] = "0xffffffff",
+                                ["right_bottom"] = "0xffffffff",
+                                ["right_center"] = "0xffffffff",
+                                ["right_top"] = "0xffffffff",
+                            },
+                            ["text"] = {
+                                ["bkgColor"] = "0x00000000",
+                                ["blurColor"] = "0x00000000",
+                                ["color"] = "0xb4b4b4dc",
+                                ["font"] = "DejaVuLGCSansCondensed.ttf",
+                                ["fontSize"] = 13,
+                                ["horzAlign"] = {
+                                    ["offset"] = 15,
+                                },
+                                ["lineHeight"] = 0,
+                                ["lineThroughColor"] = "0x00000000",
+                                ["lineThroughHeight"] = 1,
+                                ["shadowColor"] = "0x00000000",
+                                ["vertAlign"] = {
+                                    ["type"] = "middle",
+                                },
+                            },
+                        },
+                    },
+                    ["released"] = {
+                        [1] = {
+                            ["bkg"] = {
+                                ["center_bottom"] = "0x6ed8f380",
+                                ["center_center"] = "0x3095ff40",
+                                ["center_top"] = "0x6ed8f380",
+                                ["insets"] = {
+                                    ["bottom"] = 1,
+                                    ["left"] = 1,
+                                    ["right"] = 1,
+                                    ["top"] = 1,
+                                },
+                                ["left_bottom"] = "0x6ed8f380",
+                                ["left_center"] = "0x6ed8f380",
+                                ["left_top"] = "0x6ed8f380",
+                                ["right_bottom"] = "0x6ed8f380",
+                                ["right_center"] = "0x6ed8f380",
+                                ["right_top"] = "0x6ed8f380",
+                            },
+                            ["text"] = {
+                                ["bkgColor"] = "0x00000000",
+                                ["blurColor"] = "0x00000000",
+                                ["color"] = "0xffffffff",
+                                ["font"] = "DejaVuLGCSansCondensed.ttf",
+                                ["fontSize"] = 13,
+                                ["horzAlign"] = {
+                                    ["offset"] = 15,
+                                },
+                                ["lineHeight"] = 0,
+                                ["lineThroughColor"] = "0x00000000",
+                                ["lineThroughHeight"] = 1,
+                                ["shadowColor"] = "0x00000000",
+                                ["vertAlign"] = {
+                                    ["type"] = "middle",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            ["type"] = "Static",
+        },
+        ["staticCellValidSelected"] = {
+            ["params"] = {
+                ["angle"] = 0,
+                ["bounds"] = {
+                    ["h"] = 20,
+                    ["w"] = 100,
+                    ["x"] = 346,
+                    ["y"] = 287,
+                },
+                ["enabled"] = true,
+                ["pivotPoint"] = {
+                    ["x"] = 0,
+                    ["y"] = 0,
+                },
+                ["text"] = "static0",
+                ["tooltip"] = "",
+                ["visible"] = false,
+                ["zindex"] = 0,
+            },
+            ["skin"] = {
+                ["params"] = {
+                    ["name"] = "staticSkin",
+                },
+                ["states"] = {
+                    ["disabled"] = {
+                        [1] = {
+                            ["bkg"] = {
+                                ["center_bottom"] = "0xffffffff",
+                                ["center_center"] = "0x00000000",
+                                ["center_top"] = "0xffffffff",
+                                ["file"] = "",
+                                ["insets"] = {
+                                    ["bottom"] = 1,
+                                    ["left"] = 1,
+                                    ["right"] = 1,
+                                    ["top"] = 1,
+                                },
+                                ["left_bottom"] = "0xffffffff",
+                                ["left_center"] = "0xffffffff",
+                                ["left_top"] = "0xffffffff",
+                                ["right_bottom"] = "0xffffffff",
+                                ["right_center"] = "0xffffffff",
+                                ["right_top"] = "0xffffffff",
+                            },
+                            ["text"] = {
+                                ["bkgColor"] = "0x00000000",
+                                ["blurColor"] = "0x00000000",
+                                ["color"] = "0xb4b4b4dc",
+                                ["font"] = "DejaVuLGCSansCondensed.ttf",
+                                ["fontSize"] = 13,
+                                ["horzAlign"] = {
+                                    ["offset"] = 15,
+                                },
+                                ["lineHeight"] = 0,
+                                ["lineThroughColor"] = "0x00000000",
+                                ["lineThroughHeight"] = 1,
+                                ["shadowColor"] = "0x00000000",
+                                ["vertAlign"] = {
+                                    ["type"] = "middle",
+                                },
+                            },
+                        },
+                    },
+                    ["released"] = {
+                        [1] = {
+                            ["bkg"] = {
+                                ["center_bottom"] = "0x6ed8f380",
+                                ["center_center"] = "0x3095ff40",
+                                ["center_top"] = "0x6ed8f380",
+                                ["insets"] = {
+                                    ["bottom"] = 1,
+                                    ["left"] = 1,
+                                    ["right"] = 1,
+                                    ["top"] = 1,
+                                },
+                                ["left_bottom"] = "0x6ed8f380",
+                                ["left_center"] = "0x6ed8f380",
+                                ["left_top"] = "0x6ed8f380",
+                                ["right_bottom"] = "0x6ed8f380",
+                                ["right_center"] = "0x6ed8f380",
+                                ["right_top"] = "0x6ed8f380",
+                            },
+                            ["text"] = {
+                                ["bkgColor"] = "0x00000000",
+                                ["blurColor"] = "0x00000000",
+                                ["color"] = "0xffffffff",
+                                ["font"] = "DejaVuLGCSansCondensed.ttf",
+                                ["fontSize"] = 13,
+                                ["horzAlign"] = {
+                                    ["offset"] = 15,
+                                },
+                                ["lineHeight"] = 0,
+                                ["lineThroughColor"] = "0x00000000",
+                                ["lineThroughHeight"] = 1,
+                                ["shadowColor"] = "0x00000000",
+                                ["vertAlign"] = {
+                                    ["type"] = "middle",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            ["type"] = "Static",
+        },
+    }
+}

@@ -2,7 +2,7 @@ local Logging = require("SharkPlanner.Utils.Logging")
 local String = require("SharkPlanner.Utils.String")
 local GameState = require("SharkPlanner.Base.GameState")
 
-CommandGeneratorFactory = {}
+local CommandGeneratorFactory = {}
 
 -- helper function to read list of subfolders of modules
 local function getListOfModules()
@@ -74,7 +74,7 @@ end
 
 -- check if it is supported
 function CommandGeneratorFactory.isSupported(name)
-  Logging.info("Checking for support for: "..name)
+  Logging.info("Checking for support for: "..tostring(name))
   for k, v in pairs(CommandGeneratorFactory.supported) do
     if k == name then
       return true

@@ -1,12 +1,14 @@
-Command = {}
+local Command = {}
 
 function Command:new (o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-  self.name = "UnknownDevice: Unkown command"
-  self.comment = nil
-  self.schedule = nil
+  o.name = "UnknownDevice: Unknown command"
+  o.comment = nil
+  o.schedule = nil
+  o.intensityUpdateCallback = nil
+  o.intensityUpdateObject = nil
   return o
 end
 
@@ -48,6 +50,15 @@ function Command:setSchedule(schedule)
 end
 
 function Command:getIntensity()
+  if self.intensityUpdateCallback ~= nil then
+    if self.intensityUpdateObject ~= nil then
+      -- in case of object being recepient call variant with object's self
+      self.intensityUpdateCallback(self.intensityUpdateObject, self, self.updateParameters)
+    else
+      -- in case of regular function
+      self.intensityUpdateCallback(self, self.updateParameters)
+    end
+  end
   return self.intensity
 end
 
@@ -83,6 +94,17 @@ function Command:setComment(comment)
   return self
 end
 
+-- this function is used to update command intensity of command when intensity can not be calculated accuratly at the time of creation, but only later prior to immidiate command execution.
+-- as parameters it takes:
+-- recipient object (can be nil)
+-- intensityUpdateCallback
+-- updateParameters: table containing static parameters needed for update
+function Command:setIntensityUpdateCallback(object, intensityUpdateCallback, updateParameters)
+  self.intensityUpdateObject = object
+  self.intensityUpdateCallback = intensityUpdateCallback
+  self.updateParameters = updateParameters
+  return self
+end
 
 function Command:getText()
   local text = self.name

@@ -1,5 +1,8 @@
 # SharkPlanner
 SharkPlanner is a MOD for entry of waypoints into **ABRIS** and **PVI-800** of DCS **Ka-50** attack helicopter. It is 100% implemented in LUA and integrates into the DCS UI.
+
+[![SharkPlannerThumbnail](http://img.youtube.com/vi/hBLJIa6ZC6c/0.jpg)](http://www.youtube.com/watch?v=hBLJIa6ZC6c)
+
 ## FAQ
 ### How does it work?
 SharkPlanner runs as a LUA script hook and is able to utilize DCS's native UI in order to deliver minimalistic UI without requiring external application.

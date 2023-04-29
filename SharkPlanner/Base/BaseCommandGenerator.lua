@@ -1,4 +1,4 @@
-BaseCommandGenerator = {}
+local BaseCommandGenerator = {}
 
 function BaseCommandGenerator:new (o)
   o = o or {}

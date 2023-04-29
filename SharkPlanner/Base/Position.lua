@@ -1,6 +1,7 @@
 local math = require("math")
+local Logging = require("SharkPlanner.Utils.Logging")
 
-Position = {
+local Position = {
   x = 0,
   y = 0,
   z = 0,
@@ -37,12 +38,16 @@ function Position:getZ()
   return self.z
 end
 
+function Position:getAltitude()
+  return self.y
+end
+
 function Position:getLongitude()
   return self.longitude
 end
 
 function Position:getLatitude()
-  return self.longitude
+  return self.latitude
 end
 
 function Position:getLongitudeDMS()
@@ -50,7 +55,7 @@ function Position:getLongitudeDMS()
 end
 
 function Position:getLatitudeDMS()
-  return convertDecimalToDMS(self.longitude)
+  return convertDecimalToDMS(self.latitude)
 end
 
 function Position:getLongitudeDMDec()
@@ -81,14 +86,28 @@ function Position:getText()
   return "X: "..self.x.." Z: "..self.z.." Y: "..self.y.."(latitude: "..self.latitude..", longitude: "..self.longitude..")"
 end
 
+function Position:getLatitudeDMSstr()
+  local latitude = self:getLatitudeDMS()
+  local hemisphere = "N"
+  if(self.z < 0) then hemisphere = "S" end
+  return  ""..latitude.degrees.."° "..latitude.minutes.."' "..latitude.seconds.."''"..hemisphere
+end
+
+function Position:getLongitudeDMSstr()
+  local longitude = self:getLongitudeDMS()
+  local hemisphere = "E"
+  if(self.x >= 0) then hemisphere = "W" end
+  return ""..longitude.degrees.."° "..longitude.minutes.."' "..longitude.seconds.."''".. hemisphere
+end
+
 function convertDecimalToDMS(decimal)
   local result = {}
   result.degrees = math.floor(decimal)
   local rest = decimal - result.degrees
   result.minutes = math.floor(rest * 60)
-  rest = rest - result.minutes
+  rest = rest - (result.minutes / 60 )
   -- round up last digit!
-  result.seconds = math.floor((rest * 60) + 0.5)
+  result.seconds = math.floor((rest * 3600) + 0.5)
   return result
 end
 
