@@ -194,28 +194,28 @@ dialog = {
       },
       ["type"] = "ToggleButton",
     },
-    ["ExperimentButton"] = {
-      ["params"] = {
-        ["bounds"] = {
-          ["x"] = 348,
-          ["y"] = 0,
-          ["w"] = 50,
-          ["h"] = 26,
-        },
-        ["enabled"] = true,
-        ["tabOrder"] = 0,
-        ["text"] = "Exp",
-        ["tooltip"] = "Experiment",
-        ["visible"] = true,
-        ["zindex"] = 0
-      },
-      ["skin"] = {
-        ["params"] = {
-          ["name"] = "buttonSkinAwacs"
-        }
-      },
-      ["type"] = "Button"
-    },
+    -- ["ExperimentButton"] = {
+    --   ["params"] = {
+    --     ["bounds"] = {
+    --       ["x"] = 348,
+    --       ["y"] = 0,
+    --       ["w"] = 50,
+    --       ["h"] = 26,
+    --     },
+    --     ["enabled"] = true,
+    --     ["tabOrder"] = 0,
+    --     ["text"] = "Exp",
+    --     ["tooltip"] = "Experiment",
+    --     ["visible"] = true,
+    --     ["zindex"] = 0
+    --   },
+    --   ["skin"] = {
+    --     ["params"] = {
+    --       ["name"] = "buttonSkinAwacs"
+    --     }
+    --   },
+    --   ["type"] = "Button"
+    -- },
 
     -- ["WaypointSwitchLabel"] = {
     -- 	["params"] = {
