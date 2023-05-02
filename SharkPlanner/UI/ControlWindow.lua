@@ -177,6 +177,34 @@ function ControlWindow:new(o)
     for i, toggle in pairs(o.toggleGroup) do
       toggle:setSkin(toggleShortGreenSkin)
     end
+
+    if o.ExperimentButton then
+      Logging.info("Exeprimental mode activated")
+      o.ExperimentButton:setSkin(buttonAmberSkin)
+      o.ExperimentButton:addChangeCallback(
+        function(button)
+          Logging.info("Experiment!")
+          package["SharkPlanner.experiment"] = nil
+          package.loaded["SharkPlanner.experiment"] = nil
+          _G["SharkPlanner.experiment"] = nil
+          
+          local experiment = require("SharkPlanner.experiment")
+          local status, err  = pcall(experiment)
+          if not status then            
+            Logging.info("Experiment failed with: "..tostring(err))
+          else
+            Logging.info("Experiment finished!")
+          end
+          
+        end
+      )
+      o.ExperimentButton:addMouseUpCallback(
+        function(button)
+          button:setFocused(false)
+        end
+      )
+    end
+
     return o
 end
 
