@@ -101,6 +101,7 @@ Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerCha
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, window, window.OnPlayerEnteredSupportedVehicle)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.SimulationStopped, window, window.OnSimulationStopped)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferFinished, window, window.OnTransferFinished)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, coordinateData, coordinateData.OnPlayerEnteredSupportedVehicle)
 
 -- register waypointListWindow to receive events from controlWindow    
 window:addEventHandler(UI.ControlWindow.EventTypes.EntryModeChanged, waypointListWindow, waypointListWindow.OnEntryModeChanged)

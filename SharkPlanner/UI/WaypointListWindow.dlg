@@ -177,7 +177,7 @@ dialog = {
             ["enabled"] = true,
             ["layout"] = {
             },
-            ["text"] = "Altitude",
+            ["text"] = "Delta/Alt",
             ["tooltip"] = "",
             ["visible"] = true,
             ["zindex"] = 2,

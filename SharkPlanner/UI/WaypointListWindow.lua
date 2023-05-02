@@ -287,7 +287,8 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
 
   -- add altitude
   static = Static.new()
-  static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
+  static:setText("")
+  -- static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
   self.scrollGrid:setCell(2, row_number - 1, static)
 
@@ -326,16 +327,25 @@ end
 function WaypointListWindow:_calculateDistances(positions)
   local totalDistance = 0
   local priorPosition = coordinateData.planningPosition
+  if priorPosition == nil and #positions > 0 then
+    priorPosition = positions[1]
+  end
   for i, position in ipairs(positions) do
     local distance = 0
     local deltaX = math.abs(position:getX() - priorPosition:getX())
     local deltaY = math.abs(position:getZ() - priorPosition:getZ())
+    local deltaH = position:getAltitude() - priorPosition:getAltitude()
     distance = math.sqrt(math.pow(deltaX, 2) + math.pow(deltaY, 2))
     totalDistance = totalDistance + distance
     self.scrollGrid:getCell(3, i - 1):setText(
       string.format("%.2f", distance / 1000) .." km".."\n"..
       string.format("%.2f", totalDistance / 1000) .." km"
     )
+    self.scrollGrid:getCell(2, i - 1):setText(
+      string.format("%s", math.floor(deltaH + 0.5)).." m".."\n"..
+      string.format("%s", math.floor(position:getAltitude() + 0.5)) .." m"
+    )
+
     priorPosition = position
   end
 end

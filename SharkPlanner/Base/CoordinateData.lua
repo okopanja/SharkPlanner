@@ -45,8 +45,13 @@ function CoordinateData:new(o)
 end
 
 function CoordinateData:createPlanningPosition()
-    if #self.wayPoints == 0 then
+    if #self.wayPoints == 0 or self.planningPosition == nil then
         local selfData = Export.LoGetSelfData()
+        if selfData == nil then
+            Logging.info("Own position could not be retrieved")
+            self.planningPosition = nil
+            return
+        end
         local selfX = selfData["Position"]["x"]
         local selfZ = selfData["Position"]["z"]
         local selfLat, selfLong = Export.LoLoCoordinatesToGeoCoordinates(selfX, selfZ)
@@ -204,10 +209,10 @@ end
 
 function CoordinateData:normalize(commandGenerator)
     Logging.info("Normalizing data structures")
-    self.planningPosition = nil
-    self:createPlanningPosition()
     -- no commandGenerator nothing to do
     if commandGenerator == nil then return end
+    self.planningPosition = nil
+    self:createPlanningPosition()
     -- trim number of waypoints
     Logging.info("Setting correct structure size")
     if #self.wayPoints > commandGenerator:getMaximalWaypointCount() then
@@ -235,6 +240,11 @@ function CoordinateData:normalize(commandGenerator)
         Logging.info("Result: "..#self.targetPoints)
     end
 end
+
+function CoordinateData:OnPlayerEnteredSupportedVehicle(eventArgs)
+    self:createPlanningPosition()
+end
+  
 
 -- Singleton
 return CoordinateData:new{}
