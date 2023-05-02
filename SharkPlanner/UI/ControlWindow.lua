@@ -177,6 +177,42 @@ function ControlWindow:new(o)
     for i, toggle in pairs(o.toggleGroup) do
       toggle:setSkin(toggleShortGreenSkin)
     end
+
+    -- this piece of code is not supposed to run on user side
+    -- it is meant for development purposes. 
+    if o.ExperimentButton then
+      Logging.info("Exeprimental mode activated")
+      o.ExperimentButton:setSkin(buttonAmberSkin)
+      o.ExperimentButton:addChangeCallback(
+        function(button)
+          Logging.info("Unloading old expirimental code")
+          package["SharkPlanner.experiment"] = nil
+          package.loaded["SharkPlanner.experiment"] = nil
+          _G["SharkPlanner.experiment"] = nil
+          Logging.info("Loading new expirimental code")
+          local status, experiment  = pcall(require("SharkPlanner.experiment"))
+          if status then
+            Logging.info("Experimental code finished!")
+            -- local err = nil
+            -- Logging.info("Calling experimental code!")
+            -- status, err  = pcall(experiment)
+            -- if status then
+            --   Logging.info("Experimental code finished!")
+            -- else
+            --   Logging.error("Experimental code failed with: "..tostring(err))
+            -- end
+          else
+            Logging.error("Loading of experiment.lua has failed due to: "..experiment)
+          end
+        end
+      )
+      o.ExperimentButton:addMouseUpCallback(
+        function(button)
+          button:setFocused(false)
+        end
+      )
+    end
+
     return o
 end
 
