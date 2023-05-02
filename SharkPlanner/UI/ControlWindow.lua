@@ -192,12 +192,15 @@ function ControlWindow:new(o)
           Logging.info("Loading new expirimental code")
           local status, experiment  = pcall(require("SharkPlanner.experiment"))
           if status then
-            local status, err  = pcall(experiment)
-            if status then
-              Logging.info("Experimental code finished!")
-            else
-              Logging.error("Experimental code failed with: "..tostring(err))
-            end
+            Logging.info("Experimental code finished!")
+            -- local err = nil
+            -- Logging.info("Calling experimental code!")
+            -- status, err  = pcall(experiment)
+            -- if status then
+            --   Logging.info("Experimental code finished!")
+            -- else
+            --   Logging.error("Experimental code failed with: "..tostring(err))
+            -- end
           else
             Logging.error("Loading of experiment.lua has failed due to: "..experiment)
           end
