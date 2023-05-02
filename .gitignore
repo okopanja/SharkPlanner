@@ -43,3 +43,5 @@ luac.out
 SharkPlanner/Modules/Su-27/*
 # Ingore inspect.lua
 SharkPlanner/inspect.lua
+# Ignore experiment.lua
+SharkPlanner/experiment.lua
