@@ -325,14 +325,12 @@ end
 
 function WaypointListWindow:_calculateDistances(positions)
   local totalDistance = 0
-  local priorPosition = nil
+  local priorPosition = coordinateData.planningPosition
   for i, position in ipairs(positions) do
     local distance = 0
-    if i > 1 then
-      local deltaX = math.abs(position:getX() - priorPosition:getX())
-      local deltaY = math.abs(position:getZ() - priorPosition:getZ())
-      distance = math.sqrt(math.pow(deltaX, 2) + math.pow(deltaY, 2))
-    end
+    local deltaX = math.abs(position:getX() - priorPosition:getX())
+    local deltaY = math.abs(position:getZ() - priorPosition:getZ())
+    distance = math.sqrt(math.pow(deltaX, 2) + math.pow(deltaY, 2))
     totalDistance = totalDistance + distance
     self.scrollGrid:getCell(3, i - 1):setText(
       string.format("%.2f", distance / 1000) .." km".."\n"..
