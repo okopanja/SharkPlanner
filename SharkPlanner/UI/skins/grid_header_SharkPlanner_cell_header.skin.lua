@@ -77,7 +77,7 @@ local skin = {
 						["fontSize"] = 0,
 						["horzAlign"] = {
 							["offset"] = 0,
-							["type"] = "min",
+							["type"] = "middle",
 						},
 						["lineHeight"] = 0,
 						["lineThroughColor"] = "0x00000000",
@@ -145,8 +145,8 @@ local skin = {
 						["font"] = "DejaVuLGCSansCondensed.ttf",
 						["fontSize"] = 13,
 						["horzAlign"] = {
-							["offset"] = 15,
-							["type"] = "min",
+							["offset"] = 0,
+							["type"] = "middle",
 						},
 						["lineHeight"] = 0,
 						["lineThroughColor"] = "0x00000000",
@@ -216,8 +216,8 @@ local skin = {
 						["font"] = "DejaVuLGCSansCondensed.ttf",
 						["fontSize"] = 13,
 						["horzAlign"] = {
-							["offset"] = 15,
-							["type"] = "min",
+							["offset"] = 0,
+							["type"] = "middle",
 						},
 						["lineHeight"] = 0,
 						["lineThroughColor"] = "0x00000000",
@@ -285,8 +285,8 @@ local skin = {
 						["font"] = "DejaVuLGCSansCondensed.ttf",
 						["fontSize"] = 13,
 						["horzAlign"] = {
-							["offset"] = 15,
-							["type"] = "min",
+							["offset"] = 0,
+							["type"] = "middle",
 						},
 						["lineHeight"] = 0,
 						["lineThroughColor"] = "0x00000000",

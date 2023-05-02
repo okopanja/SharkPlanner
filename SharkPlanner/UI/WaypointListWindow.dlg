@@ -146,7 +146,7 @@ dialog = {
           },
           ["type"] = "GridHeaderCell",
         },
-        ["gridHeaderCellLatitude"] = {
+        ["gridHeaderCellCoordinates"] = {
           ["params"] = {
             ["bounds"] = {
               ["x"] = 0,
@@ -158,29 +158,10 @@ dialog = {
             ["enabled"] = true,
             ["layout"] = {
             },
-            ["text"] = "Latitude",
+            ["text"] = "Lat/Long",
             ["tooltip"] = "",
             ["visible"] = true,
             ["zindex"] = 1,
-          },
-          ["type"] = "GridHeaderCell",
-        },
-        ["gridHeaderCellLongitude"] = {
-          ["params"] = {
-            ["bounds"] = {
-              ["x"] = 0,
-              ["y"] = 0,
-              ["w"] = 120,
-              ["h"] = 30,
-            },
-            ["draggable"] = true,
-            ["enabled"] = true,
-            ["layout"] = {
-            },
-            ["text"] = "Longitude",
-            ["tooltip"] = "",
-            ["visible"] = true,
-            ["zindex"] = 2,
           },
           ["type"] = "GridHeaderCell",
         },
@@ -196,7 +177,26 @@ dialog = {
             ["enabled"] = true,
             ["layout"] = {
             },
-            ["text"] = "Altitude",
+            ["text"] = "Delta/Alt",
+            ["tooltip"] = "",
+            ["visible"] = true,
+            ["zindex"] = 2,
+          },
+          ["type"] = "GridHeaderCell",
+        },
+        ["gridHeaderCellDistance"] = {
+          ["params"] = {
+            ["bounds"] = {
+              ["x"] = 0,
+              ["y"] = 0,
+              ["w"] = 120,
+              ["h"] = 30,
+            },
+            ["draggable"] = true,
+            ["enabled"] = true,
+            ["layout"] = {
+            },
+            ["text"] = "Delta/Distance",
             ["tooltip"] = "",
             ["visible"] = true,
             ["zindex"] = 3,

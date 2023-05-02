@@ -81,6 +81,7 @@ dialog = {
             ["skin"] = {
                 ["params"] = {
                     ["name"] = "staticSkin",
+                    ["textWrapping"] = true,
                     ["rowColors"] = {
                         [1] = {
                             ["a"] = 0.8,
@@ -130,7 +131,8 @@ dialog = {
                                 ["font"] = "DejaVuLGCSansCondensed.ttf",
                                 ["fontSize"] = 13,
                                 ["horzAlign"] = {
-                                    ["offset"] = 15,
+                                    ["offset"] = -5,
+                                    ["type"] = "right",
                                 },
                                 ["lineHeight"] = 0,
                                 ["vertAlign"] = {

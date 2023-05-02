@@ -29,6 +29,7 @@ function CoordinateData:new(o)
     o.wayPoints = {}
     o.fixPoints = {}
     o.targetPoints = {}
+    o.planningPosition = nil
     o.eventHandlers = {
         [EventTypes.AddWayPoint] = {},
         [EventTypes.RemoveWayPoint] = {},
@@ -43,12 +44,30 @@ function CoordinateData:new(o)
     return o
 end
 
+function CoordinateData:createPlanningPosition()
+    if #self.wayPoints == 0 or self.planningPosition == nil then
+        local selfData = Export.LoGetSelfData()
+        if selfData == nil then
+            Logging.info("Own position could not be retrieved")
+            self.planningPosition = nil
+            return
+        end
+        local selfX = selfData["Position"]["x"]
+        local selfZ = selfData["Position"]["z"]
+        local selfLat, selfLong = Export.LoLoCoordinatesToGeoCoordinates(selfX, selfZ)
+        local altitude = Export.LoGetAltitudeAboveSeaLevel()
+        self.planningPosition = Position:new{x = selfX, y = altitude, z = selfZ, longitude = selfLong, latitude = selfLat }
+    end
+end
+
 function CoordinateData:addWaypoint(wayPoint)
+    self:createPlanningPosition()
     self.wayPoints[#self.wayPoints + 1] = wayPoint
     local eventArg = {
+        planningPosition  = self.planningPosition,
         wayPoints = self.wayPoints,
         wayPoint = wayPoint,
-        wayPointIndex = #self.wayPoints
+        wayPointIndex = #self.wayPoints,
     }
     self:dispatchEvent(EventTypes.AddWayPoint, eventArg)
 end
@@ -58,15 +77,17 @@ function CoordinateData:removeWaypoint(wayPointIndex)
     local eventArg = {
         wayPoints = self.wayPoints,
         wayPoint = wayPoint,
-        wayPointIndex = wayPointIndex
+        wayPointIndex = wayPointIndex,
     }
     self:dispatchEvent(EventTypes.RemoveWayPoint, eventArg)
 end
 
 function CoordinateData:addFixpoint(fixPoint)
+    self:createPlanningPosition()
     self.fixPoints[#self.fixPoints + 1] = fixPoint
 
     local eventArg = {
+        planningPosition  = self.planningPosition,
         fixPoints = self.fixPoints,
         fixPoint = fixPoint,
         fixPointIndex = #self.fixPoints
@@ -77,6 +98,7 @@ end
 function CoordinateData:removeFixpoint(fixPointIndex)
     local fixPoint = table.remove(self.fixPoints, fixPointIndex)
     local eventArg = {
+        planningPosition  = self.planningPosition,
         fixPoints = self.fixPoints,
         fixPoint = fixPoint,
         fixPointIndex = fixPointIndex
@@ -85,6 +107,7 @@ function CoordinateData:removeFixpoint(fixPointIndex)
 end
 
 function CoordinateData:addTargetpoint(targetPoint)
+    self:createPlanningPosition()
     self.targetPoints[#self.targetPoints + 1] = targetPoint
 
     local eventArg = {
@@ -110,6 +133,7 @@ function CoordinateData:reset()
     self.wayPoints = {}
     self.fixPoints = {}
     self.targetPoints = {}
+    self.planningPosition = nil
     local eventArg = {
         -- at the moment no actual need, but still needed for generic dispatchEvent method
         -- reserved for future use
@@ -187,6 +211,8 @@ function CoordinateData:normalize(commandGenerator)
     Logging.info("Normalizing data structures")
     -- no commandGenerator nothing to do
     if commandGenerator == nil then return end
+    self.planningPosition = nil
+    self:createPlanningPosition()
     -- trim number of waypoints
     Logging.info("Setting correct structure size")
     if #self.wayPoints > commandGenerator:getMaximalWaypointCount() then
@@ -214,6 +240,11 @@ function CoordinateData:normalize(commandGenerator)
         Logging.info("Result: "..#self.targetPoints)
     end
 end
+
+function CoordinateData:OnPlayerEnteredSupportedVehicle(eventArgs)
+    self:createPlanningPosition()
+end
+  
 
 -- Singleton
 return CoordinateData:new{}

@@ -57,9 +57,9 @@ function WaypointListWindow:new(o)
   o.scrollGrid:setSize(width, h + 26)
   local cellHeaderSkin = SkinHelper.loadSkin("gridHeaderSharkPlannerCellHeader")
   o.scrollGrid.gridHeaderCellNo:setSkin(cellHeaderSkin)
-  o.scrollGrid.gridHeaderCellLatitude:setSkin(cellHeaderSkin)
-  o.scrollGrid.gridHeaderCellLongitude:setSkin(cellHeaderSkin)
+  o.scrollGrid.gridHeaderCellCoordinates:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellAltitude:setSkin(cellHeaderSkin)
+  o.scrollGrid.gridHeaderCellDistance:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDelete:setSkin(cellHeaderSkin)
   
   o:setBounds(x + w, y - 26, width, h + 26 + 26)
@@ -165,6 +165,7 @@ end
 
 function WaypointListWindow:OnAddWaypoint(eventArgs)
   self:_createPositionRow(eventArgs.wayPointIndex, eventArgs.wayPoint, coordinateData.removeWaypoint)
+  self:_calculateDistances(eventArgs.wayPoints)
 end
 
 function WaypointListWindow:OnFlightPlanLoaded(eventArgs)
@@ -198,10 +199,12 @@ function WaypointListWindow:OnRemoveWaypoint(eventArgs)
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
+  self:_calculateDistances(eventArgs.wayPoints)
 end
 
 function WaypointListWindow:OnAddFixpoint(eventArgs)
   self:_createPositionRow(eventArgs.fixPointIndex, eventArgs.fixPoint, coordinateData.removeFixpoint)
+  self:_calculateDistances(eventArgs.fixPoints)
 end
 
 function WaypointListWindow:OnRemoveFixpoint(eventArgs)
@@ -215,10 +218,12 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
+  self:_calculateDistances(eventArgs.fixPoints)
 end
 
 function WaypointListWindow:OnAddTargetpoint(eventArgs)
   self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.removeTargetpoint)
+  self:_calculateDistances(eventArgs.targetPoints)
 end
 
 function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
@@ -232,6 +237,7 @@ function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
+  self:_calculateDistances(eventArgs.targetPoints)
 end
 
 function WaypointListWindow:OnReset(eventArgs)
@@ -261,34 +267,35 @@ function WaypointListWindow:OnEntryModeChanged(eventArgs)
     Logging.info(tostring(i))
     self:_createPositionRow(i, positions[i], removalFunction)
   end
+  self:_calculateDistances(positions)
 end
 
 function WaypointListWindow:_createPositionRow(row_number, position, removalFunction)
   -- add row number
-  self.scrollGrid:insertRow(30)
+  self.scrollGrid:insertRow(40)
   -- create row number
   local static = Static.new()
   static:setText(tostring(row_number))
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
   self.scrollGrid:setCell(0, row_number - 1, static)
 
-  -- add latitude
+  -- add Geographical coordindates
   static = Static.new()
-  static:setText(position:getLatitudeDMSstr())
+  static:setText(position:getLatitudeDMSstr().."\n"..position:getLongitudeDMSstr())
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
   self.scrollGrid:setCell(1, row_number - 1, static)
 
-  -- add longitude
+  -- add altitude
   static = Static.new()
-  static:setText(position:getLongitudeDMSstr())
+  static:setText("")
+  -- static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
   self.scrollGrid:setCell(2, row_number - 1, static)
 
-  -- add altitude
+  -- add distance
   static = Static.new()
-  static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
+  static:setText("")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
-  
   self.scrollGrid:setCell(3, row_number - 1, static)
 
   local panel = Panel.new()
@@ -299,7 +306,7 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   -- button:setSkin(Skin.getSkin("buttonSkinAwacs"))
   button:setSkin(self.removeButtonSkin)
   button:setText("X")
-  button:setBounds(2, 2, 26, 26)
+  button:setBounds(2, 7, 26, 26)
   button:setVisible(true)
   -- record the row_number for later use
   button.row_number = row_number
@@ -315,6 +322,32 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   panel:insertWidget(button, 1)
   -- self.scrollGrid:setCell(4, row_number - 1, button)
   self.scrollGrid:setCell(4, row_number - 1, panel)
+end
+
+function WaypointListWindow:_calculateDistances(positions)
+  local totalDistance = 0
+  local priorPosition = coordinateData.planningPosition
+  if priorPosition == nil and #positions > 0 then
+    priorPosition = positions[1]
+  end
+  for i, position in ipairs(positions) do
+    local distance = 0
+    local deltaX = math.abs(position:getX() - priorPosition:getX())
+    local deltaY = math.abs(position:getZ() - priorPosition:getZ())
+    local deltaH = position:getAltitude() - priorPosition:getAltitude()
+    distance = math.sqrt(math.pow(deltaX, 2) + math.pow(deltaY, 2))
+    totalDistance = totalDistance + distance
+    self.scrollGrid:getCell(3, i - 1):setText(
+      string.format("%.2f", distance / 1000) .." km".."\n"..
+      string.format("%.2f", totalDistance / 1000) .." km"
+    )
+    self.scrollGrid:getCell(2, i - 1):setText(
+      string.format("%s", math.floor(deltaH + 0.5)).." m".."\n"..
+      string.format("%s", math.floor(position:getAltitude() + 0.5)) .." m"
+    )
+
+    priorPosition = position
+  end
 end
 
 return  WaypointListWindow
