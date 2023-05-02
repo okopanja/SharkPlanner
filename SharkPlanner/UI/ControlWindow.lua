@@ -178,24 +178,29 @@ function ControlWindow:new(o)
       toggle:setSkin(toggleShortGreenSkin)
     end
 
+    -- this piece of code is not supposed to run on user side
+    -- it is meant for development purposes. 
     if o.ExperimentButton then
       Logging.info("Exeprimental mode activated")
       o.ExperimentButton:setSkin(buttonAmberSkin)
       o.ExperimentButton:addChangeCallback(
         function(button)
-          Logging.info("Experiment!")
+          Logging.info("Unloading old expirimental code")
           package["SharkPlanner.experiment"] = nil
           package.loaded["SharkPlanner.experiment"] = nil
           _G["SharkPlanner.experiment"] = nil
-          
-          local experiment = require("SharkPlanner.experiment")
-          local status, err  = pcall(experiment)
-          if not status then            
-            Logging.info("Experiment failed with: "..tostring(err))
+          Logging.info("Loading new expirimental code")
+          local status, experiment  = pcall(require("SharkPlanner.experiment"))
+          if status then
+            local status, err  = pcall(experiment)
+            if status then
+              Logging.info("Experimental code finished!")
+            else
+              Logging.error("Experimental code failed with: "..tostring(err))
+            end
           else
-            Logging.info("Experiment finished!")
+            Logging.error("Loading of experiment.lua has failed due to: "..experiment)
           end
-          
         end
       )
       o.ExperimentButton:addMouseUpCallback(
