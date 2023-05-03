@@ -177,20 +177,20 @@ function ControlWindow:new(o)
     for i, toggle in pairs(o.toggleGroup) do
       toggle:setSkin(toggleShortGreenSkin)
     end
-
     -- this piece of code is not supposed to run on user side
     -- it is meant for development purposes. 
     if o.ExperimentButton then
       Logging.info("Exeprimental mode activated")
       o.ExperimentButton:setSkin(buttonAmberSkin)
-      o.ExperimentButton:addChangeCallback(
+      local context = {}
+      o.ExperimentButton:addChangeCallback(        
         function(button)
           Logging.info("Unloading old expirimental code")
           package["SharkPlanner.experiment"] = nil
           package.loaded["SharkPlanner.experiment"] = nil
           _G["SharkPlanner.experiment"] = nil
           Logging.info("Loading new expirimental code")
-          local status, experiment  = pcall(require("SharkPlanner.experiment"))
+          local status, experiment  = pcall(require("SharkPlanner.experiment"), context)
           if status then
             Logging.info("Experimental code finished!")
           else
