@@ -61,7 +61,9 @@ function WaypointListWindow:new(o)
   o.scrollGrid.gridHeaderCellAltitude:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDistance:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDelete:setSkin(cellHeaderSkin)
-  
+
+  o.scrollGrid:addSelectRowCallback(o.OnPositionSelected)
+
   o:setBounds(x + w, y - 26, width, h + 26 + 26)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
@@ -173,10 +175,21 @@ function WaypointListWindow:OnFlightPlanLoaded(eventArgs)
   self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
 end
 
-
 function WaypointListWindow:OnFlightPlanSaved(eventArgs)
   self.filePath = eventArgs.filePath
   self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
+end
+
+function WaypointListWindow:OnMouseDown(self, x, y, button)
+  Logging.info("Mouse down, x: "..x.." y: "..y.." button "..tostring(button))
+end
+
+function WaypointListWindow:OnMouseDoubleDown(self, x, y, button)
+  Logging.info("Mouse down, x: "..x.." y: "..y.." button "..tostring(button))
+end
+
+function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
+  Logging.info("Selected row: "..tostring(currSelectedRow).." prior selection was: "..tostring(prevSelectedRow))
 end
 
 function WaypointListWindow:disableKeyboardCommands()
@@ -277,6 +290,12 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   local static = Static.new()
   static:setText(tostring(row_number))
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
+  static:addMouseDoubleDownCallback(self.OnMouseDoubleDown)
   self.scrollGrid:setCell(0, row_number - 1, static)
 
   -- add Geographical coordindates
