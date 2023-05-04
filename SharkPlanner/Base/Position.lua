@@ -30,12 +30,24 @@ function Position:getX()
   return self.x
 end
 
+function Position:setX(x)
+  self.x = x
+end
+
 function Position:getY()
   return self.y
 end
 
+function Position:setY(y)
+  self.y = y
+end
+
 function Position:getZ()
   return self.z
+end
+
+function Position:setZ(z)
+  self.z = z
 end
 
 function Position:getAltitude()
@@ -89,14 +101,14 @@ end
 function Position:getLatitudeDMSstr()
   local latitude = self:getLatitudeDMS()
   local hemisphere = "N"
-  if(self.z < 0) then hemisphere = "S" end
+  if(self.latitude < 0) then hemisphere = "S" end
   return  ""..latitude.degrees.."° "..string.format("%02d", latitude.minutes).."' "..string.format("%02d",latitude.seconds).."''"..hemisphere
 end
 
 function Position:getLongitudeDMSstr()
   local longitude = self:getLongitudeDMS()
   local hemisphere = "E"
-  if(self.x >= 0) then hemisphere = "W" end
+  if(self.longitude < 0) then hemisphere = "W" end
   return ""..longitude.degrees.."° "..string.format("%02d",longitude.minutes).."' "..string.format("%02d", longitude.seconds).."''"..hemisphere
 end
 
