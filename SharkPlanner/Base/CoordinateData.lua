@@ -260,18 +260,22 @@ function CoordinateData:recalculateLocalCoordinate(position)
 end
 
 function CoordinateData:recalculateLocalCoordinates()
+    Logging.info("Recalculation initiated")
     local wayPointsRecalculated = false
     local fixPointsRecalculated = false
     local targetPointsRecalculated = false
     for k, position in pairs(self.wayPoints) do
         wayPointsRecalculated = wayPointsRecalculated or self:recalculateLocalCoordinate(position)
     end
+    Logging.info("Waypoints recalculated: "..tostring(wayPointsRecalculated))
     for k, position in pairs(self.fixPoints) do
         fixPointsRecalculated = fixPointsRecalculated or self:recalculateLocalCoordinate(position)
     end
+    Logging.info("Fixpoints recalculated: "..tostring(fixPointsRecalculated))
     for k, position in pairs(self.targetPoints) do
         targetPointsRecalculated = targetPointsRecalculated or self:recalculateLocalCoordinate(position)
     end
+    Logging.info("Target points recalculated: "..tostring(targetPointsRecalculated))
     local overallResult = wayPointsRecalculated or fixPointsRecalculated or targetPointsRecalculated
     if overallResult then
         Logging.info("Recalculating occured, triggering event handlers")
