@@ -18,6 +18,7 @@ local EventTypes = {
     Reset = 7,
     FlightPlanSaved = 8,
     FlightPlanLoaded = 9,
+    LocalCoordinatesRecalculated = 10
 }
 -- make event types visible to users
 CoordinateData.EventTypes = EventTypes
@@ -40,6 +41,7 @@ function CoordinateData:new(o)
         [EventTypes.Reset] = {},
         [EventTypes.FlightPlanSaved] = {},
         [EventTypes.FlightPlanLoaded] = {},
+        [EventTypes.LocalCoordinatesRecalculated] = {}
     }
     return o
 end
@@ -242,9 +244,49 @@ function CoordinateData:normalize(commandGenerator)
 end
 
 function CoordinateData:OnPlayerEnteredSupportedVehicle(eventArgs)
+    self:recalculateLocalCoordinates()
     self:createPlanningPosition()
 end
-  
+
+function CoordinateData:recalculateLocalCoordinate(position)
+    local localCoordinates = Export.LoGeoCoordinatesToLoCoordinates(position:getLongitude(), position:getLatitude())
+    -- recalculate only if the coordinates differ
+    if localCoordinates.x ~= position:getX() or localCoordinates.z ~= position:getZ() then
+        position:setX(localCoordinates.x)
+        position:setZ(localCoordinates.z)
+        return true
+    end
+    return false
+end
+
+function CoordinateData:recalculateLocalCoordinates()
+    local wayPointsRecalculated = false
+    local fixPointsRecalculated = false
+    local targetPointsRecalculated = false
+    for k, position in pairs(self.wayPoints) do
+        wayPointsRecalculated = wayPointsRecalculated or self:recalculateLocalCoordinate(position)
+    end
+    for k, position in pairs(self.fixPoints) do
+        fixPointsRecalculated = fixPointsRecalculated or self:recalculateLocalCoordinate(position)
+    end
+    for k, position in pairs(self.targetPoints) do
+        targetPointsRecalculated = targetPointsRecalculated or self:recalculateLocalCoordinate(position)
+    end
+    local overallResult = wayPointsRecalculated or fixPointsRecalculated or targetPointsRecalculated
+    if overallResult then
+        Logging.info("Recalculating occured, triggering event handlers")
+        local eventArgs = {
+            wayPoints = self.wayPoints,
+            fixPoints = self.fixPoints,
+            targetPoints = self.targetPoints,
+            overallResult = overallResult,
+            wayPointsRecalculated = wayPointsRecalculated,
+            fixPointsRecalculated = fixPointsRecalculated,
+            targetPointsRecalculated = targetPointsRecalculated
+        }
+        self:dispatchEvent(EventTypes.LocalCoordinatesRecalculated, eventArgs)
+    end
+end
 
 -- Singleton
 return CoordinateData:new{}

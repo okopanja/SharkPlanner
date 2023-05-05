@@ -332,6 +332,12 @@ function ControlWindow:OnReset(eventArgs)
   self:updateUIState()
 end
 
+function ControlWindow:OnLocalCoordinatesRecalculated(eventArgs)
+  if eventArgs.overallResult then
+    self:updateToggleStates(ENTRY_STATES.WAYPOINTS)
+  end
+end
+
 function ControlWindow:OnPlayerEnteredSupportedVehicle(eventArgs)
   self.commandGenerator = eventArgs.commandGenerator
   self:updateToggleStates(ENTRY_STATES.WAYPOINTS)

@@ -96,6 +96,7 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveFixPoint, wi
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddTargetPoint, window, window.OnAddTargetPoint)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint, window, window.OnRemoveTargetPoint)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, window, window.OnReset)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.LocalCoordinatesRecalculated, window, window.OnLocalCoordinatesRecalculated)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.SimulationStarted, window, window.OnSimulationStarted)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerChangeSlot, window, window.OnPlayerChangeSlot)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, window, window.OnPlayerEnteredSupportedVehicle)
