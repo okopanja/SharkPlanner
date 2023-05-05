@@ -15,6 +15,7 @@ local Panel = require('Panel')
 local Utils = require("SharkPlanner.Utils")
 local math = require('math')
 local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
+local ControlWindow = require("SharkPlanner.UI.ControlWindow")
 
 -- Boilercode to load templates for dynamicly created controls
 local templateDialog	= DialogLoader.spawnDialogFromFile(lfs.writedir() .. 'Scripts\\SharkPlanner\\UI\\WaypointListWindowTemplates.dlg')
@@ -63,7 +64,12 @@ function WaypointListWindow:new(o)
   o.scrollGrid.gridHeaderCellDelete:setSkin(cellHeaderSkin)
 
   o.scrollGrid:addSelectRowCallback(o.OnPositionSelected)
-
+  o.scrollGrid:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
+  o.entryMode = "W"
   o:setBounds(x + w, y - 26, width, h + 26 + 26)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
@@ -182,6 +188,12 @@ end
 
 function WaypointListWindow:OnMouseDown(self, x, y, button)
   Logging.info("Mouse down, x: "..x.." y: "..y.." button "..tostring(button))
+  if button == 1 then
+    local column, row = self.scrollGrid:getMouseCursorColumnRow(x, y)
+    local oldRow = self.scrollGrid:getSelectedRow()
+    self.scrollGrid:selectRow(row)
+    self:OnPositionSelected(row, oldRow)
+  end
 end
 
 function WaypointListWindow:OnMouseDoubleDown(self, x, y, button)
@@ -190,6 +202,23 @@ end
 
 function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
   Logging.info("Selected row: "..tostring(currSelectedRow).." prior selection was: "..tostring(prevSelectedRow))
+  local positions = nil
+  if self.entryMode == "W" then
+    positions = coordinateData.wayPoints
+  elseif self.entryMode == "F" then
+    positions = coordinateData.fixPoints
+  elseif self.entryMode == "T" then
+    positions = coordinateData.targetPoints
+  else
+    return
+  end
+  local position = positions[currSelectedRow + 1]
+  local cameraPosition = Export.LoGetCameraPosition()
+  
+  cameraPosition['p']['x'] = position:getX()
+  cameraPosition['p']['z'] = position:getZ()
+
+  Export.LoSetCameraPosition(cameraPosition)
 end
 
 function WaypointListWindow:disableKeyboardCommands()
@@ -264,6 +293,7 @@ function WaypointListWindow:OnEntryModeChanged(eventArgs)
   self.scrollGrid:removeAllRows()
   local positions = nil
   local removalFunction = nil
+  self.entryMode = eventArgs.entryState
   if eventArgs.entryState == "W" then
     positions = coordinateData.wayPoints
     removalFunction = coordinateData.removeWaypoint
@@ -302,6 +332,11 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   static = Static.new()
   static:setText(position:getLatitudeDMSstr().."\n"..position:getLongitudeDMSstr())
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
   self.scrollGrid:setCell(1, row_number - 1, static)
 
   -- add altitude
@@ -309,16 +344,32 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   static:setText("")
   -- static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
   self.scrollGrid:setCell(2, row_number - 1, static)
 
   -- add distance
   static = Static.new()
   static:setText("")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
   self.scrollGrid:setCell(3, row_number - 1, static)
 
   local panel = Panel.new()
   panel:setVisible(true)
+  panel:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
+
   -- add delete button
   local button = Button.new()
 
