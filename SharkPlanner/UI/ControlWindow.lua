@@ -28,6 +28,7 @@ local ControlWindow = DialogLoader.spawnDialogFromFile(
 )
 
 ControlWindow.EventTypes = EventTypes
+ControlWindow.EntryStates = ENTRY_STATES
 
 -- Constructor
 function ControlWindow:new(o)
