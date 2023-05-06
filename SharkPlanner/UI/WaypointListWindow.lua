@@ -179,6 +179,42 @@ function WaypointListWindow:OnFlightPlanSaved(eventArgs)
   self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
 end
 
+function WaypointListWindow:OnMouseDown(self, x, y, button)
+  Logging.info("Mouse down, x: "..x.." y: "..y.." button "..tostring(button))
+  if button == 1 then
+    local column, row = self.scrollGrid:getMouseCursorColumnRow(x, y)
+    local oldRow = self.scrollGrid:getSelectedRow()
+    self.scrollGrid:selectRow(row)
+    self:OnPositionSelected(row, oldRow)
+  end
+end
+
+function WaypointListWindow:OnMouseDoubleDown(self, x, y, button)
+  Logging.info("Mouse down, x: "..x.." y: "..y.." button "..tostring(button))
+end
+
+function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
+  Logging.info("Selected row: "..tostring(currSelectedRow).." prior selection was: "..tostring(prevSelectedRow))
+
+  local positions = nil
+  if self.entryMode == "W" then
+    positions = coordinateData.wayPoints
+  elseif self.entryMode == "F" then
+    positions = coordinateData.fixPoints
+  elseif self.entryMode == "T" then
+    positions = coordinateData.targetPoints
+  else
+    return
+  end
+  local position = positions[currSelectedRow + 1]
+  local cameraPosition = Export.LoGetCameraPosition()
+
+  cameraPosition['p']['x'] = position:getX()
+  cameraPosition['p']['z'] = position:getZ()
+
+  Export.LoSetCameraPosition(cameraPosition)
+end
+
 function WaypointListWindow:disableKeyboardCommands()
 	local keyboardEvents	= Input.getDeviceKeys(Input.getKeyboardDeviceName())
 	DCS.lockKeyboardInput(keyboardEvents)
