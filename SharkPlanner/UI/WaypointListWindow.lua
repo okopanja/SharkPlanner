@@ -15,6 +15,7 @@ local Panel = require('Panel')
 local Utils = require("SharkPlanner.Utils")
 local math = require('math')
 local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
+local ControlWindow = require("SharkPlanner.UI.ControlWindow")
 
 -- Boilercode to load templates for dynamicly created controls
 local templateDialog	= DialogLoader.spawnDialogFromFile(lfs.writedir() .. 'Scripts\\SharkPlanner\\UI\\WaypointListWindowTemplates.dlg')
@@ -61,7 +62,14 @@ function WaypointListWindow:new(o)
   o.scrollGrid.gridHeaderCellAltitude:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDistance:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDelete:setSkin(cellHeaderSkin)
-  
+
+  o.scrollGrid:addSelectRowCallback(o.OnPositionSelected)
+  o.scrollGrid:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
+  o.entryMode = "W"
   o:setBounds(x + w, y - 26, width, h + 26 + 26)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
@@ -173,7 +181,6 @@ function WaypointListWindow:OnFlightPlanLoaded(eventArgs)
   self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
 end
 
-
 function WaypointListWindow:OnFlightPlanSaved(eventArgs)
   self.filePath = eventArgs.filePath
   self.FileNameStatic:setText(Utils.String.basename(eventArgs.filePath))
@@ -195,7 +202,6 @@ end
 
 function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
   Logging.info("Selected row: "..tostring(currSelectedRow).." prior selection was: "..tostring(prevSelectedRow))
-
   local positions = nil
   if self.entryMode == "W" then
     positions = coordinateData.wayPoints
@@ -208,7 +214,7 @@ function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
   end
   local position = positions[currSelectedRow + 1]
   local cameraPosition = Export.LoGetCameraPosition()
-
+  
   cameraPosition['p']['x'] = position:getX()
   cameraPosition['p']['z'] = position:getZ()
 
@@ -287,6 +293,7 @@ function WaypointListWindow:OnEntryModeChanged(eventArgs)
   self.scrollGrid:removeAllRows()
   local positions = nil
   local removalFunction = nil
+  self.entryMode = eventArgs.entryState
   if eventArgs.entryState == "W" then
     positions = coordinateData.wayPoints
     removalFunction = coordinateData.removeWaypoint
@@ -313,12 +320,23 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   local static = Static.new()
   static:setText(tostring(row_number))
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
+  static:addMouseDoubleDownCallback(self.OnMouseDoubleDown)
   self.scrollGrid:setCell(0, row_number - 1, static)
 
   -- add Geographical coordindates
   static = Static.new()
   static:setText(position:getLatitudeDMSstr().."\n"..position:getLongitudeDMSstr())
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
   self.scrollGrid:setCell(1, row_number - 1, static)
 
   -- add altitude
@@ -326,16 +344,32 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   static:setText("")
   -- static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
   self.scrollGrid:setCell(2, row_number - 1, static)
 
   -- add distance
   static = Static.new()
   static:setText("")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  static:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
   self.scrollGrid:setCell(3, row_number - 1, static)
 
   local panel = Panel.new()
   panel:setVisible(true)
+  panel:addMouseDownCallback(
+    function (cell, x, y, button)
+      self:OnMouseDown(self, x, y, button)
+    end
+  )
+
   -- add delete button
   local button = Button.new()
 
