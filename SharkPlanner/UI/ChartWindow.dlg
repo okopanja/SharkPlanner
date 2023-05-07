@@ -1,0 +1,40 @@
+dialog = {
+  ["type"] = "Window",
+  ["params"] = {
+    ["bounds"] = {
+      [1] = {
+        ["x"] = 0,
+        ["y"] = 0,
+        ["w"] = 400,
+        ["h"] = 400
+      }
+    },
+    ["draggable"] = true,
+    ["enabled"] = true,
+    ["hasCursor"] = true,
+    ["lockFlow"] = false,
+    ["modal"] = false,
+    ["offscreen"] = false,
+    ["resizable"] = true,
+    ["zOrder"] = 150,
+    ["text"] = "Chart window"
+  },
+  ["skin"] = {
+    ["params"] = {
+      ["headerHeight"] = 0,
+      ["name"] = "windowSkin"
+    },
+    ["states"] = {
+      ["released"] = {
+        [1] = {
+          ["bkg"] = {
+            ["center_center"] = "0x404040a0"
+          }
+        }
+      }
+    }
+  },
+  ["children"] = {
+  },
+}
+

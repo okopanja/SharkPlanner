@@ -184,6 +184,7 @@ function ControlWindow:new(o)
       Logging.info("Exeprimental mode activated")
       o.ExperimentButton:setSkin(buttonAmberSkin)
       local context = {}
+      context.crosshairWindow = o.crosshairWindow
       o.ExperimentButton:addChangeCallback(        
         function(button)
           Logging.info("Unloading old expirimental code")
