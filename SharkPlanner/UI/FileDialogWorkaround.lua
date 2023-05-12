@@ -4,6 +4,5 @@
 local fp = io.open(lfs.currentdir().."MissionEditor\\modules\\FileDialog.lua", "rb")
 local moduleContent = fp:read("*all")
 fp:close()
-local patchedFileDialog = loadstring(string.gsub(moduleContent, "local modulesInfo", "-- local modulesInfo").."\r\nreturn { save = save, open = open }")()
-
+local patchedFileDialog = loadstring(string.gsub(moduleContent, "local modulesInfo", "-- local modulesInfo").."\r\nreturn { save = save, open = open, create = create, reset = function() miniStyle = true MeSettings.setFileDialogMiniStyleParams(miniStyle) end }")()
 return patchedFileDialog
