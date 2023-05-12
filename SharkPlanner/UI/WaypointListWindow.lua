@@ -139,6 +139,7 @@ end
 
 function WaypointListWindow:loadPositions()
   Logging.info("Loading positions")
+  FileDialog.reset()
   self:disableKeyboardCommands()
   local filePath = FileDialog.open(lfs.writedir(), {{'Flight Paths'	, '(*.json)'}}, "Load Flight Plan", "*.json", "")
   if filePath ~= nil then
@@ -163,6 +164,7 @@ function WaypointListWindow:savePositionsAs()
   if filePath == nil then filePath = "" end
   --   function save(path, filters, caption, a_typeFile, a_preName)
 
+  FileDialog.reset()
   filePath = FileDialog.save(self.filePath or lfs.writedir(), {{'Flight Paths'	, '(*.json)'}}, "Save Flight Plan As", "json")
   if filePath ~= nil then
     Logging.info("Selected save path: "..filePath)
