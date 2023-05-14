@@ -177,7 +177,7 @@ function ControlWindow:new(o)
         statusWindow = o.statusWindow,
         crosshairWindow = o.crosshairWindow
       }
-      o.ExperimentButton:addChangeCallback(   
+      o.ExperimentButton:addChangeCallback(
         function(button)
           Logging.info("Unloading old expirimental code")
           package["SharkPlanner.experiment"] = nil
