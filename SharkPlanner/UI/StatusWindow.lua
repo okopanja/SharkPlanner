@@ -113,4 +113,8 @@ function StatusWindow:OnFlightPlanLoaded(eventArgs)
     self.Status:setText("Flight plan is loaded.")
 end
 
+function StatusWindow:displayMessage(message)
+    self.Status:setText(message)
+end
+
 return StatusWindow
