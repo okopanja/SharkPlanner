@@ -206,7 +206,7 @@ dialog = {
         ["tabOrder"] = 0,
         ["text"] = "Exp",
         ["tooltip"] = "Experiment",
-        ["visible"] = true,
+        ["visible"] = false,
         ["zindex"] = 0
       },
       ["skin"] = {

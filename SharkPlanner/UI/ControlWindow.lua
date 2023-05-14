@@ -36,21 +36,10 @@ function ControlWindow:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
-    local x, y, w, h = o.crosshairWindow:getBounds()
+    
     Logging.info("Creating window")
+    o:updateBounds()
 
-    -- calculate actual width
-    local totalWidth = 0
-  	for i = 1, o:getWidgetCount() do
-  		local index 		= i - 1
-  		local widget 		= o:getWidget(index)
-      local x, y, w, h = widget:getBounds()
-      totalWidth = totalWidth + w
-    end
-    -- calculate offset to make it center aligned
-    local offsetX = (w - totalWidth) / 2
-    Logging.info("Setting bounds")
-    o:setBounds(x + offsetX, y - 26, w, 26)
     o.toggleGroup = {
       self.WaypointToggle,
       self.FixpointToggle,
@@ -183,9 +172,11 @@ function ControlWindow:new(o)
     if o.ExperimentButton then
       Logging.info("Exeprimental mode activated")
       o.ExperimentButton:setSkin(buttonAmberSkin)
-      local context = {}
-      context.crosshairWindow = o.crosshairWindow
-      o.ExperimentButton:addChangeCallback(        
+      local context = {
+        coordinateData = o.coordinateData,
+        statusWindow = o.statusWindow
+      }
+      o.ExperimentButton:addChangeCallback(   
         function(button)
           Logging.info("Unloading old expirimental code")
           package["SharkPlanner.experiment"] = nil
@@ -210,18 +201,42 @@ function ControlWindow:new(o)
     return o
 end
 
+function ControlWindow:updateBounds()
+      local x, y, w, h = self.crosshairWindow:getBounds()
+      -- calculate actual width
+      local totalWidth = 0
+      for i = 1, self:getWidgetCount() do
+        local index 		= i - 1
+        local widget 		= self:getWidget(index)
+        local x, y, w, h = widget:getBounds()
+        if not ((widget == self.ExperimentButton) and (lfs.attributes(lfs.writedir()..[[Scripts\SharkPlanner\experiment.lua]]) == nil)) then
+          totalWidth = totalWidth + w
+        end
+      end
+      -- calculate offset to make it center aligned
+      local offsetX = (w - totalWidth) / 2
+      Logging.info("Setting bounds")
+      self:setBounds(x + offsetX, y - 26, w, 26)
+end
+
 function ControlWindow:show()
   Logging.info("Showing ControlWindow")
   self:setVisible(true)
   self:setSkin(self.windowDefaultSkin)
   self:setHasCursor(true)
-
+  local experiment_enabled = lfs.attributes(lfs.writedir()..[[Scripts\SharkPlanner\experiment.lua]]) ~= nil
+  self:updateBounds()
   local count = self:getWidgetCount()
   for i = 1, count do
     local index 		= i - 1
     local widget 		= self:getWidget(index)
-    widget:setVisible(true)
+    if widget == self.ExperimentButton then
+      widget:setVisible(experiment_enabled)
+    else
+      widget:setVisible(true)
+    end
   end
+
   self.is_hidden = false
 
   self.crosshairWindow:setVisible(true)
