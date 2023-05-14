@@ -174,7 +174,8 @@ function ControlWindow:new(o)
       o.ExperimentButton:setSkin(buttonAmberSkin)
       local context = {
         coordinateData = o.coordinateData,
-        statusWindow = o.statusWindow
+        statusWindow = o.statusWindow,
+        crosshairWindow = o.crosshairWindow
       }
       o.ExperimentButton:addChangeCallback(   
         function(button)
