@@ -45,16 +45,16 @@ function ChartWindow:new(o)
     Logging.info("Height: ".. height)
     o:setBounds(x, y + h + 26, width,height)
     o:setVisible(true)
-    local lineSkin = SkinHelper.loadSkin("graphSkinSharkPlannerLine")
-    local axisLineSkin = SkinHelper.loadSkin("graphSkinSharkPlannerAxisLine")
-    local horizontalAxisLineSkin = SkinHelper.loadSkin("graphSkinSharkPlannerHorizontalAxisLine")
-    local asymptoteLineSkin = SkinHelper.loadSkin("graphSkinSharkPlannerAsymptoteLine")
-    local thousandLineSkin = SkinHelper.loadSkin("graphSkinSharkPlannerThousandLine")
-    local thousandLabelSkin = SkinHelper.loadSkin("graphSkinSharkPlannerThousandLabel")
-    self.waypointLineSkin = SkinHelper.loadSkin("graphSkinSharkPlannerWaypointLine")
-    self.waypointVerticalLabelSkin = SkinHelper.loadSkin("graphSkinSharkPlannerWaypointVerticalLabel")
-    self.waypointHorizontalLabelSkin = SkinHelper.loadSkin("graphSkinSharkPlannerWaypointHorizontalLabel")
-    local seaSkin = SkinHelper.loadSkin("graphSkinSharkPlannerSea")
+    local lineSkin = SkinHelper.loadSkin("graphLine")
+    local axisLineSkin = SkinHelper.loadSkin("graphAxisLine")
+    local horizontalAxisLineSkin = SkinHelper.loadSkin("graphHorizontalAxisLine")
+    local asymptoteLineSkin = SkinHelper.loadSkin("graphAsymptoteLine")
+    local thousandLineSkin = SkinHelper.loadSkin("graphThousandLine")
+    local thousandLabelSkin = SkinHelper.loadSkin("graphThousandLabel")
+    self.waypointLineSkin = SkinHelper.loadSkin("graphWaypointLine")
+    self.waypointVerticalLabelSkin = SkinHelper.loadSkin("graphWaypointVerticalLabel")
+    self.waypointHorizontalLabelSkin = SkinHelper.loadSkin("graphWaypointHorizontalLabel")
+    local seaSkin = SkinHelper.loadSkin("graphSea")
     self.axisLineSkin = axisLineSkin
     -- create maximum asymptote
     local sea = Static.new()
@@ -132,7 +132,13 @@ function ChartWindow:new(o)
       o:insertWidget(thousandLabel, o:getWidgetCount() + 1)
       o.thousandLabels[#o.thousandLabels + 1] = thousandLabel
     end
-
+    
+    o.labelWidth = 70
+    o.labelHeight = 20
+    o.minimalDistanceX = 33
+    o.minimalElevationX = 20
+    o.defaultElevationY = 100
+  
     return o
 end
 
@@ -255,10 +261,10 @@ function ChartWindow:setValues(elevationProfile)
     line:setSize(value, 1)
   end
   -- set asymptotes
-  self.maximumAsymptote:setBounds(0, height - math.floor(maximum * verticalScalingFactor), width, 20)
+  self.maximumAsymptote:setBounds(0, height - math.floor(maximum * verticalScalingFactor + 0.5), width, 20)
   self.maximumAsymptote:setVisible(true)
   self.maximumAsymptote:setText(string.format("%.0f", maximum).."m")
-  self.minimumAsymptote:setBounds(0, height - math.floor(minimum * verticalScalingFactor), width, 20)
+  self.minimumAsymptote:setBounds(0, height - math.floor(minimum * verticalScalingFactor + 0.5), width, 20)
   self.minimumAsymptote:setText(string.format("%.0f", minimum).."m")
   if minimum ~= 0 then
     self.minimumAsymptote:setVisible(true)
@@ -277,55 +283,115 @@ function ChartWindow:setValues(elevationProfile)
       self.thousandLabels[i]:setVisible(true)
     end
   end
+  self:resetWaypoints()
+  self:createWaypoints(width, height, elevationProfile)
+end
+
+function ChartWindow:resetWaypoints()
+  if self.waypointLines then
+    for k, v in self.waypointLines do
+      self:removeWidget(v)
+      v:destroy()
+    end
+  end
+  if self.waypointDistanceLabels then
+    for k, v in self.waypointDistanceLabels do
+      self:removeWidget(v)
+      v:destroy()
+    end
+  end
+  if self.waypointElevationLabels then
+    for k, v in self.waypointElevationLabels do
+      self:removeWidget(v)
+      v:destroy()
+    end
+  end
+  self.waypointLines = {}
+  self.waypointDistanceLabels = {}
+  self.waypointElevationLabels = {}
+end
+
+function ChartWindow:createWaypoints(width, height, elevationProfile)
   -- set waypoints
   local horizontalScale = width / elevationProfile.totalDistance
   Logging.info("Width: "..width)
   Logging.info("Total distance: "..elevationProfile.totalDistance)
   Logging.info("Scale: "..horizontalScale)
   local cumulativeDistance = 0
-  local labelWidth = 70
-  local labelHeight = 20
   local lastDistanceX = 0
+  local lastElevationX = 0
+  local elevationY = self.defaultElevationY
   for i = 1, #elevationProfile.waypointDistances do
     cumulativeDistance = cumulativeDistance + elevationProfile.waypointDistances[i]
-    local waypoint = Static.new()
-    waypoint:setSkin(self.waypointLineSkin)
-    waypoint:setBounds(cumulativeDistance * horizontalScale - labelWidth, 0, labelWidth, height + 20)
-    waypoint:setText(tostring(i))
-    waypoint:setVisible(true)
-    self:insertWidget(waypoint, self:getWidgetCount() + 1)
-    local waypointDistance = Static.new()
-    waypointDistance:setSkin(self.waypointHorizontalLabelSkin)
-    local distanceX = cumulativeDistance * horizontalScale - labelWidth
-    waypointDistance:setBounds(distanceX, height - 2, labelWidth, 20)
-    local distanceText = string.format("%.0f", cumulativeDistance / 1000)
-    -- if i == #elevationProfile.waypointDistances then
-    --   distanceText = distanceText.."km"
-    -- end
-    waypointDistance:setText(distanceText)
-    waypointDistance:setAngle(0)
-    if distanceX - lastDistanceX >= 33 then
-      waypointDistance:setVisible(true)
-    else
-      waypointDistance:setVisible(false)
-    end
-    lastDistanceX = distanceX
-    self:insertWidget(waypointDistance, self:getWidgetCount() + 1)
-    local waypointHeight = Static.new()
-    waypointHeight:setSkin(self.waypointVerticalLabelSkin)
-    waypointHeight:setBounds(
-      cumulativeDistance * horizontalScale - labelHeight,
-      -- 180 - math.floor(elevationProfile.allPoints[i + 1]:getY() * verticalScalingFactor),
-      100,
-      labelWidth, 
-      20
-    )
-    waypointHeight:setText(string.format("%.0fm", elevationProfile.allPoints[i + 1]:getY()))
-    waypointHeight:setAngle(90)
-    waypointHeight:setVisible(true)
-    self:insertWidget(waypointHeight, self:getWidgetCount() + 1)
+    self:createWaypointLine(i, cumulativeDistance, horizontalScale, height)
+    lastDistanceX = self:createWaypointDistanceLabel(cumulativeDistance, horizontalScale, height, lastDistanceX)
+    lastElevationX = self:createWaypointElevationLabel(i, elevationProfile, elevationY, cumulativeDistance, horizontalScale, lastElevationX)
   end
 end
 
+function ChartWindow:createWaypointLine(i, cumulativeDistance, horizontalScale, height)
+  local waypoint = Static.new()
+  waypoint:setSkin(self.waypointLineSkin)
+  waypoint:setBounds(cumulativeDistance * horizontalScale - self.labelWidth, 0, self.labelWidth, height + self.labelHeight)
+  waypoint:setText(tostring(i))
+  waypoint:setVisible(true)
+  self:insertWidget(waypoint, self:getWidgetCount() + 1)
+  self.waypointLines[#self.waypointLines + 1] = waypoint
+end
+
+function ChartWindow:createWaypointDistanceLabel(cumulativeDistance, horizontalScale, height, lastDistanceX)
+  local waypointDistance = Static.new()
+  waypointDistance:setSkin(self.waypointHorizontalLabelSkin)
+  local distanceX = cumulativeDistance * horizontalScale - self.labelWidth
+  waypointDistance:setBounds(distanceX, height - 2, self.labelWidth, self.labelHeight)
+  local distanceText = string.format("%.0f", cumulativeDistance / 1000)
+  -- if i == #elevationProfile.waypointDistances then
+  --   distanceText = distanceText.."km"
+  -- end
+  waypointDistance:setText(distanceText)
+  waypointDistance:setAngle(0)
+  if distanceX - lastDistanceX >= self.minimalDistanceX then
+    waypointDistance:setVisible(true)
+  else
+    waypointDistance:setVisible(false)
+  end
+  self:insertWidget(waypointDistance, self:getWidgetCount() + 1)
+  self.waypointDistanceLabels[#self.waypointDistanceLabels + 1] = waypointDistance
+  return distanceX
+end
+
+function ChartWindow:createWaypointElevationLabel(i, elevationProfile, elevationY, cumulativeDistance, horizontalScale, lastElevationX)
+  local waypointHeight = Static.new()
+  waypointHeight:setSkin(self.waypointVerticalLabelSkin)
+  local elevationX = cumulativeDistance * horizontalScale - self.labelHeight
+  if (elevationX - lastElevationX >= self.minimalElevationX) or (elevationX < self.minimalElevationX) then
+    -- set normal elevation height
+    elevationY = self.defaultElevationY
+  else
+    -- if not enough space, alternate between high and low
+    if elevationY == self.defaultElevationY then
+      -- increase Y
+      elevationY = elevationY + self.labelWidth / 1.2
+    else
+      -- decrease Y
+      elevationY = self.defaultElevationY
+    end
+  end
+  lastElevationX = elevationX
+  waypointHeight:setBounds(
+    elevationX,
+    -- 180 - math.floor(elevationProfile.allPoints[i + 1]:getY() * verticalScalingFactor),
+    elevationY,
+    self.labelWidth,
+    self.labelHeight
+  )
+  waypointHeight:setText(string.format("%.0fm", elevationProfile.allPoints[i + 1]:getY()))
+  waypointHeight:setAngle(90)
+  waypointHeight:setVisible(true)
+  self:insertWidget(waypointHeight, self:getWidgetCount() + 1)
+  self.waypointElevationLabels[#self.waypointElevationLabels + 1] = waypointHeight
+
+  return elevationX
+end
 
 return ChartWindow
