@@ -5,7 +5,7 @@ dialog = {
       [1] = {
         ["x"] = 0,
         ["y"] = 0,
-        ["w"] = 400,
+        ["w"] = 800,
         ["h"] = 400
       }
     },
@@ -15,7 +15,7 @@ dialog = {
     ["lockFlow"] = false,
     ["modal"] = false,
     ["offscreen"] = false,
-    ["resizable"] = true,
+    ["resizable"] = false,
     ["zOrder"] = 150,
     ["text"] = "Chart window"
   },
@@ -28,7 +28,10 @@ dialog = {
       ["released"] = {
         [1] = {
           ["bkg"] = {
-            ["center_center"] = "0x404040a0"
+            -- ["center_center"] = "0x404040a0",
+            -- ["center_center"] = "0x40404077",
+            ["center_center"] = "0x00000055",
+            
           }
         }
       }

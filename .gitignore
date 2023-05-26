@@ -41,7 +41,9 @@ luac.out
 
 # Ignore dummy module for testing. Sorry dudes I did not figure out how to do this yet.
 SharkPlanner/Modules/Su-27/*
+SharkPlanner/Modules/Su-33/*
+SharkPlanner/Modules/J-11A/*
 # Ingore inspect.lua
 SharkPlanner/inspect.lua
 # Ignore experiment.lua
-SharkPlanner/experiment.lua
+SharkPlanner/experiment*.lua

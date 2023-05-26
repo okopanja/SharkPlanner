@@ -1,5 +1,5 @@
-local background_color = "0xffffff88"
-local font_color = "0x00000000"
+local background_color = "0x00000000"
+local font_color = "0xffffffff"
 local skin = {
 	["skinData"] = {
 		["params"] = {
@@ -11,12 +11,12 @@ local skin = {
 						["center_bottom"] = background_color,
 						["center_center"] = background_color,
 						["center_top"] = background_color,
-						["file"] = "Scripts\\SharkPlanner\\UI\\images\\line_green.png",
+						["file"] = "Scripts\\SharkPlanner\\UI\\images\\line_waypoint_dotted.png",
 						["insets"] = {
-							["bottom"] = 1,
-							["left"] = 1,
-							["right"] = 1,
-							["top"] = 1,
+							["bottom"] = 0,
+							["left"] = 0,
+							["right"] = 0,
+							["top"] = 0,
 						},
 						["left_bottom"] = background_color,
 						["left_center"] = background_color,
@@ -56,7 +56,7 @@ local skin = {
 						["center_bottom"] = background_color,
 						["center_center"] = background_color,
 						["center_top"] = background_color,
-						["file"] = "Scripts\\SharkPlanner\\UI\\images\\line_green.png",
+						-- ["file"] = "Scripts\\SharkPlanner\\UI\\images\\line_waypoint_right_dotted.png",
 						["insets"] = {
 							["bottom"] = 0,
 							["left"] = 0,
@@ -67,10 +67,10 @@ local skin = {
 						["left_center"] = background_color,
 						["left_top"] = background_color,
 						["rect"] = {
-							["x1"] = 0,
-							["x2"] = 0,
+							["x1"] = 1,
 							["y1"] = 0,
-							["y2"] = 0,
+							["x2"] = 0,
+							["y2"] = 45,
 						},
 						["right_bottom"] = background_color,
 						["right_center"] = background_color,
@@ -82,15 +82,17 @@ local skin = {
 						["font"] = "DejaVuLGCSansCondensed-Bold.ttf",
 						["fontSize"] = 12,
 						["horzAlign"] = {
-							["type"] = "min",
+							["offset"] = -5,
+							["type"] = "max",
 						},
+						["shadowColor"] = "0x000000ff",
 						["shadowOffset"] = {
-							["horz"] = 0,
-							["vert"] = 0,
+							["horz"] = 1,
+							["vert"] = 1,
 						},
 						["vertAlign"] = {
 							["offset"] = 0,
-							["type"] = "middle",
+							["type"] = "max",
 						},
 					},
 				},
