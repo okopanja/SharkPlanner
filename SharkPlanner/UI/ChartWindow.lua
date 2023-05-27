@@ -425,7 +425,11 @@ function ChartWindow:OnAddWaypoint(eventArgs)
 end
 
 function ChartWindow:OnRemoveWaypoint(eventArgs)
-  self:setValues(eventArgs.elevationProfile)
+  if eventArgs.elevationProfile then
+    self:setValues(eventArgs.elevationProfile)
+  else
+    self:reset()
+  end
 end
 
 function ChartWindow:OnReset(eventArgs)
