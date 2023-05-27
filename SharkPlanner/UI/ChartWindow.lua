@@ -412,7 +412,7 @@ function ChartWindow:reset()
   self:resetWaypoints()
   -- set values to zero
   for x, v in pairs(self.value_histogram) do
-    v:setBounds(x - 1, height - self.negativeAsymptote, 0, 1)
+    v:setBounds(x - 1, height, 0, 1)
   end
   -- hide minimum and maximum asymptote
   self.minimumAsymptote:setVisible(false)
