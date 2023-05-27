@@ -174,9 +174,10 @@ function ControlWindow:new(o)
       o.ExperimentButton:setSkin(buttonAmberSkin)
       local context = {
         coordinateData = o.coordinateData,
-        statusWindow = o.statusWindow
+        statusWindow = o.statusWindow,
+        crosshairWindow = o.crosshairWindow
       }
-      o.ExperimentButton:addChangeCallback(   
+      o.ExperimentButton:addChangeCallback(
         function(button)
           Logging.info("Unloading old expirimental code")
           package["SharkPlanner.experiment"] = nil
@@ -243,6 +244,7 @@ function ControlWindow:show()
   self.statusWindow:show()
   if self.WaypointCounter:getState() then
     self.waypointListWindow:show()
+    self.chartWindow:show()
   end
   self:updateUIState()
 end
@@ -266,6 +268,7 @@ function ControlWindow:hide()
   self.crosshairWindow:setVisible(false)
   self.statusWindow:hide()
   self.waypointListWindow:hide()
+  self.chartWindow:hide()
 end
 
 function ControlWindow:isHidden()
@@ -426,8 +429,10 @@ end
 function ControlWindow:OnWayPointCounterChanged(button)
   if button:getState() then
     self.waypointListWindow:show()
+    self.chartWindow:show()
   else
     self.waypointListWindow:hide()
+    self.chartWindow:hide()
   end
   button:setFocused(false)
 end

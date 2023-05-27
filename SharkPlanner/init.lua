@@ -9,6 +9,7 @@ local window = nil
 local crosshairWindow = nil
 local statusWindow = nil
 local waypointListWindow = nil
+local chartWindow = nil
 local coordinateData = Base.CoordinateData
 -- local http = require("socket.http")
 Logging.info("Registering event handlers")
@@ -81,12 +82,21 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, waypointLis
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, waypointListWindow, waypointListWindow.OnFlightPlanLoaded)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, waypointListWindow, waypointListWindow.OnFlightPlanSaved)
 
+-- create chart window
+chartWindow = UI.ChartWindow:new{crosshairWindow = crosshairWindow}
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, chartWindow, chartWindow.OnAddWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveWayPoint, chartWindow, chartWindow.OnRemoveWaypoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, chartWindow, chartWindow.OnReset)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, chartWindow, chartWindow.OnFlightPlanLoaded)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, chartWindow, chartWindow.OnFlightPlanSaved)
+
 -- create control window, and pass other windows
 window = UI.ControlWindow:new{
 crosshairWindow = crosshairWindow,
 statusWindow = statusWindow,
 waypointListWindow = waypointListWindow,
-coordinateData = coordinateData
+coordinateData = coordinateData,
+chartWindow = chartWindow
 }
 -- register window to receive vents from coordinateData
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, window, window.OnAddWaypoint)

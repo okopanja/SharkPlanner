@@ -55,7 +55,7 @@ function WaypointListWindow:new(o)
   local x, y, w, h = o.crosshairWindow:getBounds()
 
   local width, height = self.scrollGrid:getSize()
-  o.scrollGrid:setSize(width, h + 26)
+  o.scrollGrid:setSize(width, h + 27)
   local cellHeaderSkin = SkinHelper.loadSkin("gridHeaderSharkPlannerCellHeader")
   o.scrollGrid.gridHeaderCellNo:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellCoordinates:setSkin(cellHeaderSkin)
@@ -70,7 +70,7 @@ function WaypointListWindow:new(o)
     end
   )
   o.entryMode = "W"
-  o:setBounds(x + w, y - 26, width, h + 26 + 26)
+  o:setBounds(x + w, y - 26, width, h + 26 + 27)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   o.filePath = nil
