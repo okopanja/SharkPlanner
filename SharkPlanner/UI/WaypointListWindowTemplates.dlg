@@ -134,6 +134,11 @@ dialog = {
                                     ["offset"] = -5,
                                     ["type"] = "right",
                                 },
+                                ["shadowColor"] = "0x000000ff",
+                                ["shadowOffset"] = {
+                                    ["horz"] = 1,
+                                    ["vert"] = 1,
+                                },
                                 ["lineHeight"] = 0,
                                 ["vertAlign"] = {
                                     ["type"] = "middle",
