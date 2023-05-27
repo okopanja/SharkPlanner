@@ -130,13 +130,14 @@ function ChartWindow:new(o)
       o:insertWidget(thousandLabel, o:getWidgetCount() + 1)
       o.thousandLabels[#o.thousandLabels + 1] = thousandLabel
     end
-    
+
     o.labelWidth = 70
     o.labelHeight = 20
     o.minimalDistanceX = 33
     o.minimalElevationX = 20
     o.defaultElevationY = 100
     o.populated = false
+    o.thousandCount = 9
     return o
 end
 
@@ -150,13 +151,13 @@ function ChartWindow:show()
       widget:setVisible(true)
       widget:setFocused(false)
     end
+    local width, height = self:getSize()
+    height = height - self.negativeAsymptote
     if self.populated == false then
-      local width, height = self:getSize()
-      height = height - self.negativeAsymptote
-      local verticalScalingFactor = height / 9000
-      self:showThousandLines(9, verticalScalingFactor, width, height)
+      self.verticalScalingFactor = height / 9000
     end
-end
+    self:showThousandLines( width, height)
+  end
 
 function ChartWindow:hide()
     -- hide all widgets on status window
@@ -254,20 +255,20 @@ function ChartWindow:setValues(elevationProfile)
   self:setAggregationMode(AggregationModes.MAX)
   local sampledValues = self:determineSampleValues(values)
   Logging.info("Sampled values count: "..#sampledValues)
-  local thousandCount = math.ceil(maximum / 1000)
-  local nextThousand = thousandCount * 1000
-  local verticalScalingFactor = (height - trim) / nextThousand
+  self.thousandCount = math.ceil(maximum / 1000)
+  local nextThousand = self.thousandCount * 1000
+  self.verticalScalingFactor = (height - trim) / nextThousand
   Logging.info("Next thousaned is: "..nextThousand)
   -- plot graph
   for i, line in ipairs(self.value_histogram) do
-    local value = math.floor(sampledValues[i + 1] * verticalScalingFactor)
+    local value = math.floor(sampledValues[i + 1] * self.verticalScalingFactor)
     line:setSize(value, 1)
   end
   -- set asymptotes
-  self.maximumAsymptote:setBounds(0, height - math.floor(maximum * verticalScalingFactor + 0.5), width, self.negativeAsymptote)
+  self.maximumAsymptote:setBounds(0, height - math.floor(maximum * self.verticalScalingFactor + 0.5), width, self.negativeAsymptote)
   self.maximumAsymptote:setVisible(true)
   self.maximumAsymptote:setText(string.format("%.0f", maximum).."m")
-  self.minimumAsymptote:setBounds(0, height - math.floor(minimum * verticalScalingFactor + 0.5), width, self.negativeAsymptote)
+  self.minimumAsymptote:setBounds(0, height - math.floor(minimum * self.verticalScalingFactor + 0.5), width, self.negativeAsymptote)
   self.minimumAsymptote:setText(string.format("%.0f", minimum).."m")
   if minimum ~= 0 then
     self.minimumAsymptote:setVisible(true)
@@ -275,21 +276,21 @@ function ChartWindow:setValues(elevationProfile)
     self.minimumAsymptote:setVisible(false)
   end
   -- show thousand lines
-  self:showThousandLines(thousandCount, verticalScalingFactor, width, height)
+  self:showThousandLines(width, height)
   self:resetWaypoints()
   self:createWaypoints(width, height, elevationProfile)
 end
 
-function ChartWindow:showThousandLines(thousandCount,verticalScalingFactor, width, height)
+function ChartWindow:showThousandLines(width, height)
   -- height = height - self.negativeAsymptote
   for i = 1, #self.thousandLines do
-    if i > thousandCount then
+    if i > self.thousandCount then
       self.thousandLines[i]:setVisible(false)
       self.thousandLabels[i]:setVisible(false)
     else
-      self.thousandLines[i]:setBounds(0, height - math.floor(i * 1000 * verticalScalingFactor), width, self.negativeAsymptote)
+      self.thousandLines[i]:setBounds(0, height - math.floor(i * 1000 * self.verticalScalingFactor), width, self.negativeAsymptote)
       self.thousandLines[i]:setVisible(true)
-      self.thousandLabels[i]:setBounds(0, height - math.floor(i * 1000 * verticalScalingFactor), width, self.negativeAsymptote)
+      self.thousandLabels[i]:setBounds(0, height - math.floor(i * 1000 * self.verticalScalingFactor), width, self.negativeAsymptote)
       self.thousandLabels[i]:setVisible(true)
     end
   end
@@ -352,7 +353,7 @@ function ChartWindow:createWaypointDistanceLabel(cumulativeDistance, horizontalS
   waypointDistance:setSkin(self.waypointHorizontalLabelSkin)
   local distanceX = cumulativeDistance * horizontalScale - self.labelWidth
   waypointDistance:setBounds(distanceX, height - 2, self.labelWidth, self.labelHeight)
-  local distanceText = string.format("%.0f", cumulativeDistance / 1000)
+  local distanceText = string.format("%.0fkm", cumulativeDistance / 1000)
   -- if i == #elevationProfile.waypointDistances then
   --   distanceText = distanceText.."km"
   -- end
@@ -388,7 +389,6 @@ function ChartWindow:createWaypointElevationLabel(i, elevationProfile, elevation
   lastElevationX = elevationX
   waypointHeight:setBounds(
     elevationX,
-    -- 180 - math.floor(elevationProfile.allPoints[i + 1]:getY() * verticalScalingFactor),
     elevationY,
     self.labelWidth,
     self.labelHeight
@@ -405,9 +405,10 @@ end
 function ChartWindow:reset()
   self.populated = false
   local width, height = self:getSize()
-  local verticalScalingFactor = (height - self.negativeAsymptote) / 9000
+  self.verticalScalingFactor = (height - self.negativeAsymptote) / 9000
   height = height - self.negativeAsymptote
-  self:showThousandLines(9, verticalScalingFactor, width, height)
+  self.thousandCount = 9
+  self:showThousandLines(width, height)
   self:resetWaypoints()
   -- set values to zero
   for x, v in pairs(self.value_histogram) do
