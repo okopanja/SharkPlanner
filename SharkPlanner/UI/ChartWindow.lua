@@ -13,7 +13,6 @@ local lfs = require("lfs")
 local Skin = require("Skin")
 local SkinUtils = require("SkinUtils")
 local Static = require("Static")
-local inspect = require("SharkPlanner.inspect")
 
 local ChartWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\ChartWindow.dlg"
@@ -248,14 +247,12 @@ function ChartWindow:setValues(elevationProfile)
   local width, height = self:getSize()
   Logging.info("Width: "..#self.value_histogram)
   Logging.info("Initial values count: "..#values)
-  -- Logging.info("Initial values: "..inspect(values))
   local minimum, maximum = self:determineMinMax(values)
   local trim = self.negativeAsymptote
   height = height - trim
   self:setAggregationMode(AggregationModes.MAX)
   local sampledValues = self:determineSampleValues(values)
   Logging.info("Sampled values count: "..#sampledValues)
-  -- Logging.info("Sampled values"..inspect(sampledValues))
   local thousandCount = math.ceil(maximum / 1000)
   local nextThousand = thousandCount * 1000
   local verticalScalingFactor = (height - trim) / nextThousand
