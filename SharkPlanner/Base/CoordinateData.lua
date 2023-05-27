@@ -70,6 +70,7 @@ function CoordinateData:addWaypoint(wayPoint)
         wayPoints = self.wayPoints,
         wayPoint = wayPoint,
         wayPointIndex = #self.wayPoints,
+        elevationProfile = self:extractElevationProfile()
     }
     self:dispatchEvent(EventTypes.AddWayPoint, eventArg)
 end
@@ -80,6 +81,7 @@ function CoordinateData:removeWaypoint(wayPointIndex)
         wayPoints = self.wayPoints,
         wayPoint = wayPoint,
         wayPointIndex = wayPointIndex,
+        elevationProfile = self:extractElevationProfile()
     }
     self:dispatchEvent(EventTypes.RemoveWayPoint, eventArg)
 end
@@ -129,7 +131,6 @@ function CoordinateData:removeTargetpoint(targetPointIndex)
     }
     self:dispatchEvent(EventTypes.RemoveTargetPoint, eventArg)
 end
-
 
 function CoordinateData:reset()
     self.wayPoints = {}
@@ -291,6 +292,68 @@ function CoordinateData:recalculateLocalCoordinates()
         self:dispatchEvent(EventTypes.LocalCoordinatesRecalculated, eventArgs)
     end
 end
+
+
+function CoordinateData:extractSectionElevationProfile(elevations, startPoint, endPoint)
+    -- calculate necessary variables:
+    -- deltaX - distance on X
+    -- deltaZ - distance on Z
+    -- d - diagonal distance
+    -- mX - X multiplicator
+    -- mZ - Z multiplicator
+    local deltaX = endPoint:getX() - startPoint:getX()
+    local deltaZ = endPoint:getZ() - startPoint:getZ()
+    local D = math.sqrt(
+      math.pow(deltaX, 2) +
+      math.pow(deltaZ, 2)
+    )
+    local mX = deltaX / D
+    local mZ = deltaZ / D
+    -- define step, this may need tweaking to improve performance 
+    local step = 1
+    -- move along diagonal and calculate points on it
+    for d = 0, D, step do
+      local x = startPoint:getX() + mX * d
+      local z = startPoint:getZ() + mZ * d
+      local elevation = terrain.GetHeight(x, z)
+      --Logging.info("d: "..d.." X: "..x.." Z:"..z.." Elevation: "..elevation)
+      elevations[#elevations + 1] = elevation
+    end
+    return D
+  end
+
+  function CoordinateData:extractElevationProfile()
+    local allPoints = {}
+    local waypointDistances = {}
+    -- add planning position if any
+    if self.planningPosition then
+      allPoints[#allPoints + 1] = self.planningPosition
+    end
+    -- append requested waypoints
+    for k, v in  pairs(self.wayPoints) do
+      allPoints[#allPoints + 1] = v
+    end
+    -- if we do not have at least 2 points we can not calculate the profile
+    if #allPoints < 2 then return nil end
+    local elevations = {}
+    local currentPosition = allPoints[1]
+    local totalDistance = 0
+    for i = 2, #allPoints do
+      Logging.info("Calculating stage: "..tostring(i-1))
+      local nextPosition = allPoints[i]
+      local distance = self:extractSectionElevationProfile(elevations, currentPosition, nextPosition)
+      totalDistance = totalDistance + distance
+      waypointDistances[#waypointDistances + 1] = distance
+      currentPosition = nextPosition
+    end
+    return {
+      elevations = elevations,
+      waypointDistances = waypointDistances,
+      totalDistance = totalDistance,
+      allPoints = allPoints
+    }
+  end
+
 
 -- Singleton
 return CoordinateData:new{}
