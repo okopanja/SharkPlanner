@@ -152,7 +152,8 @@ function ChartWindow:show()
     end
     if self.populated == false then
       local width, height = self:getSize()
-      local verticalScalingFactor = (height - self.negativeAsymptote) / 9000
+      height = height - self.negativeAsymptote
+      local verticalScalingFactor = height / 9000
       self:showThousandLines(9, verticalScalingFactor, width, height)
     end
 end
@@ -280,7 +281,7 @@ function ChartWindow:setValues(elevationProfile)
 end
 
 function ChartWindow:showThousandLines(thousandCount,verticalScalingFactor, width, height)
-  height = height - self.negativeAsymptote
+  -- height = height - self.negativeAsymptote
   for i = 1, #self.thousandLines do
     if i > thousandCount then
       self.thousandLines[i]:setVisible(false)
@@ -405,6 +406,7 @@ function ChartWindow:reset()
   self.populated = false
   local width, height = self:getSize()
   local verticalScalingFactor = (height - self.negativeAsymptote) / 9000
+  height = height - self.negativeAsymptote
   self:showThousandLines(9, verticalScalingFactor, width, height)
   self:resetWaypoints()
   -- set values to zero
