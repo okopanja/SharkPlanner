@@ -75,10 +75,13 @@ function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   Logging.info("ABRIS mode: "..mode)
-  if #waypoints > 0 then
-    self:prepareABRISCommands(commands, waypoints)
+  if #targets > 0 then
+    self:prepareABRISTargetCommands(commands, targets)
   end
-    self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
+  if #waypoints > 0 then
+    self:prepareABRISWaypointCommands(commands, waypoints)
+  end
+  self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   return commands
 end
 
@@ -189,9 +192,9 @@ function KA50IIICommandGenerator:pvi800PressDigitBtn(commands, digit, comment)
   commands[#commands + 1] = Command:new():setName("PVI-800: press digit "..digit):setComment(comment):setDevice(20):setCode(3001 + digit):setDelay(default_delay):setIntensity(1):setDepress(true)
 end
 
--- Main function for ABRIS
-function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints)
-  Logging.info("prepareABRISCommands, zoom level: "..self.zoomLevel)
+-- Function for ABRIS waypoints
+function KA50IIICommandGenerator:prepareABRISWaypointCommands(commands, waypoints)
+  Logging.info("prepareABRISWaypointCommands, zoom level: "..self.zoomLevel)
 
   -- current location of aircraft is needed for relative entry of waypoints
   local selfData = Export.LoGetSelfData()
@@ -211,6 +214,29 @@ function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints)
   -- Complete and store route
   self:abrisCompleteRouteEntry(commands)
 end
+
+function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
+  Logging.info("prepareABRISTargetCommands, zoom level: "..self.zoomLevel)
+
+  -- current location of aircraft is needed for relative entry of waypoints
+  local selfData = Export.LoGetSelfData()
+  local selfX = selfData["Position"]["x"]
+  local selfZ = selfData["Position"]["z"]
+  -- Place ABRIS into MENU mode, no matter in which mode it is currently in
+  self:abrisCycleToMenuMode(commands)
+  -- Logging.info("abrisCycleToMenuMode, zoom level: "..self.zoomLevel)
+  -- -- Workaround ABRIS/SNS drift (this occurs only on the first usage, but for simplicity we will repeat it every time)
+  -- self:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
+  -- -- -- Make sure there is no route loaded
+  -- -- self:abrisUnloadRoute(commands)
+  -- Start entering
+  self:abrisStartTargetEntry(commands)
+  -- Enter waypoints
+  self:abrisEnterTargets(commands, targets, selfX, selfZ)
+  -- -- Complete and store route
+  -- self:abrisCompleteRouteEntry(commands)
+end
+
 
 function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
   local cycleNumber = self:_determineNumberOfModePresses()
@@ -263,6 +289,21 @@ function KA50IIICommandGenerator:abrisStartRouteEntry(commands)
   self:abrisPressButton3(commands, "Plan mode", 0)
   -- ABRIS: activate EDIT menu
   self:abrisPressButton2(commands, "activate EDIT menu", 0)
+  -- ABRIS: zoom in to maximum to make sure we start with known zoom level 0
+  self:abrisFullZoom(commands)
+end
+
+function KA50IIICommandGenerator:abrisStartTargetEntry(commands)
+  -- ABRIS: plan mode
+  self:abrisPressButton3(commands, "Plan mode", 0)
+  -- ABRIS: activate OPTION menu
+  self:abrisPressButton1(commands, "activate OPTION menu", 0)
+  -- ABRIS: rotate OPTION back, to possition over ADD INF
+  for i = 1, 2 do
+    self:abrisRotate(commands, -0.4, "Rotate menu back: "..i.."/4")
+  end
+  -- ABRIS: activate ADD INF
+  self:abrisPressButton1(commands, "activate ADD INF menu", 0)
   -- ABRIS: zoom in to maximum to make sure we start with known zoom level 0
   self:abrisFullZoom(commands)
 end
@@ -347,6 +388,89 @@ function KA50IIICommandGenerator:abrisStartNextWaypoint(commands)
   self:abrisPressButton1(commands, "Edit", 100) -- 1
   -- ABRIS: add
   self:abrisPressButton1(commands, "Add", 100) -- 1
+end
+
+function KA50IIICommandGenerator:abrisEnterTargets(commands, targets, selfX, selfZ)
+  Logging.info("abrisEnterRouteWaypoints, zoom level "..self.zoomLevel)
+  -- create initial waypoint from current location
+  local previous = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
+  -- add waypoints
+  for i, target in pairs(targets) do
+    Logging.info("Entering target: "..i)
+    if i == 1 then
+      self:abrisAddTarget(commands, previous, target, false)
+    else
+      self:abrisAddTarget(commands, previous, target, true)
+    end
+    -- if i == 1 then
+    --   -- first entry does not require edit/insert command
+    --   self:abrisAddWaypoint(commands, previous, waypoint, false)
+    -- else
+    --   -- other wayppints require edit/insert commands
+    --   self:abrisAddWaypoint(commands, previous, waypoint, true)
+    -- end
+    -- allocated current waypoint to priorWaypoint for next iteration
+    previous = target
+  end
+end
+
+function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, isNotFirst)
+  -- determine the smallest bounding Z range
+  local range = self:findSmallestBoundingZRange(previous, target)
+  Logging.info("Smallest Z range: "..range:getLevel())
+  -- ABRIS: zoom to the bounding range
+  self:abrisZoomToRange(commands, range:getLevel())
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- ABRIS: rotate dial for Z
+  if isNotFirst == true then
+    -- just create regular static command
+    local deltaZ = target:getZ() - previous:getZ()
+    -- calculate number of dial rotations
+    local rotationsZ = range:toRotationsZ(deltaZ)
+    self:abrisRotateEx(commands, rotationsZ, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate Z")
+  else
+    -- only first target to be updated in realtime, reasons: aircraft moves!
+    self:abrisRotateZ(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate Z", { range = range, previous = previous, waypoint = target })
+  end
+  -- ABRIS: zoom to level 0 to avoid snapping
+  self:abrisZoomToRange(commands, 0)
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- ABRIS: switch to X entry  
+  self:abrisPressRotateButton(commands, "Switch to X entry")
+  -- determine the smallest bounding X range
+  range = self:findSmallestBoundingXRange(previous, target);
+  Logging.info("Smallest X range: "..range:getLevel())
+  -- ABRIS: zoom to the bounding range
+  self:abrisZoomToRange(commands, range:getLevel())
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- ABRIS: rotate dial for X
+  if isNotFirst == true then
+    -- Calculate deltaX and deltaZ to the prior coordinate
+    local deltaX = target:getX() - previous:getX()
+    -- calculate number of dial rotations
+    local rotationsX = range:toRotationsX(deltaX)
+    self:abrisRotateEx(commands, rotationsX, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate X")
+  else
+    -- only first target to be updated in realtime, reasons: aircraft moves!
+    self:abrisRotateX(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate X", { range = range, previous = previous, waypoint = target })
+  end
+  -- ABRIS: zoom to level 0 to avoid snapping
+  self:abrisZoomToRange(commands, 0)
+  -- -- ABRIS: wait for 100ms for ABRIS to settle
+  -- self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- -- ABRIS: select ADD PNT
+  -- self:abrisPressButton1(commands, "ABRIS: select ADD PNT")
+  -- -- ABRIS: select DIRECT
+  -- self:abrisPressButton1(commands, "ABRIS: Select DIRECT")
+  -- -- ABRIS: select REFPOINT type
+  -- for i = 1, 5 do
+  --   self:abrisPressButton4(commands, "ABRIS: toggle type")
+  -- end
+  -- -- ABRIS: select ENTER
+  -- self:abrisPressButton1(commands, "ABRIS: Select ENTER")
 end
 
 function KA50IIICommandGenerator:findSmallestBoundingZRange(previous, waypoint)
