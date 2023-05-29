@@ -60,6 +60,8 @@ function DCSEventHandlers.onSimulationFrame()
           Logging.info("Commands found: "..last_scheduled_command)
           for i = 1, last_scheduled_command do
             local command = DCSEventHandlers.commands[i]
+            -- update command if needed, e.g. if command has associated update callback
+            command:update()
             Logging.info(command:getText())
             if command:getDevice() then            
               Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), command:getIntensity())
