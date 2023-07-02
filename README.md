@@ -1,5 +1,12 @@
 # SharkPlanner
-SharkPlanner is a MOD for entry of waypoints into **ABRIS** and **PVI-800** of DCS **Ka-50** attack helicopter. It is 100% implemented in LUA and integrates into the DCS UI.
+SharkPlanner is a MOD for entry of waypoints into DCS modules:
+- **Ka-50** attack helicopter
+  - **ABRIS** 
+  - **PVI-800** 
+- **SA-342 Gazelle** light attack helicopter
+  - **NADIR**
+
+It is 100% implemented in LUA and integrates into the DCS UI.
 
 [![SharkPlannerThumbnail](http://img.youtube.com/vi/hBLJIa6ZC6c/0.jpg)](http://www.youtube.com/watch?v=hBLJIa6ZC6c)
 
@@ -14,6 +21,10 @@ Minimal requirement is **2.8** either **stable** or **openbeta**.
 - BlackShark 3: Ka-50 version 2022
 - BlackShark 3: Ka-50 version 2011
 - BlackShark 2: Ka-50
+- Gazelle: SA-342L
+- Gazelle: SA-342M
+- Gazelle: SA-342Minigun
+
 ### How do I report bugs?
 Open the [issues](https://github.com/okopanja/SharkPlanner/issues), read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
 Please try to be precise and provide the steps for reproduction and if needed:

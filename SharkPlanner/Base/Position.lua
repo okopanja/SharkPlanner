@@ -1,5 +1,6 @@
 local math = require("math")
 local Logging = require("SharkPlanner.Utils.Logging")
+local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 
 local Position = {
   x = 0,
@@ -7,16 +8,6 @@ local Position = {
   z = 0,
   longitude = 0,
   latitude = 0
-}
-
-LatHemispheres = {
-  NORTH = 0,
-  SOUTH = 1
-}
-
-LongHemispheres = {
-  EAST = 0,
-  WEST = 1
 }
 
 function Position:new (o)
@@ -80,17 +71,17 @@ end
 
 function Position:getLatitudeHemisphere()
   if self.latitude >= 0 then
-    return LatHemispheres.NORTH
+    return Hemispheres.LatHemispheres.NORTH
   else
-    return LatHemispheres.SOUTH
+    return Hemispheres.LatHemispheres.SOUTH
   end
 end
 
 function Position:getLongitudeHemisphere()
   if self.longitude >= 0 then
-    return LongHemispheres.EAST
+    return Hemispheres.LongHemispheres.EAST
   else
-    return LongHemispheres.WEST
+    return Hemispheres.LongHemispheres.WEST
   end
 end
 

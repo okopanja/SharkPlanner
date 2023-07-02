@@ -1,5 +1,6 @@
 -- provide sub-packages and modules
 return {
+  Hemispheres = require("SharkPlanner.Base.Hemispheres"),
   Position = require("SharkPlanner.Base.Position"),
   Command = require("SharkPlanner.Base.Command"),
   BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator"),
