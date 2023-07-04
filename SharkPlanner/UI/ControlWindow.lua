@@ -180,6 +180,7 @@ function ControlWindow:new(o)
       }
       o.ExperimentButton:addChangeCallback(
         function(button)
+          o:updateUIState()
           Logging.info("Unloading old expirimental code")
           package["SharkPlanner.experiment"] = nil
           package.loaded["SharkPlanner.experiment"] = nil

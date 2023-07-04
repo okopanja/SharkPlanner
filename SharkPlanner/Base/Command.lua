@@ -118,12 +118,12 @@ function Command:setUpdateCallback(object, updateCallback, updateParameters)
   return self
 end
 
-function Command:update()
+function Command:update(remainingCommands)
   if self.updateCallback ~= nil then
     if self.updateObject ~= nil then
-      self.updateCallback(self.updateObject, self, self.updateParameters)
+      self.updateCallback(self.updateObject, self, self.updateParameters, remainingCommands)
     else
-      self.updateCallback(self, self.updateParameters)
+      self.updateCallback(self, self.updateParameters, remainingCommands)
     end
   end
 end
