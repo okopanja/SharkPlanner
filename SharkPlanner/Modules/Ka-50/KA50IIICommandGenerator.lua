@@ -76,6 +76,7 @@ function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   Logging.info("ABRIS mode: "..mode)
   if #targets > 0 then
+    Logging.info("Entering ABRIS targets")
     self:prepareABRISTargetCommands(commands, targets)
   end
   if #waypoints > 0 then
@@ -233,7 +234,7 @@ function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
   self:abrisStartTargetEntry(commands)
   -- Enter waypoints
   self:abrisEnterTargets(commands, targets, selfX, selfZ)
-  -- -- Complete target entry
+  -- Complete target entry
   self:abrisCompleteTargetEntry(commands)
 end
 
@@ -412,17 +413,15 @@ function KA50IIICommandGenerator:abrisEnterTargets(commands, targets, selfX, sel
   -- add waypoints
   for i, target in pairs(targets) do
     Logging.info("Entering target: "..i)
-    if i == 1 then
-      self:abrisAddTarget(commands, previous, target, false)
-    else
-      self:abrisAddTarget(commands, previous, target, true)
-    end
+    self:abrisAddTarget(commands, previous, target, i)
     -- allocated current target to prior target for next iteration
     previous = target
   end
 end
 
-function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, isNotFirst)
+function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordinal)
+  -- deterime if it is first
+  local isNotFirst = ordinal > 1
   -- determine the smallest bounding Z range
   local range = self:findSmallestBoundingZRange(previous, target)
   Logging.info("Smallest Z range: "..range:getLevel())
@@ -465,11 +464,13 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, isNo
     -- only first target to be updated in realtime, reasons: aircraft moves!
     self:abrisRotateX(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate X", { range = range, previous = previous, waypoint = target })
   end
-  -- ABRIS: zoom to level 0 to avoid snapping
+  -- ABRIS: zoom to level 0 to minimize snapping to existing objects such as airports
   self:abrisZoomToRange(commands, 0)
-  self:abrisPressButton2Ex(commands, "ABRIS: delete existing", 0, self.abrisSkipCommandOnModeMismatch, { expectedModes = { "3930", "3940" } } )
-  -- ABRIS: wait for 100ms for ABRIS to settle
-  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  local callsignRotations = 11 + (ordinal % 10)
+  -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped
+  self:nopWithCallback(commands, "ABRIS: check if skipping is needed", 0, self.abrisSkipWaypointOnModeMismatch, { expectedModes = { "3920", "3930", "3940" }, skipNextNCommands = 8 + 1 + callsignRotations } )
+  -- -- ABRIS: wait for 100ms for ABRIS to settle
+  -- self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: select ADD PNT
   self:abrisPressButton1(commands, "ABRIS: select ADD PNT")
   -- ABRIS: select DIRECT
@@ -477,6 +478,11 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, isNo
   -- ABRIS: select REFPOINT type
   for i = 1, 5 do
     self:abrisPressButton4(commands, "ABRIS: toggle type")
+  end
+  -- start entering waypoint
+  self:abrisPressButton3(commands, "Switch to callsign entry")
+  for i = 1, callsignRotations do
+    self:abrisRotateEx(commands, 1, 0, true, "Rotate name: "..i)
   end
   -- ABRIS: select ENTER
   self:abrisPressButton1(commands, "ABRIS: Select ENTER")
@@ -517,6 +523,11 @@ function KA50IIICommandGenerator:nop(commands, comment, delay)
   commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay):setIntensity(nil):setDepress(false)
 end
 
+function KA50IIICommandGenerator:nopWithCallback(commands, comment, delay, updateCallback, updateParameters)
+  delay = delay or default_delay
+  commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay):setIntensity(nil):setDepress(false):setUpdateCallback(self, updateCallback, updateParameters)
+end
+
 function KA50IIICommandGenerator:abrisPressButton1(commands, comment, delay)
   delay = delay or default_delay
   commands[#commands + 1] = Command:new():setName("ABRIS: press button 1"):setComment(comment):setDevice(9):setCode(3001):setDelay(delay):setIntensity(1):setDepress(true)
@@ -525,11 +536,6 @@ end
 function KA50IIICommandGenerator:abrisPressButton2(commands, comment, delay)
   delay = delay or default_delay
   commands[#commands + 1] = Command:new():setName("ABRIS: press button 2"):setComment(comment):setDevice(9):setCode(3002):setDelay(delay):setIntensity(1):setDepress(true)
-end
-
-function KA50IIICommandGenerator:abrisPressButton2Ex(commands, comment, delay, updateCallback, updateParameters)
-  delay = delay or default_delay
-  commands[#commands + 1] = Command:new():setName("ABRIS: press button 2"):setComment(comment):setDevice(9):setCode(3002):setDelay(delay):setIntensity(1):setDepress(true):setUpdateCallback(self, updateCallback, updateParameters)
 end
 
 function KA50IIICommandGenerator:abrisPressButton3(commands, comment, delay)
@@ -629,17 +635,25 @@ function KA50IIICommandGenerator:abrisUpdateRotateXCommand(command, updateParame
   command:setIntensity(rotationsX)
 end
 
-function KA50IIICommandGenerator:abrisSkipCommandOnModeMismatch(command, updateParameters)
+function KA50IIICommandGenerator:abrisSkipWaypointOnModeMismatch(command, updateParameters, remainingCommands)
+  Logging.info("Callback: abrisSkipWaypointOnModeMismatch")
   if updateParameters.expectedModes == nil then return end
   local mode = self:getAbrisModeAsString()
   Logging.info("Mod is: "..mode)
+  local isExpectedMode = false
   for k, v in pairs(updateParameters.expectedModes) do
     if v == mode then
-      return
+      isExpectedMode = true
     end
   end
-  -- since none of command modes where deletion should occur is detected, setDevice to nil
-  command:setDevice(nil)
+  if isExpectedMode == false then return end
+  command:setName("ABRIS: press rotate button"):setComment(comment):setDevice(9):setCode(3007):setDelay(default_delay):setIntensity(1):setDepress(true)
+  -- commands[#commands + 1] = Command:new():setName("ABRIS: press rotate button"):setComment(comment):setDevice(9):setCode(3007):setDelay(default_delay):setIntensity(1):setDepress(true)
+  Logging.info("Callback: abrisSkipWaypointOnModeMismatch -> command should be skipped")
+  -- now skip next N commands as well if requested
+  for i = 1, updateParameters.skipNextNCommands do
+    remainingCommands[i + 1]:setDevice(nil)
+  end
 end
 
 function KA50IIICommandGenerator:getAbrisModeAsString()

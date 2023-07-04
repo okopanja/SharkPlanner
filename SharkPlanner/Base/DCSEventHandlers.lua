@@ -61,9 +61,9 @@ function DCSEventHandlers.onSimulationFrame()
           for i = 1, last_scheduled_command do
             local command = DCSEventHandlers.commands[i]
             -- update command if needed, e.g. if command has associated update callback
-            command:update()
+            command:update(DCSEventHandlers.commands)
             Logging.info(command:getText())
-            if command:getDevice() then            
+            if command:getDevice() then          
               Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), command:getIntensity())
               Logging.info("Pressed")
               -- check if the command needs depress
