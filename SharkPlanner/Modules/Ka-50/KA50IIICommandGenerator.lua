@@ -51,6 +51,7 @@ function KA50IIICommandGenerator:new(o)
     ABRISZoomRange:new{level = 25, range = 100000}
   }
   self.zoomLevel = 10
+  self.targetRemovalList = {}
   return o
 end
 
@@ -230,9 +231,24 @@ function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
   -- self:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
   -- -- -- Make sure there is no route loaded
   -- -- self:abrisUnloadRoute(commands)
+  if #self.targetRemovalList > 0 then
+    Logging.info("Removing existing targets...")
+    -- Start removal
+    self:abrisStartTargetEntry(commands)
+    -- Remove targets
+    self:abrisRemoveTargets(commands, targets, selfX, selfZ)
+    -- Complete target removal
+    self:abrisCompleteTargetEntry(commands)
+    self.targetRemovalList = {}
+    -- update position
+    selfData = Export.LoGetSelfData()
+    selfX = selfData["Position"]["x"]
+    selfZ = selfData["Position"]["z"]
+  end
+
   -- Start entering
   self:abrisStartTargetEntry(commands)
-  -- Enter waypoints
+  -- Enter targets
   self:abrisEnterTargets(commands, targets, selfX, selfZ)
   -- Complete target entry
   self:abrisCompleteTargetEntry(commands)
@@ -419,6 +435,19 @@ function KA50IIICommandGenerator:abrisEnterTargets(commands, targets, selfX, sel
   end
 end
 
+function KA50IIICommandGenerator:abrisRemoveTargets(commands, targets, selfX, selfZ)
+  Logging.info("abrisEnterRouteWaypoints, zoom level "..self.zoomLevel)
+  -- create initial waypoint from current location
+  local previous = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
+  -- add waypoints
+  for i, target in pairs(targets) do
+    Logging.info("Removing target: "..i)
+    self:abrisRemoveTarget(commands, previous, target, i)
+    -- allocated current target to prior target for next iteration
+    previous = target
+  end
+end
+
 function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordinal)
   -- deterime if it is first
   local isNotFirst = ordinal > 1
@@ -466,9 +495,10 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordi
   end
   -- ABRIS: zoom to level 0 to minimize snapping to existing objects such as airports
   self:abrisZoomToRange(commands, 0)
+  -- this number determins how much the rotations are needed to get from default 'u' to specific number in in range 1234567890
   local callsignRotations = 11 + (ordinal % 10)
-  -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped
-  self:nopWithCallback(commands, "ABRIS: check if skipping is needed", 0, self.abrisSkipWaypointOnModeMismatch, { expectedModes = { "3920", "3930", "3940" }, skipNextNCommands = 8 + 1 + callsignRotations } )
+  -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped. Modes are { 3920: entryOfLines, 3930: existing_cat_type_1, 3940: existing_object_cat_2, 3950: existing_line }
+  self:nopWithCallback(commands, "ABRIS: check if skipping is needed", 0, self.abrisSkipWaypointOnModeMatch, { expectedModes = { "3920", "3930", "3940", "3950"}, skipNextNCommands = 8 + 1 + callsignRotations, currentTarget = target, targetRemovalList = self.targetRemovalList } )
   -- -- ABRIS: wait for 100ms for ABRIS to settle
   -- self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: select ADD PNT
@@ -487,6 +517,78 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordi
   -- ABRIS: select ENTER
   self:abrisPressButton1(commands, "ABRIS: Select ENTER")
 end
+
+function KA50IIICommandGenerator:abrisRemoveTarget(commands, previous, target, ordinal)
+  -- deterime if it is first
+  local isNotFirst = ordinal > 1
+  -- determine the smallest bounding Z range
+  local range = self:findSmallestBoundingZRange(previous, target)
+  Logging.info("Smallest Z range: "..range:getLevel())
+  -- ABRIS: zoom to the bounding range
+  self:abrisZoomToRange(commands, range:getLevel())
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- ABRIS: rotate dial for Z
+  if isNotFirst == true then
+    -- just create regular static command
+    local deltaZ = target:getZ() - previous:getZ()
+    -- calculate number of dial rotations
+    local rotationsZ = range:toRotationsZ(deltaZ)
+    self:abrisRotateEx(commands, rotationsZ, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate Z")
+  else
+    -- only first target to be updated in realtime, reasons: aircraft moves!
+    self:abrisRotateZ(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate Z", { range = range, previous = previous, waypoint = target })
+  end
+  -- ABRIS: zoom to level 0 to avoid snapping
+  self:abrisZoomToRange(commands, 0)
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- ABRIS: switch to X entry  
+  self:abrisPressRotateButton(commands, "Switch to X entry")
+  -- determine the smallest bounding X range
+  range = self:findSmallestBoundingXRange(previous, target);
+  Logging.info("Smallest X range: "..range:getLevel())
+  -- ABRIS: zoom to the bounding range
+  self:abrisZoomToRange(commands, range:getLevel())
+  -- ABRIS: wait for 100ms for ABRIS to settle
+  self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- ABRIS: rotate dial for X
+  if isNotFirst == true then
+    -- Calculate deltaX and deltaZ to the prior coordinate
+    local deltaX = target:getX() - previous:getX()
+    -- calculate number of dial rotations
+    local rotationsX = range:toRotationsX(deltaX)
+    self:abrisRotateEx(commands, rotationsX, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true,"Rotate X")
+  else
+    -- only first target to be updated in realtime, reasons: aircraft moves!
+    self:abrisRotateX(commands, KA50IIICommandGenerator.DELAY_ABRIS_ROTATE, true, "First Rotate X", { range = range, previous = previous, waypoint = target })
+  end
+  -- ABRIS: zoom to level 0 to minimize snapping to existing objects such as airports
+  self:abrisZoomToRange(commands, 0)
+  self:abrisPressButton2(commands, "ABRIS: remove currrent target", 50)
+  -- -- this number determins how much the rotations are needed to get from default 'u' to specific number in in range 1234567890
+  -- local callsignRotations = 11 + (ordinal % 10)
+  -- -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped. Modes are { 3920: entryOfLines, 3930: existing_cat_type_1, 3940: existing_object_cat_2, 3950: existing_line }
+  -- self:nopWithCallback(commands, "ABRIS: check if skipping is needed", 0, self.abrisSkipWaypointOnModeMatch, { expectedModes = { "3920", "3930", "3940", "3950"}, skipNextNCommands = 8 + 1 + callsignRotations, currentTarget = target, targetRemovalList = self.targetRemovalList } )
+  -- -- -- ABRIS: wait for 100ms for ABRIS to settle
+  -- -- self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
+  -- -- ABRIS: select ADD PNT
+  -- self:abrisPressButton1(commands, "ABRIS: select ADD PNT")
+  -- -- ABRIS: select DIRECT
+  -- self:abrisPressButton1(commands, "ABRIS: Select DIRECT")
+  -- -- ABRIS: select REFPOINT type
+  -- for i = 1, 5 do
+  --   self:abrisPressButton4(commands, "ABRIS: toggle type")
+  -- end
+  -- -- start entering waypoint
+  -- self:abrisPressButton3(commands, "Switch to callsign entry")
+  -- for i = 1, callsignRotations do
+  --   self:abrisRotateEx(commands, 1, 0, true, "Rotate name: "..i)
+  -- end
+  -- -- ABRIS: select ENTER
+  -- self:abrisPressButton1(commands, "ABRIS: Select ENTER")
+end
+
 
 function KA50IIICommandGenerator:findSmallestBoundingZRange(previous, waypoint)
   for i, range in pairs(self._ranges) do
@@ -635,8 +737,8 @@ function KA50IIICommandGenerator:abrisUpdateRotateXCommand(command, updateParame
   command:setIntensity(rotationsX)
 end
 
-function KA50IIICommandGenerator:abrisSkipWaypointOnModeMismatch(command, updateParameters, remainingCommands)
-  Logging.info("Callback: abrisSkipWaypointOnModeMismatch")
+function KA50IIICommandGenerator:abrisSkipWaypointOnModeMatch(command, updateParameters, remainingCommands)
+  Logging.info("Callback: abrisSkipWaypointOnModeMatch")
   if updateParameters.expectedModes == nil then return end
   local mode = self:getAbrisModeAsString()
   Logging.info("Mod is: "..mode)
@@ -646,10 +748,14 @@ function KA50IIICommandGenerator:abrisSkipWaypointOnModeMismatch(command, update
       isExpectedMode = true
     end
   end
-  if isExpectedMode == false then return end
+  -- if the expected mode is not matched then target entry will proceed, we need to record target for eventual later removal
+  if isExpectedMode == false then
+    updateParameters.targetRemovalList[#updateParameters.targetRemovalList + 1] = updateParameters.currentTarget
+    return
+  end
   command:setName("ABRIS: press rotate button"):setComment(comment):setDevice(9):setCode(3007):setDelay(default_delay):setIntensity(1):setDepress(true)
   -- commands[#commands + 1] = Command:new():setName("ABRIS: press rotate button"):setComment(comment):setDevice(9):setCode(3007):setDelay(default_delay):setIntensity(1):setDepress(true)
-  Logging.info("Callback: abrisSkipWaypointOnModeMismatch -> command should be skipped")
+  Logging.info("Callback: abrisSkipWaypointOnModeMatch -> command should be skipped")
   -- now skip next N commands as well if requested
   for i = 1, updateParameters.skipNextNCommands do
     remainingCommands[i + 1]:setDevice(nil)
