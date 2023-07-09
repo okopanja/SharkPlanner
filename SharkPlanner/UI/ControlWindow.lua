@@ -175,7 +175,8 @@ function ControlWindow:new(o)
       local context = {
         coordinateData = o.coordinateData,
         statusWindow = o.statusWindow,
-        crosshairWindow = o.crosshairWindow
+        crosshairWindow = o.crosshairWindow,
+        controlWindow = o
       }
       o.ExperimentButton:addChangeCallback(
         function(button)
