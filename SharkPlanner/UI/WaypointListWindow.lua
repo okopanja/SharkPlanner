@@ -69,7 +69,7 @@ function WaypointListWindow:new(o)
       self:OnMouseDown(self, x, y, button)
     end
   )
-  o.entryMode = "W"
+  o.entryMode = ControlWindow.EntryStates.WAYPOINTS
   o:setBounds(x + w, y - 26, width, h + 26 + 27)
   o.removeButtonSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
   local buttonAmberSkin = SkinHelper.loadSkin("buttonSkinSharkPlannerAmber")
@@ -174,8 +174,10 @@ function WaypointListWindow:savePositionsAs()
 end
 
 function WaypointListWindow:OnAddWaypoint(eventArgs)
-  self:_createPositionRow(eventArgs.wayPointIndex, eventArgs.wayPoint, coordinateData.removeWaypoint)
-  self:_calculateDistances(eventArgs.wayPoints)
+  if self.entryMode == ControlWindow.EntryStates.WAYPOINTS then
+    self:_createPositionRow(eventArgs.wayPointIndex, eventArgs.wayPoint, coordinateData.removeWaypoint)
+    self:_calculateDistances(eventArgs.wayPoints)
+  end
 end
 
 function WaypointListWindow:OnFlightPlanLoaded(eventArgs)
@@ -205,7 +207,7 @@ end
 function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
   Logging.info("Selected row: "..tostring(currSelectedRow).." prior selection was: "..tostring(prevSelectedRow))
   local positions = nil
-  if self.entryMode == "W" then
+  if self.entryMode == ControlWindow.EntryStates.WAYPOINTS then
     positions = coordinateData.wayPoints
   elseif self.entryMode == "F" then
     positions = coordinateData.fixPoints
@@ -247,8 +249,10 @@ function WaypointListWindow:OnRemoveWaypoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddFixpoint(eventArgs)
-  self:_createPositionRow(eventArgs.fixPointIndex, eventArgs.fixPoint, coordinateData.removeFixpoint)
-  self:_calculateDistances(eventArgs.fixPoints)
+  if self.entryMode == "F" then
+    self:_createPositionRow(eventArgs.fixPointIndex, eventArgs.fixPoint, coordinateData.removeFixpoint)
+    self:_calculateDistances(eventArgs.fixPoints)
+  end
 end
 
 function WaypointListWindow:OnRemoveFixpoint(eventArgs)
@@ -266,8 +270,10 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddTargetpoint(eventArgs)
-  self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.removeTargetpoint)
-  self:_calculateDistances(eventArgs.targetPoints)
+  if self.entryMode == "T" then
+    self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.removeTargetpoint)
+    self:_calculateDistances(eventArgs.targetPoints)
+  end
 end
 
 function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
