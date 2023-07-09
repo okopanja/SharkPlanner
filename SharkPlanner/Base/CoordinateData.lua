@@ -54,6 +54,11 @@ function CoordinateData:createPlanningPosition()
             self.planningPosition = nil
             return
         end
+        if selfData.Position == nil then
+            Logging.info("Own position could not be retrieved: export of own ship is not enabled on server.")
+            self.planningPosition = nil
+            return
+        end
         local selfX = selfData["Position"]["x"]
         local selfZ = selfData["Position"]["z"]
         local selfLat, selfLong = Export.LoLoCoordinatesToGeoCoordinates(selfX, selfZ)
