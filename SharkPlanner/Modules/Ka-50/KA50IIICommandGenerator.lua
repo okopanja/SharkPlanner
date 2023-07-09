@@ -125,9 +125,10 @@ function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, fixp
 end
 
 function KA50IIICommandGenerator:pvi800EnterPositions(commands, positions)
-  for digit, position in pairs(positions) do
+  for ordinal, position in pairs(positions) do
+    local positionDigit = ordinal % 10
     -- select waypoint number
-    self:pvi800PressDigitBtn(commands, digit, "Position: "..digit)
+    self:pvi800PressDigitBtn(commands, positionDigit, "Position: "..ordinal)
     -- enter lat hemisphere
     self:pvi800PressDigitBtn(commands, position:getLatitudeHemisphere(), "Latitude Hemisphere")
     -- enter latitude
