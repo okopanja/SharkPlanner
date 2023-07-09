@@ -63,7 +63,7 @@ function KA50IIICommandGenerator:getMaximalWaypointCount()
 end
 
 function KA50IIICommandGenerator:getMaximalFixPointCount()
-  return 10
+  return 4
 end
 
 function KA50IIICommandGenerator:getMaximalTargetPointCount()
