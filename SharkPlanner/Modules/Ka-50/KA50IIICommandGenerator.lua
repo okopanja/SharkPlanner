@@ -236,7 +236,7 @@ function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
     -- Start removal
     self:abrisStartTargetEntry(commands)
     -- Remove targets
-    self:abrisRemoveTargets(commands, targets, selfX, selfZ)
+    self:abrisRemoveTargets(commands, self.targetRemovalList, selfX, selfZ)
     -- Complete target removal
     self:abrisCompleteTargetEntry(commands)
     self.targetRemovalList = {}
@@ -439,7 +439,8 @@ function KA50IIICommandGenerator:abrisRemoveTargets(commands, targets, selfX, se
   Logging.info("abrisEnterRouteWaypoints, zoom level "..self.zoomLevel)
   -- create initial waypoint from current location
   local previous = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
-  -- add waypoints
+  Logging.info("Detected existing targets: "..#targets)
+  -- remove waypoints
   for i, target in pairs(targets) do
     Logging.info("Removing target: "..i)
     self:abrisRemoveTarget(commands, previous, target, i)
@@ -565,7 +566,11 @@ function KA50IIICommandGenerator:abrisRemoveTarget(commands, previous, target, o
   end
   -- ABRIS: zoom to level 0 to minimize snapping to existing objects such as airports
   self:abrisZoomToRange(commands, 0)
+  -- ABRIS: delte current object
   self:abrisPressButton2(commands, "ABRIS: remove currrent target", 50)
+  -- ABRIS: switch to X entry  
+  self:abrisPressRotateButton(commands, "Switch to X entry")
+
   -- -- this number determins how much the rotations are needed to get from default 'u' to specific number in in range 1234567890
   -- local callsignRotations = 11 + (ordinal % 10)
   -- -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped. Modes are { 3920: entryOfLines, 3930: existing_cat_type_1, 3940: existing_object_cat_2, 3950: existing_line }
@@ -741,7 +746,7 @@ function KA50IIICommandGenerator:abrisSkipWaypointOnModeMatch(command, updatePar
   Logging.info("Callback: abrisSkipWaypointOnModeMatch")
   if updateParameters.expectedModes == nil then return end
   local mode = self:getAbrisModeAsString()
-  Logging.info("Mod is: "..mode)
+  Logging.info("Entry mod is: "..mode)
   local isExpectedMode = false
   for k, v in pairs(updateParameters.expectedModes) do
     if v == mode then
