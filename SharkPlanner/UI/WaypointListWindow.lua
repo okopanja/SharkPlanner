@@ -277,7 +277,7 @@ function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
   for i = eventArgs.targetPointIndex, #eventArgs.targetPoints  do
     Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
-    self.scrollGrid:getCell(4, i - 1).row_number = i
+    self.scrollGrid:getCell(4, i - 1):getWidget(0).row_number = i
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
