@@ -76,7 +76,8 @@ function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   local mode = Export.GetDevice(9):get_mode()
   mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
   Logging.info("ABRIS mode: "..mode)
-  if #targets > 0 then
+  -- if there are targets or targets for removal prepare ABRIS targets commands
+  if #targets > 0 or #self.targetRemovalList > 0 then
     Logging.info("Entering ABRIS targets")
     self:prepareABRISTargetCommands(commands, targets)
   end
