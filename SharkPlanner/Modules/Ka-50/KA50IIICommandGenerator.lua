@@ -567,32 +567,13 @@ function KA50IIICommandGenerator:abrisRemoveTarget(commands, previous, target, o
   end
   -- ABRIS: zoom to level 0 to minimize snapping to existing objects such as airports
   self:abrisZoomToRange(commands, 0)
+  self:nopWithCallback(commands, "Wait for valid mode", 0, self.abrisDelayIfModeNotMatched, { expectedModes = { "3920", "3930", "3940", "3950"} } )
+  -- self:nop(commands, "Wait for ABRIS to settle", 5000)
   -- ABRIS: delte current object
   self:abrisPressButton2(commands, "ABRIS: remove currrent target", 50)
   -- ABRIS: switch to X entry  
   self:abrisPressRotateButton(commands, "Switch to X entry")
 
-  -- -- this number determins how much the rotations are needed to get from default 'u' to specific number in in range 1234567890
-  -- local callsignRotations = 11 + (ordinal % 10)
-  -- -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped. Modes are { 3920: entryOfLines, 3930: existing_cat_type_1, 3940: existing_object_cat_2, 3950: existing_line }
-  -- self:nopWithCallback(commands, "ABRIS: check if skipping is needed", 0, self.abrisSkipWaypointOnModeMatch, { expectedModes = { "3920", "3930", "3940", "3950"}, skipNextNCommands = 8 + 1 + callsignRotations, currentTarget = target, targetRemovalList = self.targetRemovalList } )
-  -- -- -- ABRIS: wait for 100ms for ABRIS to settle
-  -- -- self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
-  -- -- ABRIS: select ADD PNT
-  -- self:abrisPressButton1(commands, "ABRIS: select ADD PNT")
-  -- -- ABRIS: select DIRECT
-  -- self:abrisPressButton1(commands, "ABRIS: Select DIRECT")
-  -- -- ABRIS: select REFPOINT type
-  -- for i = 1, 5 do
-  --   self:abrisPressButton4(commands, "ABRIS: toggle type")
-  -- end
-  -- -- start entering waypoint
-  -- self:abrisPressButton3(commands, "Switch to callsign entry")
-  -- for i = 1, callsignRotations do
-  --   self:abrisRotateEx(commands, 1, 0, true, "Rotate name: "..i)
-  -- end
-  -- -- ABRIS: select ENTER
-  -- self:abrisPressButton1(commands, "ABRIS: Select ENTER")
 end
 
 
@@ -767,6 +748,26 @@ function KA50IIICommandGenerator:abrisSkipWaypointOnModeMatch(command, updatePar
     remainingCommands[i + 1]:setDevice(nil)
   end
 end
+
+function KA50IIICommandGenerator:abrisDelayIfModeNotMatched(command, updateParameters, remainingCommands)
+  Logging.info("Callback: abrisDelayIfModeNotMatched")
+  if updateParameters.expectedModes == nil then return end
+  local mode = self:getAbrisModeAsString()
+  Logging.info("Entry mod is: "..mode)
+  local isExpectedMode = false
+  for k, v in pairs(updateParameters.expectedModes) do
+    if v == mode then
+      isExpectedMode = true
+    end
+  end
+  -- if the expected mode is not matched then target entry will proceed, we need to record target for eventual later removal
+  if isExpectedMode == false then
+    -- remove the command and skipFrame
+    table.remove(remainingCommands, 1)
+    return "skipFrame"
+  end
+end
+
 
 function KA50IIICommandGenerator:getAbrisModeAsString()
   local mode = Export.GetDevice(9):get_mode()

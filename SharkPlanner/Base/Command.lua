@@ -121,9 +121,9 @@ end
 function Command:update(remainingCommands)
   if self.updateCallback ~= nil then
     if self.updateObject ~= nil then
-      self.updateCallback(self.updateObject, self, self.updateParameters, remainingCommands)
+      return self.updateCallback(self.updateObject, self, self.updateParameters, remainingCommands)
     else
-      self.updateCallback(self, self.updateParameters, remainingCommands)
+      return self.updateCallback(self, self.updateParameters, remainingCommands)
     end
   end
 end
