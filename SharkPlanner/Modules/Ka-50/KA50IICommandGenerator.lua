@@ -1,5 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local KA50IIICommandGenerator = require("SharkPlanner.Modules.Ka-50.KA50IIICommandGenerator")
+local Position = require("SharkPlanner.Base.Position")
+
 KA50IICommandGenerator = KA50IIICommandGenerator:new()
 
 function KA50IICommandGenerator:getAircraftName()
