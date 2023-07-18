@@ -218,13 +218,20 @@ function KA50IIICommandGenerator:prepareABRISWaypointCommands(commands, waypoint
   self:abrisCompleteRouteEntry(commands)
 end
 
+function KA50IIICommandGenerator:getEndRouteCoordinates()
+  local abrisDevice = Export.GetDevice(9)
+  local current_route = abrisDevice:get_current_route()
+  local latitude = current_route.segments[#current_route.segments]["end"].position.latitude
+  local longitude = current_route.segments[#current_route.segments]["end"].position.longitude
+  local coordinates = Export.LoGeoCoordinatesToLoCoordinates(longitude, latitude)
+  return coordinates
+end
+
 function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
   Logging.info("prepareABRISTargetCommands, zoom level: "..self.zoomLevel)
 
-  -- current location of aircraft is needed for relative entry of waypoints
-  local selfData = Export.LoGetSelfData()
-  local selfX = selfData["Position"]["x"]
-  local selfZ = selfData["Position"]["z"]
+  -- current location of end point of current route is needed
+  local startCoordinates = self:getEndRouteCoordinates()
   -- Place ABRIS into MENU mode, no matter in which mode it is currently in
   self:abrisCycleToMenuMode(commands)
   -- Logging.info("abrisCycleToMenuMode, zoom level: "..self.zoomLevel)
@@ -237,20 +244,18 @@ function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
     -- Start removal
     self:abrisStartTargetEntry(commands)
     -- Remove targets
-    self:abrisRemoveTargets(commands, self.targetRemovalList, selfX, selfZ)
+    self:abrisRemoveTargets(commands, self.targetRemovalList, startCoordinates.x, startCoordinates.z)
     -- Complete target removal
     self:abrisCompleteTargetEntry(commands)
     self.targetRemovalList = {}
     -- update position
-    selfData = Export.LoGetSelfData()
-    selfX = selfData["Position"]["x"]
-    selfZ = selfData["Position"]["z"]
+    startCoordinates = self:getEndRouteCoordinates()
   end
 
   -- Start entering
   self:abrisStartTargetEntry(commands)
   -- Enter targets
-  self:abrisEnterTargets(commands, targets, selfX, selfZ)
+  self:abrisEnterTargets(commands, targets, startCoordinates.x, startCoordinates.z)
   -- Complete target entry
   self:abrisCompleteTargetEntry(commands)
 end
@@ -707,8 +712,10 @@ function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
 end
 
 function KA50IIICommandGenerator:abrisUpdateRotateZCommand(command, updateParameters)
+  local coordinates = self:getEndRouteCoordinates()
   -- just create regular static command
-  local deltaZ = updateParameters.waypoint:getZ() - Export.LoGetSelfData()["Position"]["z"]
+  -- local deltaZ = updateParameters.waypoint:getZ() - Export.LoGetSelfData()["Position"]["z"]
+  local deltaZ = updateParameters.waypoint:getZ() - coordinates.z
   -- calculate number of dial rotations
   local rotationsZ = updateParameters.range:toRotationsZ(deltaZ)
   -- update intensity
@@ -716,8 +723,10 @@ function KA50IIICommandGenerator:abrisUpdateRotateZCommand(command, updateParame
 end
 
 function KA50IIICommandGenerator:abrisUpdateRotateXCommand(command, updateParameters)
+  local coordinates = self:getEndRouteCoordinates()
   -- just create regular static command
-  local deltaX = updateParameters.waypoint:getX() - Export.LoGetSelfData()["Position"]["x"]
+  -- local deltaX = updateParameters.waypoint:getX() - Export.LoGetSelfData()["Position"]["x"]
+  local deltaX = updateParameters.waypoint:getX() - coordinates.x
   -- calculate number of dial rotations
   local rotationsX = updateParameters.range:toRotationsZ(deltaX)
   -- update intensity
