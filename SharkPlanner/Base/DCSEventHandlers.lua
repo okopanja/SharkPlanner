@@ -62,9 +62,12 @@ function DCSEventHandlers.onSimulationFrame()
             local command = DCSEventHandlers.commands[i]
             -- update command if needed, e.g. if command has associated update callback
             local updateResult = command:update(DCSEventHandlers.commands)
-            -- if callback requires, skip frame
-            if updateResult == "skipFrame" then return end
             Logging.info(command:getText())
+            -- if callback requires, skip frame
+            if updateResult == "skipFrame" then
+              Logging.info("Skipping frame")
+              return
+            end
             if command:getDevice() then          
               Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), command:getIntensity())
               Logging.info("Pressed")
