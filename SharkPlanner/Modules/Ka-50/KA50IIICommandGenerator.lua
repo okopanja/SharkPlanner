@@ -234,11 +234,7 @@ function KA50IIICommandGenerator:prepareABRISTargetCommands(commands, targets)
   local startCoordinates = self:getEndRouteCoordinates()
   -- Place ABRIS into MENU mode, no matter in which mode it is currently in
   self:abrisCycleToMenuMode(commands)
-  -- Logging.info("abrisCycleToMenuMode, zoom level: "..self.zoomLevel)
-  -- -- Workaround ABRIS/SNS drift (this occurs only on the first usage, but for simplicity we will repeat it every time)
-  -- self:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
-  -- -- -- Make sure there is no route loaded
-  -- -- self:abrisUnloadRoute(commands)
+  -- Start removal
   if #self.targetRemovalList > 0 then
     Logging.info("Removing existing targets...")
     -- Start removal
@@ -506,8 +502,6 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordi
   local callsignRotations = 11 + (ordinal % 10)
   -- ABRIS: add callback command to determine if the entry of current point can proceed. If there is an object in position rest of the commands should be skipped. Modes are { 3920: entryOfLines, 3930: existing_cat_type_1, 3940: existing_object_cat_2, 3950: existing_line }
   self:nopWithCallback(commands, "ABRIS: check if skipping is needed", 0, self.abrisSkipWaypointOnModeMatch, { expectedModes = { "3920", "3930", "3940", "3950"}, skipNextNCommands = 8 + 1 + callsignRotations, currentTarget = target, targetRemovalList = self.targetRemovalList } )
-  -- -- ABRIS: wait for 100ms for ABRIS to settle
-  -- self:nop(commands, "Wait for ABRIS to settle", KA50IIICommandGenerator.DELAY_ABRIS_SETTLE)
   -- ABRIS: select ADD PNT
   self:abrisPressButton1(commands, "ABRIS: select ADD PNT")
   -- ABRIS: select DIRECT
