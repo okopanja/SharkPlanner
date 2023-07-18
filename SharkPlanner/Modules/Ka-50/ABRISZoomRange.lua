@@ -42,11 +42,11 @@ function ABRISZoomRange:toRotationsZ(deltaZ)
 end
 
 function ABRISZoomRange:areBothPointsWithinZRange(current, next)
-  return math.abs(current:getZ() - next:getZ()) <= self.horizontal
+  return math.abs(current:getZ() - next:getZ()) <= (0.8 * self.horizontal)
 end
 
 function ABRISZoomRange:areBothPointsWithinXRange(current, next)
-  return math.abs(current:getX() - next:getX()) <= self.vertical
+  return math.abs(current:getX() - next:getX()) <= (0.8 * self.vertical)
 end
 
 return ABRISZoomRange
