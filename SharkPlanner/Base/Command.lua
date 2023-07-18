@@ -50,15 +50,6 @@ function Command:setSchedule(schedule)
 end
 
 function Command:getIntensity()
-  -- if self.intensityUpdateCallback ~= nil then
-  --   if self.intensityUpdateObject ~= nil then
-  --     -- in case of object being recepient call variant with object's self
-  --     self.intensityUpdateCallback(self.intensityUpdateObject, self, self.updateParameters)
-  --   else
-  --     -- in case of regular function
-  --     self.intensityUpdateCallback(self, self.updateParameters)
-  --   end
-  -- end
   return self.intensity
 end
 
