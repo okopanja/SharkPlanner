@@ -129,7 +129,7 @@ function ControlWindow:new(o)
         "Ctrl+Shift+space",
         function()
             Logging.info("Hotkey pressed!")
-            Logging.info("Game state: "..GameState.getGameState())
+            Logging.info("Game state (hotkey pressed): "..GameState.getGameState())
             local currentAircraftModel = CommandGeneratorFactory.getCurrentAirframe()
             Logging.info("Current airframe: "..tostring(currentAircraftModel))
             if CommandGeneratorFactory.isSupported(currentAircraftModel) then
