@@ -128,7 +128,7 @@ Logging.info("Hidding the window")
 window:hide()
 
 Logging.info("Window creation completed")
-Logging.info("Game state: "..Base.GameState.getGameState())
+Logging.info("Game state (UI initialization): "..Base.GameState.getGameState())
 
 -- make Base, Modules Utils, and VERSION_INFO available
 return {
