@@ -16,8 +16,8 @@ dialog = {
     ["modal"] = false,
     ["offscreen"] = false,
     ["resizable"] = false,
-    ["zOrder"] = 150,
-    ["text"] = "Status Window"
+    ["zOrder"] = 250,
+    ["text"] = "TransferStatusWindow"
   },
   ["skin"] = {
     ["params"] = {
@@ -46,7 +46,7 @@ dialog = {
         ["enabled"] = true,
         ["text"] = "",
         ["tooltip"] = "",
-        ["visible"] = true,
+        ["visible"] = false,
         ["zindex"] = 0,
       },
       -- ["skin"] = {
@@ -56,27 +56,47 @@ dialog = {
       -- },
       ["type"] = "Static",
     },
-    ["VersionInfo"] = {
+    ["ProgressBar"] = {
       ["params"] = {
         ["bounds"] = {
-          ["x"] = 341,
-          ["y"] = 0,
-          ["h"] = 26,
-          ["w"] = 59,
+          ["x"] = 0,
+          ["y"] = 26,
+          ["w"] = 400,
+          ["h"] = 30,
         },
-        ["enabled"] = false,
-        ["text"] = "",
+        ["enabled"] = true,
+        ["range"] = {
+          ["max"] = 100,
+          ["min"] = 0,
+        },
+        ["step"] = 1,
+        ["text"] = "horzProgressBar0",
         ["tooltip"] = "",
-        ["visible"] = true,
-        ["zindex"] = 0,
+        ["value"] = 0,
+        ["visible"] = false,
+        ["zindex"] = 1,
       },
       ["skin"] = {
         ["params"] = {
-          ["name"] = "buttonSkinAwacs",
-          -- ["name"] = "staticSkin_ME",
+          ["name"] = "horzProgressBarStartDialogSkin",
+        },
+        ["states"] = {
+          ["released"] = {
+            [1] = {
+              ["bkg"] = {
+                ["center_center"] = "$nil$",
+              },
+              ["picture"] = {
+                ["color"] = "0xffffffff",
+                ["vertAlign"] = {
+                  ["type"] = "middle",
+                },
+              },
+            },
+          },
         },
       },
-      ["type"] = "Static",
+      ["type"] = "HorzProgressBar",
     },
   }
 }

@@ -270,6 +270,7 @@ function ControlWindow:hide()
   self.statusWindow:hide()
   self.waypointListWindow:hide()
   self.chartWindow:hide()
+  self.transferStatusWindow:hide()
 end
 
 function ControlWindow:isHidden()

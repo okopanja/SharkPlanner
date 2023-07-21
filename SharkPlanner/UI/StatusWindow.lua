@@ -36,11 +36,9 @@ function StatusWindow:show()
     -- show all widgets on status window
     local count = self:getWidgetCount()
   	for i = 1, count do
-      local index 		= i - 1
-  	  local widget 		= self:getWidget(index)
-      if widget ~= self.ProgressBar then
+        local index 		= i - 1
+  	    local widget 		= self:getWidget(index)
         widget:setVisible(true)
-      end
     end
 end
 
@@ -50,8 +48,8 @@ function StatusWindow:hide()
     for i = 1, count do
         local index 		= i - 1
         local widget 		= self:getWidget(index)
-    widget:setVisible(false)
-    widget:setFocused(false)
+        widget:setVisible(false)
+        widget:setFocused(false)
   end
   self:setHasCursor(false)
   self:setVisible(false)
@@ -87,18 +85,10 @@ end
 
 function StatusWindow:OnTransferStarted(eventArgs)
     self.Status:setText("Transfer in progress...")
-    self.ProgressBar:setValue(1)
-    self.ProgressBar:setRange(1, #eventArgs.commands)
-    self.ProgressBar:setVisible(true)
 end
 
 function StatusWindow:OnTransferFinished(eventArgs)
     self.Status:setText("Transfer completed")
-    self.ProgressBar:setVisible(false)
-end
-
-function StatusWindow:OnTransferProgressUpdated(eventArgs)
-    self.ProgressBar:setValue(eventArgs.totalCommandsCount - eventArgs.currentCommandCount)
 end
 
 function StatusWindow:OnPlayerEnteredSupportedVehicle(eventArg)

@@ -10,6 +10,7 @@ local crosshairWindow = nil
 local statusWindow = nil
 local waypointListWindow = nil
 local chartWindow = nil
+local transferStatusWindow = nil
 local coordinateData = Base.CoordinateData
 -- local http = require("socket.http")
 Logging.info("Registering event handlers")
@@ -66,8 +67,13 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, 
 -- register statusWindow to receive events from DCS
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferStarted, statusWindow, statusWindow.OnTransferStarted)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferFinished, statusWindow, statusWindow.OnTransferFinished)
-Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferProgressUpdated, statusWindow, statusWindow.OnTransferProgressUpdated)
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.PlayerEnteredSupportedVehicle, statusWindow, statusWindow.OnPlayerEnteredSupportedVehicle)
+
+-- create transfer status window
+transferStatusWindow = UI.TransferStatusWindow:new{crosshairWindow = crosshairWindow}
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferStarted, transferStatusWindow, transferStatusWindow.OnTransferStarted)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferFinished, transferStatusWindow, transferStatusWindow.OnTransferFinished)
+Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferProgressUpdated, transferStatusWindow, transferStatusWindow.OnTransferProgressUpdated)
 
 -- create waypoint list window
 waypointListWindow = UI.WaypointListWindow:new{crosshairWindow = crosshairWindow}
@@ -96,7 +102,8 @@ crosshairWindow = crosshairWindow,
 statusWindow = statusWindow,
 waypointListWindow = waypointListWindow,
 coordinateData = coordinateData,
-chartWindow = chartWindow
+chartWindow = chartWindow,
+transferStatusWindow = transferStatusWindow
 }
 -- register window to receive vents from coordinateData
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, window, window.OnAddWaypoint)
