@@ -209,9 +209,9 @@ function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
   local positions = nil
   if self.entryMode == ControlWindow.EntryStates.WAYPOINTS then
     positions = coordinateData.wayPoints
-  elseif self.entryMode == "F" then
+  elseif self.entryMode == ControlWindow.EntryStates.FIXPOINTS then
     positions = coordinateData.fixPoints
-  elseif self.entryMode == "T" then
+  elseif self.entryMode == ControlWindow.EntryStates.TARGET_POINTS then
     positions = coordinateData.targetPoints
   else
     return
@@ -249,7 +249,7 @@ function WaypointListWindow:OnRemoveWaypoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddFixpoint(eventArgs)
-  if self.entryMode == "F" then
+  if self.entryMode == ControlWindow.EntryStates.FIXPOINTS then
     self:_createPositionRow(eventArgs.fixPointIndex, eventArgs.fixPoint, coordinateData.removeFixpoint)
     self:_calculateDistances(eventArgs.fixPoints)
   end
@@ -270,7 +270,7 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
 end
 
 function WaypointListWindow:OnAddTargetpoint(eventArgs)
-  if self.entryMode == "T" then
+  if self.entryMode == ControlWindow.EntryStates.TARGET_POINTS then
     self:_createPositionRow(eventArgs.targetPointIndex, eventArgs.targetPoint, coordinateData.removeTargetpoint)
     self:_calculateDistances(eventArgs.targetPoints)
   end
@@ -302,13 +302,13 @@ function WaypointListWindow:OnEntryModeChanged(eventArgs)
   local positions = nil
   local removalFunction = nil
   self.entryMode = eventArgs.entryState
-  if eventArgs.entryState == "W" then
+  if eventArgs.entryState == ControlWindow.EntryStates.WAYPOINTS then
     positions = coordinateData.wayPoints
     removalFunction = coordinateData.removeWaypoint
-  elseif eventArgs.entryState == "F" then
+  elseif eventArgs.entryState == ControlWindow.EntryStates.FIXPOINTS then
     positions = coordinateData.fixPoints
     removalFunction = coordinateData.removeFixpoint
-  elseif eventArgs.entryState == "T" then
+  elseif eventArgs.entryState == ControlWindow.EntryStates.TARGET_POINTS then
     positions = coordinateData.targetPoints
     removalFunction = coordinateData.removeTargetpoint
   else
