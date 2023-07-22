@@ -4,5 +4,6 @@ return {
     WaypointListWindow = require("SharkPlanner.UI.WaypointListWindow"),
     CrosshairWindow = require("SharkPlanner.UI.CrosshairWindow"),
     SkinHelper = require("SharkPlanner.UI.SkinHelper"),
-    ChartWindow = require("SharkPlanner.UI.ChartWindow")
+    ChartWindow = require("SharkPlanner.UI.ChartWindow"),
+    TransferStatusWindow = require("SharkPlanner.UI.TransferStatusWindow")
 }

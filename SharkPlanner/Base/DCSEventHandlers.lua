@@ -121,7 +121,7 @@ function DCSEventHandlers.onSimulationStart()
     }    
     DCSEventHandlers.dispatchEvent(EventTypes.SimulationStarted, eventArgs)
 
-    Logging.info("Game state: "..GameState.getGameState())  
+    Logging.info("Game state (onSimulationStart): "..GameState.getGameState())  
     DCSEventHandlers.aircraftModel = CommandGeneratorFactory.getCurrentAirframe()
     if DCSEventHandlers.aircraftModel ~= nil then
       Logging.info("Detected: "..DCSEventHandlers.aircraftModel)
@@ -152,8 +152,10 @@ function DCSEventHandlers.onSimulationStop()
     Logging.info("onSimulationStop")
     DCSEventHandlers.aircraftModel = nil
     DCSEventHandlers.commandGenerator = nil
+    DCSEventHandlers.commands = {}
+    DCSEventHandlers.delayed_depress_commands = {}
     local eventArgs = {
-    }    
+    }
     DCSEventHandlers.dispatchEvent(EventTypes.SimulationStopped, eventArgs)
 end
 
@@ -166,6 +168,8 @@ function DCSEventHandlers.onPlayerChangeSlot(id)
       }
       DCSEventHandlers.aircraftModel = nil
       DCSEventHandlers.commandGenerator = nil
+      DCSEventHandlers.commands = {}
+      DCSEventHandlers.delayed_depress_commands = {}
       DCSEventHandlers.dispatchEvent(EventTypes.PlayerChangeSlot, eventArgs)
     end
 end
