@@ -1,7 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local String = require("SharkPlanner.Utils.String")
 local GameState = require("SharkPlanner.Base.GameState")
-
+local Configuration = require("SharkPlanner.Base.Configuration")
 local CommandGeneratorFactory = {}
 
 -- helper function to read list of subfolders of modules
@@ -37,6 +37,7 @@ function CommandGeneratorFactory.reload()
   for module_name, module_full_path in pairs(module_list) do
     Logging.info("Loading: "..module_full_path)
     local module = require(module_full_path)
+    Configuration:setConfigurationDefinition(module_name, module.getConfigurationDefinition())
     CommandGeneratorFactory.variantLookupFunctions[module_name] = module.determineVariant
     local module_command_generators = module.getCommandGenerators()
     for variant, command_generator in pairs(module_command_generators) do

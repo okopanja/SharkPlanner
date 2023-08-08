@@ -12,6 +12,42 @@ local function getCommandGenerators()
     return COMMAND_GENERATORS
 end
 
+local function getConfigurationDefinition()
+    return {
+        {
+            Name = "ABRIS_EnableWayPointEntry",
+            Label = "ABRIS: enable entry of waypoints points",
+            Default = true
+        },
+
+        -- {
+        --     Name = "ABRIS_EnableFixPointEntry"
+        --     Label = "ABRIS: enable entry of fix points (not implemented)",
+        --     Default = false
+        -- },
+        {
+            Name = "ABRIS_EnableTargetPointEntry",
+            Label = "ABRIS: enable entry of target points (experimental)",
+            Default = false
+        },
+        {
+            Name = "PVI-800_EnableWayPointEntry",
+            Label = "ABRIS: enable entry of waypoints points",
+            Default = true
+        },
+        {
+            Name = "PVI-800_EnableFixPointEntry",
+            Label = "ABRIS: enable entry of fix points",
+            Default = true
+        },
+        {
+            Name = "PVI-800_EnableTargetPointEntry",
+            Label = "ABRIS: enable entry of target points",
+            Default = true
+        },
+    }
+end
+
 -- Function tries to determine sub variant based on base_module_name and module specific criteria. E.g. by checking if certain device is implemented or not
 -- For modules having single variant the function should return base_module_name
 local function determineVariant(base_module_name)
@@ -30,5 +66,6 @@ end
 -- return module
 return {
     getCommandGenerators = getCommandGenerators,
-    determineVariant = determineVariant
+    determineVariant = determineVariant,
+    getConfigurationDefinition = getConfigurationDefinition
 }

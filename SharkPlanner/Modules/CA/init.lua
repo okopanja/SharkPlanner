@@ -18,6 +18,10 @@ local function getCommandGenerators()
     return COMMAND_GENERATORS
 end
 
+local function getConfigurationDefinition()
+    return {}
+end
+
 local function getSlotInfo(side_id, slot_id)
     local availableSlots = DCS.getAvailableSlots(Coalitions[side_id])
     for k,v in pairs(availableSlots) do
@@ -47,5 +51,6 @@ end
 -- return module
 return {
     getCommandGenerators = getCommandGenerators,
-    determineVariant = determineVariant
+    determineVariant = determineVariant,
+    getConfigurationDefinition = getConfigurationDefinition
 }

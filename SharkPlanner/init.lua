@@ -13,6 +13,17 @@ local chartWindow = nil
 local transferStatusWindow = nil
 local coordinateData = Base.CoordinateData
 -- local http = require("socket.http")
+Logging.info("Checking if configuration exist")
+if Base.Configuration:exists() then
+    Logging.info("Configuration was found.")
+    Logging.info("Loading configuration.")
+    -- if there the configuration update was detected save the config file with new options 
+    if Base.Configuration:load() then
+        Base.Configuration:save()
+    end
+else
+    Base.Configuration:save()
+end
 Logging.info("Registering event handlers")
 Base.DCSEventHandlers.register()
 
@@ -136,5 +147,5 @@ return {
     Modules = Modules,
     Utils = Utils,
     UI = UI,
-    VERSION_INFO = VERSION_INFO
+    VERSION_INFO = VERSION_INFO,
 }
