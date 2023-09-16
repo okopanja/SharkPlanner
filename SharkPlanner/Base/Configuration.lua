@@ -1,6 +1,8 @@
 local lfs = require("lfs")
 local JSON = require("JSON")
 local Logging = require("SharkPlanner.Utils.Logging")
+local String = require("SharkPlanner.Utils.String")
+local Table = require("SharkPlanner.Utils.Table")
 local FILEPATH = lfs.writedir()..[[Config\SharkPlanner.json]]
 
 local Configuration = {}
@@ -15,32 +17,35 @@ function Configuration:new (o)
 end
 
 function Configuration:load()
-    Logging.info("Pre-setting default configuration options")
     local updated = false
-    for section, configurationDefinition in pairs(self.sections) do
-        -- in which case we need to ensure that all required options are set
-        for i, currentOptionDefinition in ipairs(configurationDefinition) do
-            -- create any non existing option
-            Logging.info("Ensure that option: "..section.."."..currentOptionDefinition.Name.." is set to default value: "..tostring(currentOptionDefinition.Default))
-            if self:getOption(section, currentOptionDefinition.Name) == nil then
-                self:setOption(section, currentOptionDefinition.Name, currentOptionDefinition.Default)
-                updated = true
-            end
-        end
-    end
-
     Logging.info("Loading configuration from: "..FILEPATH)
     local fp = io.open(FILEPATH, "r")
     if fp then
         local rawBuffer = fp:read("*all")
         local loadedOptions = JSON:decode(rawBuffer)
         fp:close()
-        -- overlay the file values over any already loaded defaults
-        for sectionName, section in pairs(loadedOptions) do
-            for optionName, option in pairs(section) do
-                self.options[sectionName][optionName] = option
+        Logging.debug("Default options keys")
+        local defaultOptionKeys = self:_getOptionKeys(self.options)
+        Logging.debug("Loaded options keys")
+        local loadedOptionKeys = self:_getOptionKeys(loadedOptions)
+        -- check if there are new options not existing in config file
+        for k, v in pairs(defaultOptionKeys) do
+            if Table.is_in_values(loadedOptionKeys, v) == false then
+                Logging.warning("Option: "..v.." was not specified in configuration file.")
+                updated = true
             end
         end
+        -- check if there are options specified in config file, but absent in default configuration
+        for k, v in pairs(loadedOptionKeys) do
+            if Table.is_in_values(defaultOptionKeys, v) == false then
+                Logging.warning("Option: "..v.." found in config file is not in use anymore.")
+            end
+        end
+        -- overlay the file values over any already loaded defaults
+        for i, v in ipairs(loadedOptionKeys) do            
+            self:setOption(v, self:_getOption(loadedOptions, v))
+        end
+
         Logging.info("Loaded configuration")
     end
     return updated
@@ -63,36 +68,106 @@ function Configuration:exists()
     return lfs.attributes(FILEPATH) ~= nil
 end
 
-function Configuration:getOption(section, option)
-    if self.options[section] ~= nil then
-        if self.options[section][option] ~= nil then
-            return self.options[section][option]
+function Configuration:getOption(option)
+    return self:_getOption(self.options, option)
+end
+
+function Configuration:_getOption(options, option)
+    local configPath = String.csplit(option, "%.")
+    Logging.debug("Option has "..#configPath.." components.")
+    local currentElement = options
+    for i, currentElementPathComponent in ipairs(configPath) do
+        Logging.debug("Path component: "..currentElementPathComponent)
+        local nextElement = currentElement[currentElementPathComponent]
+        if nextElement == nil then
+            Logging.debug("Option '"..option.."' is not found.")
+        elseif i == #configPath then
+            -- reached the option, set option
+            Logging.debug("Reached option")
+            return currentElement[currentElementPathComponent]
         end
+        currentElement = nextElement
     end
     return nil
 end
 
-function Configuration:setOption(section, option, value)
-    -- create section if it does not exist
-    if self.options[section] == nil then
-        self.options[section] = {}
-    end
-    -- set option within option
-    self.options[section][option] = value
+function Configuration:setOption(option, value)
+    return self:_setOption(self.options, option, value)
 end
 
-function Configuration:setConfigurationDefinition(section, configurationDefinition)
+function Configuration:_setOption(options, option, value)
+    local configPath = String.csplit(option, "%.")
+    Logging.debug("Option has "..#configPath.." components.")
+    local currentElement = options
+    for i, currentElementPathComponent in ipairs(configPath) do
+        Logging.debug("Path component: "..currentElementPathComponent)
+        local nextElement = currentElement[currentElementPathComponent]
+        if nextElement == nil and i < #configPath then
+            -- create option if it does not exist
+            Logging.debug("Creating path component...")
+            nextElement = {}
+            currentElement[currentElementPathComponent] = nextElement
+        elseif i == #configPath then
+            -- reached the option, set option
+            Logging.debug("Reached option")
+            currentElement[currentElementPathComponent] = value
+        else
+        end
+        currentElement = nextElement
+    end
+end
+
+function Configuration:_getOptionKeys(options)
+    local keys = {}
+    local stack = {}
+    -- local currentKeyComponents = {}
+    stack[#stack + 1] = { k = nil,  v = options, keyComponents = {} }
+    while #stack > 0 do
+        local current = table.remove(stack)
+        if type(current.v) == 'table' then
+            -- iterate over table
+            for k, v in pairs(current.v) do
+                -- place key value on value stack
+                local keyComponents = {}
+                for i, v in ipairs(current.keyComponents) do
+                    keyComponents[i] = v
+                end
+                keyComponents[#keyComponents + 1] = k
+                stack[#stack + 1] = { k = k, v = v, keyComponents = keyComponents}
+            end
+        else
+            -- we reached terminal value, key should be constracted now
+            local key = ""
+            for i, v in ipairs(current.keyComponents) do
+                if i == 1 then
+                    key = v
+                else
+                    key = key.."."..v
+                end
+            end
+            -- top level has key with "" and this is not needed
+            if key ~= "" then
+                Logging.debug("Added key: "..key)
+                keys[#keys + 1] = key
+            end
+        end
+    end
+    return keys
+end
+
+function Configuration:registerConfigurationDefinition(section, configurationDefinition)
     Logging.info("Setting configuration definition for section: "..section)
     -- if section is not defined initialize with default values
     if self.options[section] == nil and #configurationDefinition > 0 then
-        Logging.info("Section does not exist, and section has defaults in configurationDefinition")
+        Logging.info("Section does not exist, and section has defined defaults in configurationDefinition")
         -- if at least one entry is found, register section
         self.sections[section] = configurationDefinition
         self.options[section] = {}
-        for i, currentOptionDefinition in ipairs(configurationDefinition) do
-            self.options[section][currentOptionDefinition.Name] = currentOptionDefinition.Default
+        for i, currentSectionDefinition in ipairs(configurationDefinition) do
+            for j, currentOptionDefinition in ipairs(currentSectionDefinition.Options) do
+                self:_setOption(self.options, section.."."..currentSectionDefinition.SectionName.."."..currentOptionDefinition.Name, currentOptionDefinition.Default)
+            end
         end
-
     end
 end
 

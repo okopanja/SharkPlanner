@@ -10,8 +10,21 @@ local function basename(filePath)
    return filePath:match("([^\\]+)$")
 end
 
+local function csplit(str,sep)
+   local ret={}
+   local n=1
+   for w in str:gmatch("([^"..sep.."]*)") do
+      ret[n] = ret[n] or w -- only set once (so the blank after a string is ignored)
+      if w=="" then
+         n = n + 1
+      end -- step forwards on a blank but not a string
+   end
+   return ret
+end
+
 return {
   starts_with = starts_with,
   ends_with = ends_with,
-  basename = basename
+  basename = basename,
+  csplit = csplit
 }

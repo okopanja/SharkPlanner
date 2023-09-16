@@ -15,36 +15,45 @@ end
 local function getConfigurationDefinition()
     return {
         {
-            Name = "ABRIS_EnableWayPointEntry",
-            Label = "ABRIS: enable entry of waypoints points",
-            Default = true
-        },
-
-        -- {
-        --     Name = "ABRIS_EnableFixPointEntry"
-        --     Label = "ABRIS: enable entry of fix points (not implemented)",
-        --     Default = false
-        -- },
-        {
-            Name = "ABRIS_EnableTargetPointEntry",
-            Label = "ABRIS: enable entry of target points (experimental)",
-            Default = false
-        },
-        {
-            Name = "PVI-800_EnableWayPointEntry",
-            Label = "ABRIS: enable entry of waypoints points",
-            Default = true
-        },
-        {
-            Name = "PVI-800_EnableFixPointEntry",
-            Label = "ABRIS: enable entry of fix points",
-            Default = true
+            SectionName = "ABRIS",
+            Options = {
+                {
+                    Name = "EnableWayPointEntry",
+                    Label = "Enable entry of waypoints points",
+                    Default = true
+                },
+                -- {
+                --     Name = "EnableFixPointEntry",
+                --     Label = "Enable entry of fix points (not implemented)",
+                --     Default = false
+                -- },
+                -- {
+                --     Name = "EnableTargetPointEntry",
+                --     Label = "Enable entry of target points (experimental)",
+                --     Default = false
+                -- },
+            }
         },
         {
-            Name = "PVI-800_EnableTargetPointEntry",
-            Label = "ABRIS: enable entry of target points",
-            Default = true
-        },
+            SectionName = "PVI-800",
+            Options = {
+                {
+                    Name = "EnableWayPointEntry",
+                    Label = "Enable entry of waypoints points",
+                    Default = true
+                },
+                {
+                    Name = "EnableFixPointEntry",
+                    Label = "Enable entry of fix points",
+                    Default = true
+                },
+                {
+                    Name = "EnableTargetPointEntry",
+                    Label = "Enable entry of target points",
+                    Default = true
+                }        
+            }
+        }
     }
 end
 

@@ -17,12 +17,18 @@ end
 local function getConfigurationDefinition()
     return {
         {
-            Name = "NADIR_EnableSwitchToBUTMode",
-            Label = "NADIR: once entry is complete switch to BUT mode",
-            Default = true
+            SectionName = "NADIR",
+            Options = {
+                {
+                    Name = "EnableSwitchToBUTMode",
+                    Label = "Once entry is complete switch to BUT mode",
+                    Default = true
+                }
+            }
         }
     }
 end
+
 -- Function tries to determine sub variant based on base_module_name and module specific criteria. E.g. by checking if certain device is implemented or not
 -- For modules having single variant the function should return base_module_name
 local function determineVariant(base_module_name)

@@ -21,19 +21,19 @@ local function loadSkin(skinName)
     end
     local result = nil
     local skinFileName = getFullSkinPath(names[skinName])
-    Logging.info("Loading skin file: ".. skinFileName)
+    Logging.debug("Loading skin file: ".. skinFileName)
     local f, err = loadfile(skinFileName)
     if f then
         result = f()
         -- dxgui pictures by default searches within the main installation. 
         -- To workaround that the relative paths of the mode need to be adjusted to absolute paths within user's Saved Games
         for stateName, state in pairs(result.skinData.states) do
-            Logging.info("State: "..stateName)
+            Logging.debug("State: "..stateName)
             for i, style in pairs(state) do                
                 if style.bkg then
                     if style.bkg.file then
                         if Utils.String.starts_with(style.bkg.file, "dxgui") == false and style.bkg.file ~= "$nil$"  then
-                            Logging.info("Correcting path to: "..lfs.writedir() .. style.bkg.file)
+                            Logging.debug("Correcting path to: "..lfs.writedir() .. style.bkg.file)
                             style.bkg.file = lfs.writedir() .. style.bkg.file
                         end
                     end
@@ -41,7 +41,7 @@ local function loadSkin(skinName)
                 if style.picture then
                     if style.picture.file then
                         if Utils.String.starts_with(style.picture.file, "dxgui") == false and style.picture.file ~= "$nil$"  then
-                            Logging.info("Correcting path to: "..lfs.writedir() .. style.picture.file)
+                            Logging.debug("Correcting path to: "..lfs.writedir() .. style.picture.file)
                             style.picture.file = lfs.writedir() .. style.picture.file
                         end
                     end
