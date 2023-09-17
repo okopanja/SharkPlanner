@@ -155,7 +155,9 @@ function Configuration:_getOptionKeys(options)
     return keys
 end
 
-function Configuration:registerConfigurationDefinition(section, configurationDefinition)
+function Configuration:registerConfigurationDefinition(configurationDefinition)
+    local section = configurationDefinition.SectionName
+    if section == nil then return end
     Logging.info("Setting configuration definition for section: "..section)
     -- if section is not defined initialize with default values
     if self.options[section] == nil and #configurationDefinition > 0 then
@@ -164,8 +166,10 @@ function Configuration:registerConfigurationDefinition(section, configurationDef
         self.sections[section] = configurationDefinition
         self.options[section] = {}
         for i, currentSectionDefinition in ipairs(configurationDefinition) do
-            for j, currentOptionDefinition in ipairs(currentSectionDefinition.Options) do
-                self:_setOption(self.options, section.."."..currentSectionDefinition.SectionName.."."..currentOptionDefinition.Name, currentOptionDefinition.Default)
+            if type(currentSectionDefinition) == "table" then
+                for j, currentOptionDefinition in ipairs(currentSectionDefinition.Options) do
+                    self:_setOption(self.options, section.."."..currentSectionDefinition.SectionName.."."..currentOptionDefinition.Name, currentOptionDefinition.Default)
+                end
             end
         end
     end

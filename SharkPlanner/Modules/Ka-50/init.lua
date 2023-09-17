@@ -14,6 +14,7 @@ end
 
 local function getConfigurationDefinition()
     return {
+        SectionName = "Ka-50",
         {
             SectionName = "ABRIS",
             Options = {

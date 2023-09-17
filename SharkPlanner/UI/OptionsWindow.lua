@@ -16,7 +16,7 @@ local OptionsWindow = DialogLoader.spawnDialogFromFile(
 
 local skinMappings = {
   ["Ka-50"] = SkinHelper.loadSkin("buttonConfigurationKa50"),
-  ["SA342Gazelle"] = SkinHelper.loadSkin("buttonConfigurationSA342")
+  ["SA-342 Gazelle"] = SkinHelper.loadSkin("buttonConfigurationSA342")
 }
 
 -- Constructor
@@ -29,6 +29,7 @@ function OptionsWindow:new(o)
     for k, v in pairs(Configuration.sections) do
       Logging.debug("Section found: "..k)
       local btn = Button.new()
+      -- btn:setText(v.SectionName)
       btn:setSkin(skinMappings[k])
       o.panelSections:insertWidget(btn, o.panelSections:getWidgetCount() + 1)
     end

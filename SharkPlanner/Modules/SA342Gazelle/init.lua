@@ -16,6 +16,7 @@ end
 
 local function getConfigurationDefinition()
     return {
+        SectionName = "SA-342 Gazelle",
         {
             SectionName = "NADIR",
             Options = {
