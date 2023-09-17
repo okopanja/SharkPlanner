@@ -11,6 +11,7 @@ local statusWindow = nil
 local waypointListWindow = nil
 local chartWindow = nil
 local transferStatusWindow = nil
+local optionsWindow = nil
 local coordinateData = Base.CoordinateData
 -- local http = require("socket.http")
 Logging.info("Checking if configuration exist")
@@ -107,14 +108,18 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, chartWindow
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, chartWindow, chartWindow.OnFlightPlanLoaded)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, chartWindow, chartWindow.OnFlightPlanSaved)
 
+-- create options window
+optionsWindow = UI.OptionsWindow:new{crosshairWindow = crosshairWindow}
+
 -- create control window, and pass other windows
 window = UI.ControlWindow:new{
-crosshairWindow = crosshairWindow,
-statusWindow = statusWindow,
-waypointListWindow = waypointListWindow,
-coordinateData = coordinateData,
-chartWindow = chartWindow,
-transferStatusWindow = transferStatusWindow
+    crosshairWindow = crosshairWindow,
+    statusWindow = statusWindow,
+    waypointListWindow = waypointListWindow,
+    coordinateData = coordinateData,
+    chartWindow = chartWindow,
+    transferStatusWindow = transferStatusWindow,
+    optionsWindow = optionsWindow
 }
 -- register window to receive vents from coordinateData
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, window, window.OnAddWaypoint)

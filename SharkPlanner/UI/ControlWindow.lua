@@ -176,6 +176,7 @@ function ControlWindow:new(o)
         coordinateData = o.coordinateData,
         statusWindow = o.statusWindow,
         crosshairWindow = o.crosshairWindow,
+        optionsWindow = o.optionsWindow,
         controlWindow = o
       }
       o.ExperimentButton:addChangeCallback(

@@ -20,17 +20,20 @@ local function getConfigurationDefinition()
                 {
                     Name = "EnableWayPointEntry",
                     Label = "Enable entry of waypoints points",
-                    Default = true
-                },
+                    Default = true,
+                    Control = "Checkbox"
+            },
                 -- {
                 --     Name = "EnableFixPointEntry",
                 --     Label = "Enable entry of fix points (not implemented)",
-                --     Default = false
+                --     Default = false,
+                --     Control = "Checkbox"
                 -- },
                 -- {
                 --     Name = "EnableTargetPointEntry",
                 --     Label = "Enable entry of target points (experimental)",
-                --     Default = false
+                --     Default = false,
+                --     Control = "Checkbox"
                 -- },
             }
         },
@@ -40,18 +43,21 @@ local function getConfigurationDefinition()
                 {
                     Name = "EnableWayPointEntry",
                     Label = "Enable entry of waypoints points",
-                    Default = true
+                    Default = true,
+                    Control = "Checkbox"
                 },
                 {
                     Name = "EnableFixPointEntry",
                     Label = "Enable entry of fix points",
-                    Default = true
+                    Default = true,
+                    Control = "Checkbox"
                 },
                 {
                     Name = "EnableTargetPointEntry",
                     Label = "Enable entry of target points",
-                    Default = true
-                }        
+                    Default = true,
+                    Control = "Checkbox"
+                }
             }
         }
     }
