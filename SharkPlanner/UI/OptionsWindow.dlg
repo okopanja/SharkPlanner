@@ -44,7 +44,7 @@ dialog = {
 				["bounds"] = {
 					["x"] = 0,
 					["y"] = 0,
-					["w"] = 86,
+					["w"] = 88,
 					["h"] = 400,
 				},
 				["enabled"] = true,
@@ -69,30 +69,88 @@ dialog = {
 			},
 			["skin"] = {
 				["params"] = {
-					["name"] = "panelMESkin",
+					-- ["name"] = "panelMESkin",
+					["name"] = "scrollPaneSkin",
 				},
-				["states"] = {
-					["released"] = {
-						[1] = {
-							["bkg"] = {
-								["center_bottom"] = "0x00000000",
-								["center_center"] = "0x2d3e5077",
-								["center_top"] = "0x00000000",
-								["file"] = "",
-								["insets"] = "$nil$",
-								["left_bottom"] = "0x00000000",
-								["left_center"] = "0x00000000",
-								["left_top"] = "0x00000000",
-								["right_bottom"] = "0x00000000",
-								["right_center"] = "0x00000000",
-								["right_top"] = "0x00000000",
-							},
+				-- ["states"] = {
+				-- 	["released"] = {
+				-- 		[1] = {
+				-- 			["bkg"] = {
+				-- 				["center_bottom"] = "0x00000000",
+				-- 				["center_center"] = "0x2d3e5077",
+				-- 				["center_top"] = "0x00000000",
+				-- 				["file"] = "",
+				-- 				["insets"] = "$nil$",
+				-- 				["left_bottom"] = "0x00000000",
+				-- 				["left_center"] = "0x00000000",
+				-- 				["left_top"] = "0x00000000",
+				-- 				["right_bottom"] = "0x00000000",
+				-- 				["right_center"] = "0x00000000",
+				-- 				["right_top"] = "0x00000000",
+				-- 			},
+				-- 		},
+				-- 	},
+				-- },
+			},
+			["type"] = "ScrollPane",
+		},
+		["sectionContent"] = {
+			["children"] = {
+            },
+			["params"] = {
+				["bounds"] = {
+					["x"] = 87,
+					["y"] = 0,
+					["w"] = 400 - 88,
+					["h"] = 400,
+				},
+				["enabled"] = true,
+				["layout"] = {
+					["data"] = {
+						["gap"] = 0,
+						["horzAlign"] = {
+							["offset"] = 0,
+							["type"] = "min",
+						},
+						["vertAlign"] = {
+							["offset"] = 0,
+							["type"] = "min",
 						},
 					},
+					["type"] = "vert",
 				},
+				["text"] = "panel0",
+				["tooltip"] = "",
+				["visible"] = true,
+				["zindex"] = 0,
 			},
-			["type"] = "Panel",
-		}, 
+			["skin"] = {
+				["params"] = {
+					-- ["name"] = "panelMESkin",
+					["name"] = "scrollPaneSkin",
+				},
+				-- ["states"] = {
+				-- 	["released"] = {
+				-- 		[1] = {
+				-- 			["bkg"] = {
+				-- 				["center_bottom"] = "0x00000000",
+				-- 				["center_center"] = "0x2d3e5077",
+				-- 				["center_top"] = "0x00000000",
+				-- 				["file"] = "",
+				-- 				["insets"] = "$nil$",
+				-- 				["left_bottom"] = "0x00000000",
+				-- 				["left_center"] = "0x00000000",
+				-- 				["left_top"] = "0x00000000",
+				-- 				["right_bottom"] = "0x00000000",
+				-- 				["right_center"] = "0x00000000",
+				-- 				["right_top"] = "0x00000000",
+				-- 			},
+				-- 		},
+				-- 	},
+				-- },
+			},
+			["type"] = "ScrollPane",
+		},
 	},
 	["version"] = 1,
 }
