@@ -163,7 +163,7 @@ function Configuration:registerConfigurationDefinition(configurationDefinition)
     if self.options[section] == nil and #configurationDefinition > 0 then
         Logging.info("Section does not exist, and section has defined defaults in configurationDefinition")
         -- if at least one entry is found, register section
-        self.sections[section] = configurationDefinition
+        self.sections[#self.sections + 1] = configurationDefinition
         self.options[section] = {}
         for i, currentSectionDefinition in ipairs(configurationDefinition) do
             if type(currentSectionDefinition) == "table" then
@@ -175,5 +175,24 @@ function Configuration:registerConfigurationDefinition(configurationDefinition)
     end
 end
 
+
+local generalConfiguration = {
+    SectionName = "General",
+    {
+        SectionName = "Logging",
+        Options = {
+            {
+                Name = "Verbosity",
+                Label = "Verbosity level",
+                Default = true,
+                Control = "ComboBox"
+            },
+        }
+    },
+}
+
+local singleton = Configuration:new{}
+singleton:registerConfigurationDefinition(generalConfiguration)
+
 -- Singleton since the result gets cached by require directive
-return Configuration:new{}
+return singleton

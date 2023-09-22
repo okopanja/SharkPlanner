@@ -8,7 +8,7 @@ local Skin = require("Skin")
 local SkinUtils = require("SkinUtils")
 local Static = require("Static")
 local Configuration = require("SharkPlanner.Base.Configuration")
-local Button			= require("Button")
+local ToggleButton			= require("ToggleButton")
 local Panel			= require("Panel")
 local ScrollPane = require("ScrollPane")
 local Static = require("Static")
@@ -18,14 +18,9 @@ local OptionsWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\OptionsWindow.dlg"
 )
 
-local skinMappings = {
-  ["Ka-50"] = SkinHelper.loadSkin("buttonConfigurationKa50"),
-  ["SA-342 Gazelle"] = SkinHelper.loadSkin("buttonConfigurationSA342")
-}
 
 local staticConfigurationSectionTitleSkin = SkinHelper.loadSkin("staticConfigurationSectionTitle")
-local statusSkin = SkinHelper.loadSkin("staticSkinSharkPlannerStatus")
-
+local toggleConfigurationSidePanel = SkinHelper.loadSkin("toggleConfigurationSidePanel")
 -- Constructor
 function OptionsWindow:new(o)
     o = o or {}
@@ -34,12 +29,17 @@ function OptionsWindow:new(o)
     self.__index = self
     local x, y, w, h = o.crosshairWindow:getBounds()
     local first = true
-    Logging.info("Creating options window")
-    for k, v in pairs(Configuration.sections) do
-      Logging.debug("Section found: "..k)
-      local btn = Button.new()
-      btn.sectionName = k
-      btn:setSkin(skinMappings[k])
+    local sidePanelWidth, sidePanelHeight = o.sidePanel:getSize()
+    Logging.debug("Creating options window")
+    for i, section in ipairs(Configuration.sections) do
+      Logging.debug("Section found: "..section.SectionName)
+      local btn = ToggleButton.new()
+      -- button needs to be aware of the it's section name
+      btn.sectionName = section.SectionName
+      btn:setText(section.SectionName)
+      btn:setSkin(toggleConfigurationSidePanel)
+      -- btn:setSize(100,26)
+      -- register button click to ensure that setions are navigable
       btn:addChangeCallback(
         function(button)
           Logging.debug("Clicked on: "..button.sectionName)
@@ -47,22 +47,25 @@ function OptionsWindow:new(o)
           local newWidget = o.sectionPanels[button.sectionName]
           if newWidget ~= currentWidget then
             Logging.debug("Replacing content")
+            o.sidePanel.selectedButton:setState(false)
+            o.sidePanel.selectedButton = button
             o.sectionContent:removeWidget(currentWidget)
             o.sectionContent:insertWidget(newWidget)
           else
-            Logging.debug("Same section selection, ignoring")
+            Logging.debug("Clicked section is already active, ignoring")
+            o.sidePanel.selectedButton:setState(true)
           end
         end
       )
 
-      o.panelSections:insertWidget(btn, o.panelSections:getWidgetCount() + 1)
-      -- create Panel
+      o.sidePanel:insertWidget(btn, o.sidePanel:getWidgetCount() + 1)
+      -- create Panel for section content
       local panel = Panel.new()
       panel:setBounds(0,0,200,200)
-      o.sectionPanels[k] = panel
+      o.sectionPanels[section.SectionName] = panel
       local sectionTitle = Static.new()
       -- o.sectionContent:insertWidget(sectionTitle, o.sectionContent:getWidgetCount() + 1)
-      sectionTitle:setText(k)
+      sectionTitle:setText(section.SectionName)
       sectionTitle:setBounds(0,0,200,30)
       sectionTitle:setVisible(true)
       sectionTitle:setSkin(staticConfigurationSectionTitleSkin)
@@ -70,12 +73,13 @@ function OptionsWindow:new(o)
       panel:insertWidget(sectionTitle)
       if first then
         o.sectionContent:insertWidget(panel, o.sectionContent:getWidgetCount() + 1)
+        btn:setState(true)
+        o.sidePanel.selectedButton = btn
         first = false
       end
     end
-    -- o.panelSections:getLayout():updateSize()
-    o:setBounds(x, y - h, w, h)
-    -- o:setVisible(true)
+    o:setBounds(x, y - (h / 2), w, h)
+    o:setVisible(true)
     return o
 end
 

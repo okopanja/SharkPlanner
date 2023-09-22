@@ -23,7 +23,7 @@ local function getConfigurationDefinition()
                     Label = "Enable entry of waypoints points",
                     Default = true,
                     Control = "Checkbox"
-            },
+                },
                 -- {
                 --     Name = "EnableFixPointEntry",
                 --     Label = "Enable entry of fix points (not implemented)",

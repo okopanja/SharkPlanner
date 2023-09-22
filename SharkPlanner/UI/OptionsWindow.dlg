@@ -1,3 +1,4 @@
+local sidePanelWidth = 122
 dialog = {
     ["type"] = "Window",
     ["params"] = {
@@ -37,14 +38,14 @@ dialog = {
       }
     },
     ["children"] = {
-		["panelSections"] = {
+		["sidePanel"] = {
 			["children"] = {
             },
 			["params"] = {
 				["bounds"] = {
 					["x"] = 0,
 					["y"] = 0,
-					["w"] = 88,
+					["w"] = sidePanelWidth,
 					["h"] = 400,
 				},
 				["enabled"] = true,
@@ -99,9 +100,9 @@ dialog = {
             },
 			["params"] = {
 				["bounds"] = {
-					["x"] = 87,
+					["x"] = sidePanelWidth - 1,
 					["y"] = 0,
-					["w"] = 400 - 88,
+					["w"] = 400 - sidePanelWidth,
 					["h"] = 400,
 				},
 				["enabled"] = true,
