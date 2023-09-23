@@ -13,6 +13,7 @@ function Configuration:new (o)
   self.__index = self
   o.options = {}
   o.sections = {}
+  o.updateCallbacks = {}
   return o
 end
 
@@ -92,6 +93,9 @@ function Configuration:_getOption(options, option)
 end
 
 function Configuration:setOption(option, value)
+    if self.updateCallbacks[option] ~= nil then
+        self.updateCallbacks[option](value)
+    end
     return self:_setOption(self.options, option, value)
 end
 
@@ -168,7 +172,12 @@ function Configuration:registerConfigurationDefinition(configurationDefinition)
         for i, currentSectionDefinition in ipairs(configurationDefinition) do
             if type(currentSectionDefinition) == "table" then
                 for j, currentOptionDefinition in ipairs(currentSectionDefinition.Options) do
-                    self:_setOption(self.options, section.."."..currentSectionDefinition.SectionName.."."..currentOptionDefinition.Name, currentOptionDefinition.Default)
+                    local optionKey = section.."."..currentSectionDefinition.SectionName.."."..currentOptionDefinition.Name
+                    self:_setOption(self.options, optionKey, currentOptionDefinition.Default)
+                    -- register callback if option value must be changed in realtime
+                    if currentOptionDefinition.UpdateCallback then
+                        self.updateCallbacks[optionKey] = currentOptionDefinition.UpdateCallback
+                    end
                 end
             end
         end
@@ -184,8 +193,15 @@ local generalConfiguration = {
             {
                 Name = "Verbosity",
                 Label = "Verbosity level",
-                Default = true,
-                Control = "ComboBox"
+                Default = Logging.LOG_LEVELS.INFO.name,
+                Control = "ComboBox",
+                Items = {
+                    Logging.LOG_LEVELS.ERROR,
+                    Logging.LOG_LEVELS.INFO,
+                    Logging.LOG_LEVELS.WARNING,
+                    Logging.LOG_LEVELS.DEBUG,
+                },
+                UpdateCallback = Logging.updateVerbosity
             },
         }
     },

@@ -111,7 +111,7 @@ dialog = {
 						["gap"] = 0,
 						["horzAlign"] = {
 							["offset"] = 0,
-							["type"] = "min",
+							["type"] = "middle",
 						},
 						["vertAlign"] = {
 							["offset"] = 0,

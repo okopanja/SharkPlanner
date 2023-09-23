@@ -194,12 +194,30 @@ dialog = {
       },
       ["type"] = "ToggleButton",
     },
-    ["ExperimentButton"] = {
+    ["OptionsButton"] = {
       ["params"] = {
         ["bounds"] = {
           ["x"] = 348,
           ["y"] = 0,
-          ["w"] = 50,
+          ["w"] = 26,
+          ["h"] = 26,
+        },
+        ["enabled"] = true,
+        ["state"] = false,
+        ["tabOrder"] = 0,
+        ["text"] = "...",
+        ["tooltip"] = "Options",
+        ["visible"] = true,
+        ["zindex"] = 1
+      },
+      ["type"] = "ToggleButton"
+    },
+    ["ExperimentButton"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 374,
+          ["y"] = 0,
+          ["w"] = 26,
           ["h"] = 26,
         },
         ["enabled"] = true,

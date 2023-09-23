@@ -23,7 +23,8 @@ local function getConfigurationDefinition()
                 {
                     Name = "EnableSwitchToBUTMode",
                     Label = "Once entry is complete switch to BUT mode",
-                    Default = true
+                    Default = true,
+                    Control = "CheckBox"
                 }
             }
         }
