@@ -102,19 +102,19 @@ dialog = {
 				["bounds"] = {
 					["x"] = sidePanelWidth - 1,
 					["y"] = 0,
-					["w"] = 400 - sidePanelWidth,
-					["h"] = 400,
+					["w"] = 500 - sidePanelWidth,
+					["h"] = 500,
 				},
 				["enabled"] = true,
 				["layout"] = {
 					["data"] = {
 						["gap"] = 0,
 						["horzAlign"] = {
-							["offset"] = 0,
-							["type"] = "middle",
+							["offset"] = 10,
+							["type"] = "min",
 						},
 						["vertAlign"] = {
-							["offset"] = 0,
+							["offset"] = 10,
 							["type"] = "min",
 						},
 					},

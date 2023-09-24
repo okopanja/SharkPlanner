@@ -25,7 +25,9 @@ local OptionsWindow = DialogLoader.spawnDialogFromFile(
 
 
 local staticConfigurationSectionTitleSkin = SkinHelper.loadSkin("staticConfigurationSectionTitle")
+local staticConfigurationOptionLabelSkin = SkinHelper.loadSkin("staticConfigurationOptionLabel")
 local toggleConfigurationSidePanel = SkinHelper.loadSkin("toggleConfigurationSidePanel")
+local checkboxFlipSwitchGreen = SkinHelper.loadSkin("checkboxFlipSwitchGreen")
 local comboBoxSkin = SkinHelper.loadSkin("comboBox")
 
 -- Constructor
@@ -50,7 +52,7 @@ function OptionsWindow:new(o)
         btn:setState(true)
       end
     end
-    o:setBounds(x - h, y, w, h)
+    o:setBounds(x - h - 100, y, w + 100, h)
     -- o:setVisible(true)
     return o
 end
@@ -94,6 +96,7 @@ function OptionsWindow:createSectionPanel(section)
   local sectionPanel = Panel.new()
   sectionPanel:setBounds(0,0,200,200)
   local sectionLayout = LayoutFactory.createLayout("vert", VertLayout.newLayout())
+  sectionLayout:setGap(20)
   sectionLayout:setVertAlign(
     {
       ["offset"] = 0,
@@ -119,6 +122,7 @@ function OptionsWindow:createSubSectionPanel(section, subSection)
   Logging.debug("Adding subsection: "..subSection.SectionName)
   local subSectionPanel = Panel.new()
   local subSectionLayout = LayoutFactory.createLayout("vert", VertLayout.newLayout())
+  subSectionLayout:setGap(10)
   subSectionLayout:setVertAlign(
     {
       ["offset"] = 0,
@@ -128,7 +132,7 @@ function OptionsWindow:createSubSectionPanel(section, subSection)
   subSectionLayout:setHorzAlign(
     {
       ["offset"] = 0,
-      ["type"] = "middle",
+      ["type"] = "min",
     }
   )
   subSectionPanel:setLayout(subSectionLayout)
@@ -149,11 +153,25 @@ end
 function OptionsWindow:createOptionPanel(section, subSection, option)
   local optionPanel = Panel.new()
   local optionPanelLayout = LayoutFactory.createLayout("horz", HorzLayout.newLayout())
+
+  optionPanelLayout:setGap(10)
+  optionPanelLayout:setVertAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  optionPanelLayout:setHorzAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "min",
+    }
+  )  
   -- local optionPanelLayout = LayoutFactory.createLayout("vert", VertLayout.newLayout())
   optionPanel:setLayout(optionPanelLayout)
   local optionLabel = Static.new()
   optionLabel:setText(option.Label)
-  optionLabel:setSkin(staticConfigurationSectionTitleSkin)
+  optionLabel:setSkin(staticConfigurationOptionLabelSkin)
   optionLabel:setVisible(true)
   optionPanel:insertWidget(optionLabel)
 
@@ -185,6 +203,7 @@ end
 
 function OptionsWindow:createCheckBox(configKey, configValue)
   local control = CheckBox.new()
+  -- control:setSkin(checkboxFlipSwitchGreen)
   control:setState(configValue)
   control:addChangeCallback(
     function(control)

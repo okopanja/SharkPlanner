@@ -2,6 +2,10 @@ local skin = {
 	["skinData"] = {
 		["params"] = {
 			["textLineHeight"] = 0,
+			["minSize"] = {
+				["horz"] = 245,
+				["vert"] = 0,
+			}
 		},
 		["states"] = {
 			["disabled"] = {
@@ -38,9 +42,9 @@ local skin = {
 						["bkgColor"] = "0x00000000",
 						["blur"] = 0,
 						["blurColor"] = "0x00000000",
-						['color'] = "0xb2edb9ff",
+						["color"] = "0xffffffff",
 						["font"] = "DejaVuLGCSansCondensed.ttf",
-						["fontSize"] = 20,
+						["fontSize"] = 13,
 						["horzAlign"] = {
 							["offset"] = 0,
 							["type"] = "min",
@@ -48,10 +52,10 @@ local skin = {
 						["lineHeight"] = 0,
 						["lineThroughColor"] = "0x00000000",
 						["lineThroughHeight"] = 1,
-						["shadowColor"] = "0x000000ff",
+						["shadowColor"] = "0x00000000",
 						["shadowOffset"] = {
-							["horz"] = 1,
-							["vert"] = 1,
+							["horz"] = 0,
+							["vert"] = 0,
 						},
 						["vertAlign"] = {
 							["offset"] = 0,

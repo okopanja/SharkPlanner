@@ -17,7 +17,7 @@ local skin = {
 				["vert"] = 26,
 			},
 			["minSize"] = {
-				["horz"] = 100,
+				["horz"] = 80,
 				["vert"] = 26,
 			},
 			["textLineHeight"] = 0,
