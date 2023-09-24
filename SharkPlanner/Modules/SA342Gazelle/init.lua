@@ -21,8 +21,8 @@ local function getConfigurationDefinition()
             SectionName = "NADIR",
             Options = {
                 {
-                    Name = "EnableSwitchToBUTMode",
-                    Label = "Once entry is complete switch to BUT mode",
+                    Name = "EnableSelectWaypoint1",
+                    Label = "Select waypoint 1",
                     Default = true,
                     Control = "CheckBox"
                 }

@@ -74,17 +74,7 @@ end
 
 function KA50IIICommandGenerator:generateCommands(waypoints, fixpoints, targets)
   local commands = {}
-  local mode = Export.GetDevice(9):get_mode()
-  mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
-  Logging.info("ABRIS mode: "..mode)
-  -- if there are targets or targets for removal prepare ABRIS targets commands
-  if #targets > 0 or #self.targetRemovalList > 0 then
-    Logging.info("Entering ABRIS targets")
-    self:prepareABRISTargetCommands(commands, targets)
-  end
-  if #waypoints > 0 then
-    self:prepareABRISWaypointCommands(commands, waypoints)
-  end
+  self:prepareABRISCommands(commands, waypoints, fixpoints, targets)
   self:preparePVI800Commands(commands, waypoints, fixpoints, targets)
   return commands
 end
@@ -209,6 +199,25 @@ function KA50IIICommandGenerator:pvi800PressDigitBtn(commands, digit, comment)
     return
   end
   commands[#commands + 1] = Command:new():setName("PVI-800: press digit "..digit):setComment(comment):setDevice(20):setCode(3001 + digit):setDelay(default_delay):setIntensity(1):setDepress(true)
+end
+
+function KA50IIICommandGenerator:prepareABRISCommands(commands, waypoints, fixpoints, targets)
+  local mode = Export.GetDevice(9):get_mode()
+  mode = tostring(mode.master)..tostring(mode.level_2)..tostring(mode.level_3)..tostring(mode.level_4)
+  Logging.debug("ABRIS mode: "..mode)
+  -- if there are targets or targets for removal prepare ABRIS targets commands
+  if Configuration:getOption("Ka-50.ABRIS.EnableTargetPointEntry") then
+    if #targets > 0 or #self.targetRemovalList > 0 then
+      Logging.info("Entering ABRIS targets")
+      self:prepareABRISTargetCommands(commands, targets)
+    end
+  end
+  if Configuration:getOption("Ka-50.ABRIS.EnableWayPointEntry") then
+    if #waypoints > 0 then
+      self:prepareABRISWaypointCommands(commands, waypoints)
+    end
+  end
+  return commands
 end
 
 -- Function for ABRIS waypoints

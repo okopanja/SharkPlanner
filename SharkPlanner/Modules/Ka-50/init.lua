@@ -30,12 +30,12 @@ local function getConfigurationDefinition()
                 --     Default = false,
                 --     Control = "CheckBox"
                 -- },
-                -- {
-                --     Name = "EnableTargetPointEntry",
-                --     Label = "Enable entry of target points (experimental)",
-                --     Default = false,
-                --     Control = "CheckBox"
-                -- },
+                {
+                    Name = "EnableTargetPointEntry",
+                    Label = "Enable entry of target points (experimental)",
+                    Default = false,
+                    Control = "CheckBox"
+                },
             }
         },
         {
