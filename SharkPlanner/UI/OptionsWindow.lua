@@ -52,7 +52,7 @@ function OptionsWindow:new(o)
         btn:setState(true)
       end
     end
-    o:setBounds(x - h - 80, y, w + 80, h)
+    o:setBounds(x - h - 95, y, w + 95, h)
     -- o:setVisible(true)
     return o
 end
