@@ -38,7 +38,7 @@ end
 function GazelleCommandGenerator:generateCommands(waypoints, fixpoints, targets)
   local delay = default_delay
   local commands = {}
-  
+
   self:nadirPlaceIntoBUTmode(commands)
   self:nadirEnterWapoints(commands, waypoints)
 
