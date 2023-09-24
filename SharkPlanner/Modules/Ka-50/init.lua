@@ -12,6 +12,58 @@ local function getCommandGenerators()
     return COMMAND_GENERATORS
 end
 
+local function getConfigurationDefinition()
+    return {
+        SectionName = "Ka-50",
+        {
+            SectionName = "ABRIS",
+            Options = {
+                {
+                    Name = "EnableWayPointEntry",
+                    Label = "Enable entry of waypoints points",
+                    Default = true,
+                    Control = "CheckBox"
+                },
+                -- {
+                --     Name = "EnableFixPointEntry",
+                --     Label = "Enable entry of fix points (not implemented)",
+                --     Default = false,
+                --     Control = "CheckBox"
+                -- },
+                -- {
+                --     Name = "EnableTargetPointEntry",
+                --     Label = "Enable entry of target points (experimental)",
+                --     Default = false,
+                --     Control = "CheckBox"
+                -- },
+            }
+        },
+        {
+            SectionName = "PVI-800",
+            Options = {
+                {
+                    Name = "EnableWayPointEntry",
+                    Label = "Enable entry of waypoints points",
+                    Default = true,
+                    Control = "CheckBox"
+                },
+                {
+                    Name = "EnableFixPointEntry",
+                    Label = "Enable entry of fix points",
+                    Default = true,
+                    Control = "CheckBox"
+                },
+                {
+                    Name = "EnableTargetPointEntry",
+                    Label = "Enable entry of target points",
+                    Default = true,
+                    Control = "CheckBox"
+                }
+            }
+        }
+    }
+end
+
 -- Function tries to determine sub variant based on base_module_name and module specific criteria. E.g. by checking if certain device is implemented or not
 -- For modules having single variant the function should return base_module_name
 local function determineVariant(base_module_name)
@@ -30,5 +82,6 @@ end
 -- return module
 return {
     getCommandGenerators = getCommandGenerators,
-    determineVariant = determineVariant
+    determineVariant = determineVariant,
+    getConfigurationDefinition = getConfigurationDefinition
 }

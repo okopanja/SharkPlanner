@@ -1,10 +1,10 @@
 local net = require("net")
 
 local LOG_LEVELS = {
-  INFO    = { name = "INFO",    level = 0 },
-  WARNING = { name = "WARNING", level = 1 },
-  ERROR   = { name = "ERROR",   level = 2 },
-  DEBUG   = { name = "DEBUG",   level = 3 },
+  INFO    = { name = "INFO",    value = 0 },
+  WARNING = { name = "WARNING", value = 1 },
+  ERROR   = { name = "ERROR",   value = 2 },
+  DEBUG   = { name = "DEBUG",   value = 3 },
 }
 
 local fp = io.open(lfs.writedir().."Logs\\SharkPlanner.log", "w")
@@ -16,31 +16,39 @@ local function log(level, message)
 end
 
 local function info(message)
-  if verbosity.level >= LOG_LEVELS.INFO.level then
+  if verbosity.value >= LOG_LEVELS.INFO.value then
     log(LOG_LEVELS.INFO, message)
   end
 end
 
 local function warning(message)
-  if verbosity.level >= LOG_LEVELS.WARNING.level then
+  if verbosity.value >= LOG_LEVELS.WARNING.value then
     log(LOG_LEVELS.WARNING, message)
   end
 end
 
 local function error(message)
-  if verbosity.level >= LOG_LEVELS.ERROR.level then
+  if verbosity.value >= LOG_LEVELS.ERROR.value then
     log(LOG_LEVELS.ERROR, message)
   end
 end
 
 local function debug(message)
-  if verbosity.level >= LOG_LEVELS.ERROR.level then
+  if verbosity.value >= LOG_LEVELS.DEBUG.value then
     log(LOG_LEVELS.DEBUG, message)
   end
 end
 
 local function setLogLevel(logLevel)
+  info("Changing log level to: "..logLevel.name)
   verbosity = logLevel
+end
+
+local function updateVerbosity(logLevelName)
+  local logLevel = LOG_LEVELS[logLevelName]
+  if logLevel ~= nil then
+    setLogLevel(logLevel)
+  end
 end
 
 return {
@@ -50,5 +58,6 @@ return {
   error = error,
   debug = debug,
   setLogLevel = setLogLevel,
+  updateVerbosity = updateVerbosity,
   LOG_LEVELS = LOG_LEVELS
 }

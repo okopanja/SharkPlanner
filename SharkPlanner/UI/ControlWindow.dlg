@@ -194,12 +194,30 @@ dialog = {
       },
       ["type"] = "ToggleButton",
     },
-    ["ExperimentButton"] = {
+    ["OptionsButton"] = {
       ["params"] = {
         ["bounds"] = {
           ["x"] = 348,
           ["y"] = 0,
-          ["w"] = 50,
+          ["w"] = 26,
+          ["h"] = 26,
+        },
+        ["enabled"] = true,
+        ["state"] = false,
+        ["tabOrder"] = 0,
+        ["text"] = "...",
+        ["tooltip"] = "Options",
+        ["visible"] = true,
+        ["zindex"] = 1
+      },
+      ["type"] = "ToggleButton"
+    },
+    ["ExperimentButton"] = {
+      ["params"] = {
+        ["bounds"] = {
+          ["x"] = 374,
+          ["y"] = 0,
+          ["w"] = 26,
           ["h"] = 26,
         },
         ["enabled"] = true,
@@ -216,250 +234,5 @@ dialog = {
       },
       ["type"] = "Button"
     },
-
-    -- ["WaypointSwitchLabel"] = {
-    -- 	["params"] = {
-    -- 		["bounds"] = {
-    --       ["x"] = 270,
-    --       ["y"] = 0,
-    --       ["w"] = 30,
-    -- 			["h"] = 30,
-    -- 		},
-    -- 		["enabled"] = true,
-    -- 		["text"] = "W",
-    -- 		["tooltip"] = "Waypoints",
-    -- 		["visible"] = true,
-    -- 		["zindex"] = 0,
-    -- 	},
-    -- 	["skin"] = {
-    -- 		["params"] = {
-    -- 			["name"] = "buttonSkinAwacs",
-    -- 		},
-    -- 	},
-    -- 	["type"] = "Static",
-    -- },
-    -- ["WaypointTargetCheckBox"] = {
-    -- 	["params"] = {
-    -- 		["bounds"] = {
-    --       ["x"] = 360,
-    -- 			["y"] = 0,
-    --       ["w"] = 60,
-    -- 			["h"] = 30,
-    -- 		},
-    -- 		["enabled"] = true,
-    -- 		["state"] = false,
-    -- 		["tabOrder"] = 0,
-    -- 		["text"] = "",
-    -- 		["tooltip"] = "",
-    -- 		["visible"] = true,
-    -- 		["zindex"] = 6,
-    -- 	},
-    -- 	["skin"] = {
-    -- 		["params"] = {
-    -- 			["name"] = "checkBoxSkin_options",
-    -- 		},
-    -- 		["states"] = {
-    -- 			["hover"] = {
-    -- 				[1] = {
-    -- 					["check"] = {
-    -- 						["color"] = "$nil$",
-    -- 						["file"] = "$nil$",
-    -- 					},
-    -- 					["picture"] = {
-    -- 						["color"] = "0xffffffff",
-    -- 						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\buttons(new)\\slide\\slideoffhover.png",
-    -- 					},
-    -- 					["text"] = {
-    -- 						["blur"] = "$nil$",
-    -- 						["color"] = "$nil$",
-    -- 						["font"] = "$nil$",
-    -- 						["fontSize"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 				},
-    -- 				[2] = {
-    -- 					["check"] = {
-    -- 						["color"] = "$nil$",
-    -- 						["file"] = "$nil$",
-    -- 					},
-    -- 					["picture"] = {
-    -- 						["color"] = "0xffffffff",
-    -- 						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\buttons(new)\\slide\\slideonhover.png",
-    -- 					},
-    -- 					["text"] = {
-    -- 						["blur"] = "$nil$",
-    -- 						["color"] = "$nil$",
-    -- 						["font"] = "$nil$",
-    -- 						["fontSize"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 				},
-    -- 			},
-    -- 			["pressed"] = {
-    -- 				[1] = {
-    -- 					["text"] = {
-    -- 						["blur"] = "$nil$",
-    -- 						["color"] = "$nil$",
-    -- 						["font"] = "$nil$",
-    -- 						["fontSize"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 						["shadowOffset"] = {
-    -- 							["horz"] = "$nil$",
-    -- 							["vert"] = "$nil$",
-    -- 						},
-    -- 						["vertAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 				},
-    -- 				[2] = {
-    -- 					["text"] = {
-    -- 						["blur"] = "$nil$",
-    -- 						["color"] = "$nil$",
-    -- 						["font"] = "$nil$",
-    -- 						["fontSize"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 						["shadowOffset"] = {
-    -- 							["horz"] = "$nil$",
-    -- 							["vert"] = "$nil$",
-    -- 						},
-    -- 						["vertAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 				},
-    -- 			},
-    -- 			["released"] = {
-    -- 				[1] = {
-    -- 					["bkg"] = {
-    -- 						["center_bottom"] = "$nil$",
-    -- 						["center_center"] = "$nil$",
-    -- 						["center_top"] = "$nil$",
-    -- 						["file"] = "$nil$",
-    -- 						["insets"] = "$nil$",
-    -- 						["left_bottom"] = "$nil$",
-    -- 						["left_center"] = "$nil$",
-    -- 						["left_top"] = "$nil$",
-    -- 						["right_bottom"] = "$nil$",
-    -- 						["right_center"] = "$nil$",
-    -- 						["right_top"] = "$nil$",
-    -- 					},
-    -- 					["check"] = {
-    -- 						["color"] = "$nil$",
-    -- 						["file"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 						["rect"] = {
-    -- 							["x1"] = "$nil$",
-    -- 							["x2"] = "$nil$",
-    -- 							["y1"] = "$nil$",
-    -- 							["y2"] = "$nil$",
-    -- 						},
-    -- 						["size"] = {
-    -- 							["horz"] = "$nil$",
-    -- 							["vert"] = "$nil$",
-    -- 						},
-    -- 						["userTexSampler"] = "$nil$",
-    -- 						["vertAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 					["picture"] = {
-    -- 						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\buttons(new)\\slide\\slideoffrl.png",
-    -- 					},
-    -- 					["text"] = {
-    -- 						["blur"] = "$nil$",
-    -- 						["color"] = "$nil$",
-    -- 						["font"] = "$nil$",
-    -- 						["fontSize"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 						["shadowOffset"] = {
-    -- 							["horz"] = "$nil$",
-    -- 							["vert"] = "$nil$",
-    -- 						},
-    -- 						["vertAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 				},
-    -- 				[2] = {
-    -- 					["check"] = {
-    -- 						["color"] = "$nil$",
-    -- 						["file"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 						["rect"] = {
-    -- 							["x1"] = "$nil$",
-    -- 							["x2"] = "$nil$",
-    -- 							["y1"] = "$nil$",
-    -- 							["y2"] = "$nil$",
-    -- 						},
-    -- 						["size"] = {
-    -- 							["horz"] = "$nil$",
-    -- 							["vert"] = "$nil$",
-    -- 						},
-    -- 						["userTexSampler"] = "$nil$",
-    -- 						["vertAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 					["picture"] = {
-    -- 						["file"] = "dxgui\\skins\\skinme\\images\\buttons\\buttons(new)\\slide\\slideonrl.png",
-    -- 					},
-    -- 					["text"] = {
-    -- 						["blur"] = "$nil$",
-    -- 						["color"] = "$nil$",
-    -- 						["font"] = "$nil$",
-    -- 						["fontSize"] = "$nil$",
-    -- 						["horzAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 						["shadowOffset"] = {
-    -- 							["horz"] = "$nil$",
-    -- 							["vert"] = "$nil$",
-    -- 						},
-    -- 						["vertAlign"] = {
-    -- 							["offset"] = "$nil$",
-    -- 						},
-    -- 					},
-    -- 				},
-    -- 			},
-    -- 		},
-    -- 	},
-    -- 	["type"] = "CheckBox",
-    -- },
-    -- ["TargetSwitchLabel"] = {
-    -- 	["params"] = {
-    -- 		["bounds"] = {
-    --       ["x"] = 360,
-    --       ["y"] = 0,
-    -- 			["h"] = 30,
-    -- 			["w"] = 30,
-    -- 		},
-    -- 		["enabled"] = true,
-    -- 		["text"] = "T",
-    -- 		["tooltip"] = "Targets",
-    -- 		["visible"] = true,
-    -- 		["zindex"] = 0,
-    -- 	},
-    -- 	["skin"] = {
-    -- 		["params"] = {
-    -- 			["name"] = "buttonSkinAwacs",
-    -- 		},
-    -- 	},
-    -- 	["type"] = "Static",
-    -- },
   }
 }

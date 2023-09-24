@@ -3,6 +3,7 @@ local BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator")
 local Command = require("SharkPlanner.Base.Command")
 local Position = require("SharkPlanner.Base.Position")
 local ABRISZoomRange = require("SharkPlanner.Modules.Ka-50.ABRISZoomRange")
+local Configuration = require("SharkPlanner.Base.Configuration")
 require("math")
 
 local default_delay = 100 -- default delay in ms
@@ -90,6 +91,13 @@ end
 
 -- main function for PVI commands
 function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, fixpoints, targets)
+  local EnableWayPointEntry = Configuration:getOption("Ka-50.PVI-800.EnableWayPointEntry")
+  local EnableFixPointEntry = Configuration:getOption("Ka-50.PVI-800.EnableFixPointEntry")
+  local EnableTargetPointEntry = Configuration:getOption("Ka-50.PVI-800.EnableTargetPointEntry")
+  if not(EnableWayPointEntry or EnableFixPointEntry or EnableTargetPointEntry) then
+    Logging.info("Skipping PVI-800 entry, since no options for entry are specified.")
+    return
+  end
   -- cycle waypoint, fixpoints, airports (to ensure proper mode), then select waypoint 1
   self:pvi800PressWaypointBtn(commands)
   self:pvi800PressFixpointBtn(commands)
@@ -100,34 +108,42 @@ function KA50IIICommandGenerator:preparePVI800Commands(commands, waypoints, fixp
   -- entry of waypoints positions
   self:pvi800SwitchToEntryMode(commands)
   -- enter waypoints if any
-  if #waypoints > 0 then
-    self:pvi800PressWaypointBtn(commands)
-    self:pvi800EnterPositions(commands, waypoints)
+  if EnableWayPointEntry then
+    if #waypoints > 0 then
+      self:pvi800PressWaypointBtn(commands)
+      self:pvi800EnterPositions(commands, waypoints)
+    end
   end
   -- enter fixpoints if any
-  if #fixpoints > 0 then
+  if EnableFixPointEntry then
+    if #fixpoints > 0 then
     self:pvi800PressFixpointBtn(commands)
     self:pvi800EnterPositions(commands, fixpoints)
+    end
   end
   -- enter targets if any
-  if #targets > 0 then
-    self:pvi800PressNavTargetBtn(commands)
-    self:pvi800EnterPositions(commands, targets)
+  if EnableTargetPointEntry then
+    if #targets > 0 then
+      self:pvi800PressNavTargetBtn(commands)
+      self:pvi800EnterPositions(commands, targets)
+    end
   end
   -- switch to operation mode
   self:pvi800SwitchToOperMode(commands)
-  -- enter route consisting of previosly entered waypoints
-  for digit, waypoint in pairs(waypoints) do
-    self:pvi800PressDigitBtn(commands, digit, "Waypoint: "..digit)
-    self:pvi800PressEnterBtn(commands)
-  end
-  -- self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
-  self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
-  self:pvi800PressWaypointBtn(commands)
-  if #waypoints < 6 then
+  if EnableWayPointEntry then
+    -- enter route consisting of previosly entered waypoints
+    for digit, waypoint in pairs(waypoints) do
+      self:pvi800PressDigitBtn(commands, digit, "Waypoint: "..digit)
+      self:pvi800PressEnterBtn(commands)
+    end
+    -- self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
+    self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
     self:pvi800PressWaypointBtn(commands)
+    if #waypoints < 6 then
+      self:pvi800PressWaypointBtn(commands)
+    end
+    self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
   end
-  self:pvi800PressDigitBtn(commands, 1, "Activate waypoint 1")
 end
 
 function KA50IIICommandGenerator:pvi800EnterPositions(commands, positions)
