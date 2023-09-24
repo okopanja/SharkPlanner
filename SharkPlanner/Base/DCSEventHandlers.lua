@@ -217,7 +217,7 @@ function DCSEventHandlers.scheduleCommands(commands)
   Logging.info("Expected schedule start: "..schedule_time)
   for k, command in pairs(commands) do
     command:setSchedule(schedule_time)
-    Logging.info(command:getText())
+    Logging.debug(command:getText())
     -- adjust the schedule_time by delay caused by current command. (causes all remaning to be delayed)
     schedule_time = schedule_time + (command:getDelay() / 1000)
   end

@@ -290,17 +290,17 @@ function KA50IIICommandGenerator:abrisCycleToMenuMode(commands)
 end
 
 function KA50IIICommandGenerator:abrisWorkaroundInitialSNSDrift(commands, selfX, selfZ)
-  Logging.info("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
+  Logging.debug("abrisWorkaroundInitialSNSDrift, zoom level: "..self.zoomLevel)
 
   local dummyRoute = {}
   dummyRoute[#dummyRoute + 1] = Position:new{x = selfX, y = 0, z = selfZ, longitude = 0, latitude = 0 }
-  Logging.info("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
+  Logging.debug("Before abrisUnloadRoute, zoom level: "..self.zoomLevel)
   self:abrisUnloadRoute(commands)
-  Logging.info("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
+  Logging.debug("Before abrisStartRouteEntry, zoom level: "..self.zoomLevel)
   self:abrisStartRouteEntry(commands)
-  Logging.info("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
+  Logging.debug("Before abrisEnterRouteWaypoints, zoom level: "..self.zoomLevel)
   self:abrisEnterRouteWaypoints(commands, dummyRoute, selfX, selfZ)
-  Logging.info("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
+  Logging.debug("Before abrisCompleteRouteEntry, zoom level: "..self.zoomLevel)
   self:abrisCompleteRouteEntry(commands)
   for i = 1, 4 do
     self:abrisPressButton5(commands, "Cycle mode")
@@ -394,7 +394,7 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   end
   -- determine the smallest bounding Z range
   local range = self:findSmallestBoundingZRange(previous, waypoint)
-  Logging.info("Smallest Z range: "..range:getLevel())
+  Logging.debug("Smallest Z range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -418,7 +418,7 @@ function KA50IIICommandGenerator:abrisAddWaypoint(commands, previous, waypoint, 
   self:abrisPressRotateButton(commands, "Switch to X entry")
   -- determine the smallest bounding X range
   range = self:findSmallestBoundingXRange(previous, waypoint);
-  Logging.info("Smallest X range: "..range:getLevel())
+  Logging.debug("Smallest X range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -481,7 +481,7 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordi
   local isNotFirst = ordinal > 1
   -- determine the smallest bounding Z range
   local range = self:findSmallestBoundingZRange(previous, target)
-  Logging.info("Smallest Z range: "..range:getLevel())
+  Logging.debug("Smallest Z range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -505,7 +505,7 @@ function KA50IIICommandGenerator:abrisAddTarget(commands, previous, target, ordi
   self:abrisPressRotateButton(commands, "Switch to X entry")
   -- determine the smallest bounding X range
   range = self:findSmallestBoundingXRange(previous, target);
-  Logging.info("Smallest X range: "..range:getLevel())
+  Logging.debug("Smallest X range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -549,7 +549,7 @@ function KA50IIICommandGenerator:abrisRemoveTarget(commands, previous, target, o
   local isNotFirst = ordinal > 1
   -- determine the smallest bounding Z range
   local range = self:findSmallestBoundingZRange(previous, target)
-  Logging.info("Smallest Z range: "..range:getLevel())
+  Logging.debug("Smallest Z range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -573,7 +573,7 @@ function KA50IIICommandGenerator:abrisRemoveTarget(commands, previous, target, o
   self:abrisPressRotateButton(commands, "Switch to X entry")
   -- determine the smallest bounding X range
   range = self:findSmallestBoundingXRange(previous, target);
-  Logging.info("Smallest X range: "..range:getLevel())
+  Logging.debug("Smallest X range: "..range:getLevel())
   -- ABRIS: zoom to the bounding range
   self:abrisZoomToRange(commands, range:getLevel())
   -- ABRIS: wait for 100ms for ABRIS to settle
@@ -603,7 +603,7 @@ end
 
 function KA50IIICommandGenerator:findSmallestBoundingZRange(previous, waypoint)
   for i, range in pairs(self._ranges) do
-    Logging.info("Checking Z level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
+    Logging.debug("Checking Z level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
     if range:areBothPointsWithinZRange(previous, waypoint) then
       return range
     end
@@ -615,7 +615,7 @@ end
 
 function KA50IIICommandGenerator:findSmallestBoundingXRange(previous, waypoint)
   for i, range in pairs(self._ranges) do
-    Logging.info("Checking X level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
+    Logging.debug("Checking X level: "..range:getRange().." level: "..range:getLevel().." horizontal: "..range:getHorizontal().." vertical "..range:getVertical())
     if range:areBothPointsWithinXRange(previous, waypoint) then
       return range
     end
@@ -688,17 +688,17 @@ end
 
 function KA50IIICommandGenerator:abrisZoomToRange(commands, level)
   local delta = level - self.zoomLevel
-  Logging.info("Requested zoom: "..level)
-  Logging.info("Current zoom: "..self.zoomLevel)
-  Logging.info("Delta: "..delta)
+  Logging.debug("Requested zoom: "..level)
+  Logging.debug("Current zoom: "..self.zoomLevel)
+  Logging.debug("Delta: "..delta)
   if delta < 0 then
     self:abrisZoomIn(commands, -delta)
   else
     self:abrisZoomOut(commands, delta)
   end
-  Logging.info("POST Requested zoom: "..level)
-  Logging.info("POST Current zoom: "..self.zoomLevel)
-  Logging.info("POST Delta: "..delta)
+  Logging.debug("POST Requested zoom: "..level)
+  Logging.debug("POST Current zoom: "..self.zoomLevel)
+  Logging.debug("POST Delta: "..delta)
 end
 
 function KA50IIICommandGenerator:abrisFullZoom(commands)
@@ -706,7 +706,7 @@ function KA50IIICommandGenerator:abrisFullZoom(commands)
 end
 
 function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
-  Logging.info("abrisZoomIn relativeZoomLevel: "..relativeZoomLevel)
+  Logging.debug("abrisZoomIn relativeZoomLevel: "..relativeZoomLevel)
   if relativeZoomLevel < 0 then
     return
   end
@@ -714,12 +714,12 @@ function KA50IIICommandGenerator:abrisZoomIn(commands, relativeZoomLevel)
     self:abrisPressButton3(commands, "ZoomIn", KA50IIICommandGenerator.DELAY_ABRIS_ZOOM)
   end
   self.zoomLevel = math.max(self.zoomLevel - relativeZoomLevel, 0)
-  Logging.info("abrisZoomIn Zoom Level: "..self.zoomLevel)
+  Logging.debug("abrisZoomIn Zoom Level: "..self.zoomLevel)
 end
 
 function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
-  Logging.info("abrisZoomOut Zoom Level: "..self.zoomLevel)
-  Logging.info("abrisZoomOut relativeZoomLevel: "..relativeZoomLevel)
+  Logging.debug("abrisZoomOut Zoom Level: "..self.zoomLevel)
+  Logging.debug("abrisZoomOut relativeZoomLevel: "..relativeZoomLevel)
   if relativeZoomLevel < 0 then
     return
   end
@@ -727,7 +727,7 @@ function KA50IIICommandGenerator:abrisZoomOut(commands, relativeZoomLevel)
     self:abrisPressButton4(commands, "ZoomOut", KA50IIICommandGenerator.DELAY_ABRIS_ZOOM)
   end
   self.zoomLevel = math.min(self.zoomLevel + relativeZoomLevel, #self._ranges)
-  Logging.info("abrisZoomOut Zoom Level: "..self.zoomLevel)
+  Logging.debug("abrisZoomOut Zoom Level: "..self.zoomLevel)
 end
 
 function KA50IIICommandGenerator:abrisUpdateRotateZCommand(command, updateParameters)
