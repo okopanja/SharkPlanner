@@ -50,15 +50,6 @@ function Command:setSchedule(schedule)
 end
 
 function Command:getIntensity()
-  if self.intensityUpdateCallback ~= nil then
-    if self.intensityUpdateObject ~= nil then
-      -- in case of object being recepient call variant with object's self
-      self.intensityUpdateCallback(self.intensityUpdateObject, self, self.updateParameters)
-    else
-      -- in case of regular function
-      self.intensityUpdateCallback(self, self.updateParameters)
-    end
-  end
   return self.intensity
 end
 
@@ -104,6 +95,28 @@ function Command:setIntensityUpdateCallback(object, intensityUpdateCallback, upd
   self.intensityUpdateCallback = intensityUpdateCallback
   self.updateParameters = updateParameters
   return self
+end
+
+-- this function is used to update command when command execution conditions can not be calculated accuratly at the time of creation, but only later prior to immidiate command execution.
+-- as parameters it takes:
+-- recipient object (can be nil), normally this is instance of BaseCommandGenerator or one of derived classes
+-- updateCallback
+-- updateParameters: table containing static parameters needed for update
+function Command:setUpdateCallback(object, updateCallback, updateParameters)
+  self.updateObject = object
+  self.updateCallback = updateCallback
+  self.updateParameters = updateParameters
+  return self
+end
+
+function Command:update(remainingCommands)
+  if self.updateCallback ~= nil then
+    if self.updateObject ~= nil then
+      return self.updateCallback(self.updateObject, self, self.updateParameters, remainingCommands)
+    else
+      return self.updateCallback(self, self.updateParameters, remainingCommands)
+    end
+  end
 end
 
 function Command:getText()

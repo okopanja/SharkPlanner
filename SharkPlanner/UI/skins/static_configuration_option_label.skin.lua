@@ -3,7 +3,7 @@ local skin = {
 		["params"] = {
 			["textLineHeight"] = 0,
 			["minSize"] = {
-				["horz"] = 245,
+				["horz"] = 260,
 				["vert"] = 0,
 			}
 		},

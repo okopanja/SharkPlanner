@@ -38,7 +38,7 @@ function DCSEventHandlers.onSimulationFrame()
       -- determine what can be depressed
       local last_command_due_for_depress = DCSEventHandlers.find_last_due_command_index(DCSEventHandlers.delayed_depress_commands, current_time)
       if last_command_due_for_depress > 0 then
-          Logging.info("Last command due for depress: "..last_command_due_for_depress)
+          Logging.debug("Last command due for depress: "..last_command_due_for_depress)
           -- depress all matching
           for i = 1, last_command_due_for_depress do
           local command = DCSEventHandlers.delayed_depress_commands[i]
@@ -57,28 +57,35 @@ function DCSEventHandlers.onSimulationFrame()
       -- determine commands that have reach the point for execition
       local last_scheduled_command = DCSEventHandlers.find_last_due_command_index(DCSEventHandlers.commands, current_time)
       if last_scheduled_command > 0 then
-          Logging.info("Commands found: "..last_scheduled_command)
+          Logging.debug("Commands found: "..last_scheduled_command)
           for i = 1, last_scheduled_command do
             local command = DCSEventHandlers.commands[i]
-            Logging.info(command:getText())
-            if command:getDevice() then            
+            -- update command if needed, e.g. if command has associated update callback
+            local updateResult = command:update(DCSEventHandlers.commands)
+            Logging.debug(command:getText())
+            -- if callback requires, skip frame
+            if updateResult == "skipFrame" then
+              Logging.debug("Skipping frame")
+              return
+            end
+            if command:getDevice() then          
               Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), command:getIntensity())
-              Logging.info("Pressed")
+              Logging.debug("Pressed")
               -- check if the command needs depress
               if command:getDepress() then
                 -- check for Delay
                 if command:getDelay() == 0 then
                 -- if the delay is 0, the command can be immidiatly depressed
                 Export.GetDevice(command:getDevice()):performClickableAction(command:getCode(), 0)
-                Logging.info("Depressed")
+                Logging.debug("Depressed")
                 else
                 -- Delayed commands can not be depressed now
                 command:setSchedule(current_time + (command:getDelay() / 1000))
                 DCSEventHandlers.delayed_depress_commands[#DCSEventHandlers.delayed_depress_commands + 1] = command
-                Logging.info("Queued for delayed depress")
+                Logging.debug("Queued for delayed depress")
                 end
               else
-                Logging.info("NOP command, skipping")
+                Logging.debug("NOP command, skipping")
               end
             end
           end
@@ -210,7 +217,7 @@ function DCSEventHandlers.scheduleCommands(commands)
   Logging.info("Expected schedule start: "..schedule_time)
   for k, command in pairs(commands) do
     command:setSchedule(schedule_time)
-    Logging.info(command:getText())
+    Logging.debug(command:getText())
     -- adjust the schedule_time by delay caused by current command. (causes all remaning to be delayed)
     schedule_time = schedule_time + (command:getDelay() / 1000)
   end

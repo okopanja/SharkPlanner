@@ -193,8 +193,8 @@ local generalConfiguration = {
             {
                 Name = "Verbosity",
                 Label = "Verbosity level",
-                Default = Logging.LOG_LEVELS.INFO.name,
-                Control = "ComboBox",
+                Default = Logging.LOG_LEVELS.DEBUG.name,
+                Control = "ComboList",
                 Items = {
                     Logging.LOG_LEVELS.ERROR,
                     Logging.LOG_LEVELS.INFO,

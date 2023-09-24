@@ -3,7 +3,7 @@ local BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator")
 local Command = require("SharkPlanner.Base.Command")
 local Position = require("SharkPlanner.Base.Position")
 local Hemispheres = require("SharkPlanner.Base.Hemispheres")
-
+local Configuration = require("SharkPlanner.Base.Configuration")
 require("math")
 
 local default_delay = 75 -- default delay in ms
@@ -38,9 +38,13 @@ end
 function GazelleCommandGenerator:generateCommands(waypoints, fixpoints, targets)
   local delay = default_delay
   local commands = {}
+
   self:nadirPlaceIntoBUTmode(commands)
   self:nadirEnterWapoints(commands, waypoints)
-  self:nadirPressDigitButton(commands, 1, "Selected waypoint: 1", delay)
+
+  if Configuration:getOption("SA-342 Gazelle.NADIR.EnableSelectWaypoint1") then
+    self:nadirPressDigitButton(commands, 1, "Selected waypoint: 1", delay)
+  end
   return commands
 end
 
