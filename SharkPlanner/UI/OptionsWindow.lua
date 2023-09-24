@@ -14,6 +14,7 @@ local ScrollPane = require("ScrollPane")
 local Static = require("Static")
 local CheckBox = require("CheckBox")
 local ComboBox = require("ComboBox")
+local ComboList = require("ComboList")
 local ListBoxItem = require("ListBoxItem")
 local LayoutFactory = require("LayoutFactory")
 local HorzLayout = require("HorzLayout")
@@ -29,7 +30,7 @@ local staticConfigurationOptionLabelSkin = SkinHelper.loadSkin("staticConfigurat
 local toggleConfigurationSidePanel = SkinHelper.loadSkin("toggleConfigurationSidePanel")
 local checkBoxNewBlue = SkinHelper.loadSkin("checkBoxNewBlue")
 local comboBoxSkin = SkinHelper.loadSkin("comboBox")
-
+local comboListSkin = SkinHelper.loadSkin("comboList")
 -- Constructor
 function OptionsWindow:new(o)
     o = o or {}
@@ -53,7 +54,6 @@ function OptionsWindow:new(o)
       end
     end
     o:setBounds(x - h - 95, y, w + 95, h)
-    -- o:setVisible(true)
     return o
 end
 
@@ -192,6 +192,8 @@ function OptionsWindow:createOptionControl(section, subSection, option)
     control = self:createCheckBox(configKey, configValue)
   elseif option.Control == "ComboBox" then
     control = self:createComboBox(configKey, configValue, option)
+  elseif option.Control == "ComboList" then
+    control = self:createComboList(configKey, configValue, option)
   end
   if control ~= nil then
     control.key = configKey
@@ -226,7 +228,7 @@ function OptionsWindow:createComboBox(configKey, configValue, option)
   local control = ComboBox.new()
   control:clear()
   control:setVisible(true)
-  control:setReadOnly(true)
+  -- control:setReadOnly(true)
   local selected = 0
   for i, item in ipairs(option.Items) do
     Logging.debug("Adding item: "..item.name)
@@ -257,6 +259,43 @@ function OptionsWindow:createComboBox(configKey, configValue, option)
 
   return control
 end
+
+function OptionsWindow:createComboList(configKey, configValue, option)
+  local control = ComboList.new()
+  control:clear()
+  control:setVisible(true)
+  -- control:setReadOnly(true)
+  local selected = 0
+  for i, item in ipairs(option.Items) do
+    Logging.debug("Adding item: "..item.name)
+    local listBoxItem = ListBoxItem.new(item.name)
+    listBoxItem.value = item.value
+    listBoxItem.index = i - 1
+    if item.name == configValue then
+      selected = i
+    end
+    control:insertItem(listBoxItem)
+  end
+  control:selectItem(control:getItem(selected - 1))
+  control:setSkin(comboListSkin)
+  control:addChangeCallback(
+    function(control)      
+      local value = control:getSelectedItem():getText()
+      Logging.debug("Modified: "..configKey.." to: "..value)
+      Configuration:setOption(configKey, value)
+      Configuration:save()
+    end
+  )
+  -- need to make sure that no controls hold focus so hotkeys can work
+  control:addMouseUpCallback(
+    function(control)
+      control:setFocused(false)
+    end
+  )
+
+  return control
+end
+
 
 function OptionsWindow:show()
   Logging.debug("Showing Options window")
