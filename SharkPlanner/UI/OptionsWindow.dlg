@@ -102,8 +102,8 @@ dialog = {
 				["bounds"] = {
 					["x"] = sidePanelWidth - 1,
 					["y"] = 0,
-					["w"] = 500 - sidePanelWidth,
-					["h"] = 500,
+					["w"] = 480 - sidePanelWidth,
+					["h"] = 400,
 				},
 				["enabled"] = true,
 				["layout"] = {

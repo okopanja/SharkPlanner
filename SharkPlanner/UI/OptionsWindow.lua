@@ -27,7 +27,7 @@ local OptionsWindow = DialogLoader.spawnDialogFromFile(
 local staticConfigurationSectionTitleSkin = SkinHelper.loadSkin("staticConfigurationSectionTitle")
 local staticConfigurationOptionLabelSkin = SkinHelper.loadSkin("staticConfigurationOptionLabel")
 local toggleConfigurationSidePanel = SkinHelper.loadSkin("toggleConfigurationSidePanel")
-local checkboxFlipSwitchGreen = SkinHelper.loadSkin("checkboxFlipSwitchGreen")
+local checkBoxNewBlue = SkinHelper.loadSkin("checkBoxNewBlue")
 local comboBoxSkin = SkinHelper.loadSkin("comboBox")
 
 -- Constructor
@@ -42,7 +42,7 @@ function OptionsWindow:new(o)
     for i, section in ipairs(Configuration.sections) do
       Logging.debug("Adding sections: "..section.SectionName)
       local btn = self:createSectionButton(section)
-      o.sidePanel:insertWidget(btn, o.sidePanel:getWidgetCount() + 1)      
+      o.sidePanel:insertWidget(btn, o.sidePanel:getWidgetCount() + 1)
       -- create Panel for section content
       local sectionPanel = self:createSectionPanel(section)
       -- first section must be manually selected        
@@ -52,7 +52,7 @@ function OptionsWindow:new(o)
         btn:setState(true)
       end
     end
-    o:setBounds(x - h - 100, y, w + 100, h)
+    o:setBounds(x - h - 80, y, w + 80, h)
     -- o:setVisible(true)
     return o
 end
@@ -203,7 +203,7 @@ end
 
 function OptionsWindow:createCheckBox(configKey, configValue)
   local control = CheckBox.new()
-  -- control:setSkin(checkboxFlipSwitchGreen)
+  control:setSkin(checkBoxNewBlue)
   control:setState(configValue)
   control:addChangeCallback(
     function(control)

@@ -71,7 +71,11 @@ function ControlWindow:new(o)
         o:OnOptionsButtonChanged(button)
       end
     )
-    -- self.updateToggleStates(ENTRY_STATES.WAYPOINTS)
+    o.OptionsButton:addMouseUpCallback(
+      function(button)
+        button:setFocused(false)
+      end
+    )
 
     Logging.info("Getting default skin")
     o.windowDefaultSkin = self:getSkin()
@@ -126,16 +130,6 @@ function ControlWindow:new(o)
         button:setFocused(false)
       end
     )
-    -- o.OptionsButton:addChangeCallback(
-    --   function(button)
-    --     o.optionsWindow:show()
-    --   end
-    -- )
-    -- o.OptionsButton:addMouseUpCallback(
-    --   function(button)
-    --     button:setFocused(false)
-    --   end
-    -- )
 
     Logging.info("Adding hotkey callback")
     -- add open/close hotkey
