@@ -11,8 +11,20 @@ local statusWindow = nil
 local waypointListWindow = nil
 local chartWindow = nil
 local transferStatusWindow = nil
+local optionsWindow = nil
 local coordinateData = Base.CoordinateData
 -- local http = require("socket.http")
+Logging.info("Checking if configuration exist")
+if Base.Configuration:exists() then
+    Logging.info("Configuration was found.")
+    Logging.info("Loading configuration.")
+    -- if there the configuration update was detected save the config file with new options 
+    if Base.Configuration:load() then
+        Base.Configuration:save()
+    end
+else
+    Base.Configuration:save()
+end
 Logging.info("Registering event handlers")
 Base.DCSEventHandlers.register()
 
@@ -96,14 +108,18 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, chartWindow
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, chartWindow, chartWindow.OnFlightPlanLoaded)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, chartWindow, chartWindow.OnFlightPlanSaved)
 
+-- create options window
+optionsWindow = UI.OptionsWindow:new{crosshairWindow = crosshairWindow}
+
 -- create control window, and pass other windows
 window = UI.ControlWindow:new{
-crosshairWindow = crosshairWindow,
-statusWindow = statusWindow,
-waypointListWindow = waypointListWindow,
-coordinateData = coordinateData,
-chartWindow = chartWindow,
-transferStatusWindow = transferStatusWindow
+    crosshairWindow = crosshairWindow,
+    statusWindow = statusWindow,
+    waypointListWindow = waypointListWindow,
+    coordinateData = coordinateData,
+    chartWindow = chartWindow,
+    transferStatusWindow = transferStatusWindow,
+    optionsWindow = optionsWindow
 }
 -- register window to receive vents from coordinateData
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.AddWayPoint, window, window.OnAddWaypoint)
@@ -136,5 +152,5 @@ return {
     Modules = Modules,
     Utils = Utils,
     UI = UI,
-    VERSION_INFO = VERSION_INFO
+    VERSION_INFO = VERSION_INFO,
 }

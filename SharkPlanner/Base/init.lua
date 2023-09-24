@@ -7,5 +7,6 @@ return {
   CommandGeneratorFactory = require("SharkPlanner.Base.CommandGeneratorFactory"),
   GameState = require("SharkPlanner.Base.GameState"),
   CoordinateData = require("SharkPlanner.Base.CoordinateData"),
-  DCSEventHandlers = require("SharkPlanner.Base.DCSEventHandlers")
+  DCSEventHandlers = require("SharkPlanner.Base.DCSEventHandlers"),
+  Configuration = require("SharkPlanner.Base.Configuration")
 }

@@ -61,14 +61,21 @@ function ControlWindow:new(o)
         o:OnToggleStateChanged(button)
       end
     )
-
     self.WaypointCounter:addChangeCallback(
       function(button)
         o:OnWayPointCounterChanged(button)
       end
     )
-
-    -- self.updateToggleStates(ENTRY_STATES.WAYPOINTS)
+    self.OptionsButton:addChangeCallback(
+      function(button)
+        o:OnOptionsButtonChanged(button)
+      end
+    )
+    o.OptionsButton:addMouseUpCallback(
+      function(button)
+        button:setFocused(false)
+      end
+    )
 
     Logging.info("Getting default skin")
     o.windowDefaultSkin = self:getSkin()
@@ -123,6 +130,7 @@ function ControlWindow:new(o)
         button:setFocused(false)
       end
     )
+
     Logging.info("Adding hotkey callback")
     -- add open/close hotkey
     o:addHotKeyCallback(
@@ -159,9 +167,9 @@ function ControlWindow:new(o)
     o.ResetButton:setSkin(buttonAmberSkin)
     o.TransferButton:setSkin(buttonAmberSkin)
 
-
     local toggleLongGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerLongGreen")
     o.WaypointCounter:setSkin(toggleLongGreenSkin)
+    o.OptionsButton:setSkin(toggleLongGreenSkin)
 
     local toggleShortGreenSkin = SkinHelper.loadSkin("toggleSkinSharkPlannerShortGreen")
     for i, toggle in pairs(o.toggleGroup) do
@@ -176,6 +184,7 @@ function ControlWindow:new(o)
         coordinateData = o.coordinateData,
         statusWindow = o.statusWindow,
         crosshairWindow = o.crosshairWindow,
+        optionsWindow = o.optionsWindow,
         controlWindow = o
       }
       o.ExperimentButton:addChangeCallback(
@@ -247,6 +256,9 @@ function ControlWindow:show()
     self.waypointListWindow:show()
     self.chartWindow:show()
   end
+  if self.OptionsButton:getState() then
+    self.optionsWindow:show()
+  end
   self:updateUIState()
 end
 
@@ -270,6 +282,7 @@ function ControlWindow:hide()
   self.statusWindow:hide()
   self.waypointListWindow:hide()
   self.chartWindow:hide()
+  self.optionsWindow:hide()
   self.transferStatusWindow:hide()
 end
 
@@ -438,6 +451,16 @@ function ControlWindow:OnWayPointCounterChanged(button)
   end
   button:setFocused(false)
 end
+
+function ControlWindow:OnOptionsButtonChanged(button)
+  if button:getState() then
+    self.optionsWindow:show()
+  else
+    self.optionsWindow:hide()
+  end
+  button:setFocused(false)
+end
+
 
 
 function ControlWindow:logPosition(w)
