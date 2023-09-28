@@ -15,11 +15,12 @@ local Static = require("Static")
 local CheckBox = require("CheckBox")
 local ComboBox = require("ComboBox")
 local ComboList = require("ComboList")
+local HorzSlider = require("HorzSlider")
+local EditBox = require("EditBox")
 local ListBoxItem = require("ListBoxItem")
 local LayoutFactory = require("LayoutFactory")
 local HorzLayout = require("HorzLayout")
 local VertLayout = require("VertLayout")
-
 local OptionsWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\OptionsWindow.dlg"
 )
@@ -31,6 +32,9 @@ local toggleConfigurationSidePanel = SkinHelper.loadSkin("toggleConfigurationSid
 local checkBoxNewBlue = SkinHelper.loadSkin("checkBoxNewBlue")
 local comboBoxSkin = SkinHelper.loadSkin("comboBox")
 local comboListSkin = SkinHelper.loadSkin("comboList")
+local editBoxSkin = SkinHelper.loadSkin("editBox")
+local horzSliderSkin = SkinHelper.setMinSize(SkinHelper.loadSkin("horzSlider"), 60, 26)
+
 -- Constructor
 function OptionsWindow:new(o)
     o = o or {}
@@ -54,6 +58,7 @@ function OptionsWindow:new(o)
       end
     end
     o:setBounds(x - h - 95, y, w + 95, h)
+    Logging.debug("Skin methods: "..require("inspect")(Skin))
     return o
 end
 
@@ -194,6 +199,10 @@ function OptionsWindow:createOptionControl(section, subSection, option)
     control = self:createComboBox(configKey, configValue, option)
   elseif option.Control == "ComboList" then
     control = self:createComboList(configKey, configValue, option)
+  elseif option.Control == "EditBox" then
+    control = self:createEditBox(configKey, configValue, option)
+  elseif option.Control == "HorzSlider" then
+    control = self:createHorzSlider(configKey, configValue, option)
   end
   if control ~= nil then
     control.key = configKey
@@ -296,6 +305,76 @@ function OptionsWindow:createComboList(configKey, configValue, option)
   return control
 end
 
+function OptionsWindow:createEditBox(configKey, configValue)
+  local control = EditBox.new()
+  control:setSkin(editBoxSkin)
+  control:setText(configValue)
+  -- control:setState(configValue)
+  control:addChangeCallback(
+    function(control)
+      Logging.debug("Modified: "..configKey.." to: "..tostring(control:getText()))
+      Configuration:setOption(configKey, control:getText())
+      Configuration:save()
+    end
+  )
+  -- need to make sure that no controls hold focus so hotkeys can work
+  control:addMouseUpCallback(
+    function(control)
+      control:setFocused(false)
+    end
+  )
+
+  return control
+end
+
+function OptionsWindow:createHorzSlider(configKey, configValue, option)
+  local panel = Panel.new()
+  panel:setBounds(0,0,200,200)
+  local layout = LayoutFactory.createLayout("horz", HorzLayout.newLayout())
+  layout:setGap(0)
+  layout:setVertAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  layout:setHorzAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  panel:setLayout(layout)
+
+  local staticValue = Static.new()
+  staticValue:setSkin(staticConfigurationOptionLabelSkin)
+  staticValue:setText(tostring(configValue))
+  staticValue:setVisible(true)
+  local control = HorzSlider.new()
+  control:setSkin(horzSliderSkin)
+  control:setRange(option.Min, option.Max)
+  control:setStep(option.Step)
+  control:setValue(configValue)
+  
+  control:addChangeCallback(
+    function(control)
+      Logging.debug("Modified: "..configKey.." to: "..tostring(control:getValue()))
+      staticValue:setText(tostring(control:getValue()))
+      Configuration:setOption(configKey, control:getValue())
+      Configuration:save()
+    end
+  )
+  -- need to make sure that no controls hold focus so hotkeys can work
+  control:addMouseUpCallback(
+    function(control)
+      control:setFocused(false)
+    end
+  )
+  panel:insertWidget(control)
+  panel:insertWidget(staticValue)
+
+  return panel
+end
 
 function OptionsWindow:show()
   Logging.debug("Showing Options window")

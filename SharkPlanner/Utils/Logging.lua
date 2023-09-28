@@ -44,7 +44,7 @@ local function setLogLevel(logLevel)
   verbosity = logLevel
 end
 
-local function updateVerbosity(logLevelName)
+local function updateVerbosity(option, logLevelName)
   local logLevel = LOG_LEVELS[logLevelName]
   if logLevel ~= nil then
     setLogLevel(logLevel)

@@ -1,6 +1,5 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local CACommandGenerator = require("SharkPlanner.Modules.CA.CACommandGenerator")
-
 -- definition of variants and associated command generators
 local COMMAND_GENERATORS = {}
 -- COMMAND_GENERATORS["nil"] = CACommandGenerator
@@ -19,7 +18,41 @@ local function getCommandGenerators()
 end
 
 local function getConfigurationDefinition()
-    return {}
+    return {
+        SectionName = "Combined Arms",
+        {
+            SectionName = "Entry limits",
+            Options = {
+                {
+                    Name = "MaximalNumberWaypoints",
+                    Label = "Maximal number of waypoints",
+                    Default = 100,
+                    Control = "HorzSlider",
+                    Min = 0,
+                    Max = 5000,
+                    Step = 100,
+                },
+                {
+                    Name = "MaximalNumberFixpoints",
+                    Label = "Maximal number of fix points",
+                    Default = 100,
+                    Control = "HorzSlider",
+                    Min = 0,
+                    Max = 5000,
+                    Step = 100,
+                },
+                {
+                    Name = "MaximalNumberTargetpoints",
+                    Label = "Maximal number of target points",
+                    Default = 100,
+                    Control = "HorzSlider",
+                    Min = 0,
+                    Max = 5000,
+                    Step = 100,
+                },
+            }
+        },
+    }
 end
 
 local function getSlotInfo(side_id, slot_id)
