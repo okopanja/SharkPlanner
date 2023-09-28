@@ -16,6 +16,10 @@ local skins = {}
 
 
 local function loadSkin(skinName)
+    if skinName == nil then
+        Logging.error("Unable to load nil skinName")
+        return nil
+    end
     if skins[skinName] ~= nil then
         return skins[skinName]
     end
@@ -56,6 +60,14 @@ local function loadSkin(skinName)
     return result
 end
 
+local function setMinSize(skin, horz, vert)
+    skin['skinData']['params']['minSize'] = {
+        ["horz"] = horz,
+        ["vert"] = vert,
+    }
+    return skin
+end
+
 local function loadLocalSkins()
     Logging.info("Loading skin file: ".. namesFilename)
 	local f, err = loadfile(namesFilename)
@@ -71,4 +83,5 @@ loadLocalSkins()
 
 return {
     loadSkin = loadSkin,
+    setMinSize = setMinSize
 }

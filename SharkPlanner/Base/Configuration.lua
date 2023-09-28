@@ -94,7 +94,7 @@ end
 
 function Configuration:setOption(option, value)
     if self.updateCallbacks[option] ~= nil then
-        self.updateCallbacks[option](value)
+        self.updateCallbacks[option](option, value)
     end
     return self:_setOption(self.options, option, value)
 end

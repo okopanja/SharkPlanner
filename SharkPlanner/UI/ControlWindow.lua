@@ -12,7 +12,6 @@ local Input = require("Input")
 local lfs = require("lfs")
 local Skin = require("Skin")
 local SkinUtils = require("SkinUtils")
-
 local ENTRY_STATES = {
   WAYPOINTS = "W",
   FIXPOINTS = "F",
@@ -458,6 +457,7 @@ function ControlWindow:OnOptionsButtonChanged(button)
     self.optionsWindow:show()
   else
     self.optionsWindow:hide()
+    self:updateWaypointCounter()
   end
   button:setFocused(false)
 end

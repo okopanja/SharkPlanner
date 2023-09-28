@@ -2,7 +2,7 @@ local Logging = require("SharkPlanner.Utils.Logging")
 local BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator")
 local Command = require("SharkPlanner.Base.Command")
 local Position = require("SharkPlanner.Base.Position")
-
+local Configuration = require("SharkPlanner.Base.Configuration")
 -- require("net")
 
 
@@ -27,15 +27,15 @@ end
 
 
 function CACommandGenerator:getMaximalWaypointCount()
-  return 100
+  return Configuration:getOption("Combined Arms.Entry limits.MaximalNumberWaypoints")
 end
 
 function CACommandGenerator:getMaximalFixPointCount()
-  return 100
+  return Configuration:getOption("Combined Arms.Entry limits.MaximalNumberFixpoints")
 end
 
 function CACommandGenerator:getMaximalTargetPointCount()
-  return 100
+  return Configuration:getOption("Combined Arms.Entry limits.MaximalNumberTargetpoints")
 end
 
 function CACommandGenerator:generateCommands(waypoints, fixpoints, targets)
