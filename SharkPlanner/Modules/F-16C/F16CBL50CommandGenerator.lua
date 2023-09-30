@@ -13,7 +13,7 @@ function F16CBL50CommandGenerator:new(o)
 end
 
 function F16CBL50CommandGenerator:getAircraftName()
-    return "Ka-50_3"
+    return "F-16C_50"
 end
 
 function F16CBL50CommandGenerator:getMaximalWaypointCount()
