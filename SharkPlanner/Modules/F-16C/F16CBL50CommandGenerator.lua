@@ -13,7 +13,6 @@ function F16CBL50CommandGenerator:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
-    -- self.
     return o
 end
 
@@ -33,155 +32,162 @@ function F16CBL50CommandGenerator:getMaximalTargetPointCount()
     return 4
 end
 
+-- main function for generating commands
 function F16CBL50CommandGenerator:generateCommands(waypoints, fixpoints, targets)
+    self.ufcDelay = Configuration:getOption("F-16.UFC.CommandDelay")
+    self.hotasDelay = Configuration:getOption("F-16.HOTAS.CommandDelay")
     local commands = {}
-    local delay = 100
     -- Enter DEST subpage
-    self:ufcEnterDEST(commands, delay)
+    self:ufcEnterDEST(commands)
     -- Enter waypoints
     for i, waypoint in ipairs(waypoints) do
-        self:ufcEnterWaypoint(commands, i, waypoint, delay)
+        self:ufcEnterWaypoint(commands, i, waypoint)
     end
-
-    -- self:ufcRewindSteerpoints(commands, waypoints, delay)
+    -- Enter target points
+    for i, target in ipairs(targets) do
+        self:ufcEnterWaypoint(commands, i + 26 - 1, target)
+    end    
+    -- Return to main menu
+    self:ufcDcsRtn(commands, "Exit current DED mode")
+    self:ufcDcsRtn(commands, "Exit current DED mode")
     return commands
 end
 
-function F16CBL50CommandGenerator:ufcEnterDEST(commands, delay)
-    self:ufcDcsRtn(commands, "Exit current DED mode", delay)
-    self:ufcList(commands, "Enter LIST page", delay)
-    self:ufcPressDigitButton(commands, 1, "Enter LIST -> DEST subpage", delay)
-    self:ufcDcsSeq(commands, "Switch to long/lat coordinates", delay)
+-- Sequences of commands
+function F16CBL50CommandGenerator:ufcEnterDEST(commands)
+    -- LIST -> DEST enableds more consistant entry than STRP
+    self:ufcDcsRtn(commands, "Exit current DED mode")
+    self:ufcList(commands, "Enter LIST page")
+    self:ufcPressDigitButton(commands, 1, "Enter LIST -> DEST subpage")
+    self:ufcDcsSeq(commands, "Switch to long/lat coordinates")
 end
 
-function F16CBL50CommandGenerator:ufcEnterWaypoint(commands, pos, waypoint, delay)
+function F16CBL50CommandGenerator:ufcEnterWaypoint(commands, pos, waypoint)
+    -- first we select the waypoint
     local latitude_digits = self:_getWaypointDigits(pos)
     for pos, digit in pairs(latitude_digits) do
         Logging.debug("Waypoint digit: "..digit)
-        self:ufcPressDigitButton(commands, digit, "Latitude digit: "..digit, delay)
+        self:ufcPressDigitButton(commands, digit, "Latitude digit: "..digit)
     end
-    self:ufcDcsEntr(commands, "Select steerpoint 1", delay)
+    self:ufcDcsEntr(commands, "Select steerpoint 1")
 
     -- enter latitude
-    self:ufcDcsDown(commands, "Select latitude", delay)
+    self:ufcDcsDown(commands, "Select latitude")
     -- enter hepisphere
     if waypoint:getLatitudeHemisphere() == Hemispheres.LatHemispheres.NORTH then
-        self:ufcPressDigitButton(commands, 2, "Hemisphere: NORTH", delay)
+        self:ufcPressDigitButton(commands, 2, "Hemisphere: NORTH")
     else
-        self:ufcPressDigitButton(commands, 8, "Hemisphere: SOUTH", delay)
+        self:ufcPressDigitButton(commands, 8, "Hemisphere: SOUTH")
     end
     -- enter numeric part
     local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMDec())
     for pos, digit in pairs(latitude_digits) do
         Logging.debug("Latitude digit: "..digit)
-        self:ufcPressDigitButton(commands, digit, "Latitude digit: "..digit, delay)
+        self:ufcPressDigitButton(commands, digit, "Latitude digit: "..digit)
     end
-    self:ufcDcsEntr(commands, "Complete latitude entry", delay)
+    self:ufcDcsEntr(commands, "Complete latitude entry")
 
     -- enter longitude
-    self:ufcDcsDown(commands, "Select longitude", delay)
+    self:ufcDcsDown(commands, "Select longitude")
     -- enter hepisphere
     if waypoint:getLongitudeHemisphere() == Hemispheres.LongHemispheres.EAST then
-        self:ufcPressDigitButton(commands, 6, "Hemisphere: EAST", delay)
+        self:ufcPressDigitButton(commands, 6, "Hemisphere: EAST")
     else
-        self:ufcPressDigitButton(commands, 4, "Hemisphere: WEST", delay)
+        self:ufcPressDigitButton(commands, 4, "Hemisphere: WEST")
     end
     -- enter numeric part
     local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMDec())
     for pos, digit in pairs(longitude_digits) do
         Logging.debug("Longitude digit: "..digit)
-        self:ufcPressDigitButton(commands, digit, "Longitude digit: "..digit, delay)
+        self:ufcPressDigitButton(commands, digit, "Longitude digit: "..digit)
     end
-    self:ufcDcsEntr(commands, "Complete longitude entry", delay)
+    self:ufcDcsEntr(commands, "Complete longitude entry")
     
-    self:ufcDcsDown(commands, "Select altitude", delay)
+    -- enter altitude
+    self:ufcDcsDown(commands, "Select altitude")
     local altitude_feet_digits = self:_getAltitudeDigits(waypoint:getAltitudeFeet())
 
     for pos, digit in pairs(altitude_feet_digits) do
         Logging.debug("Altitude digit: "..digit)
-        self:ufcPressDigitButton(commands, digit, "Longitude digit: "..digit, delay)
+        self:ufcPressDigitButton(commands, digit, "Longitude digit: "..digit)
     end
-    self:ufcDcsEntr(commands, "Complete altitude entry", delay)
+    self:ufcDcsEntr(commands, "Complete altitude entry")
 
-    self:ufcDcsUp(commands, "Select waypoint", delay)
-    self:ufcDcsUp(commands, "Select latitude", delay)
-    self:ufcDcsUp(commands, "Select longitude", delay)
-
+    -- position cursor on top
+    self:ufcDcsUp(commands, "Select waypoint")
+    self:ufcDcsUp(commands, "Select latitude")
+    self:ufcDcsUp(commands, "Select longitude")
 end
-
-function F16CBL50CommandGenerator:ufcRewindSteerpoints(commands, waypoints, delay)
-end
-
--- Sequences of commands
 
 -- Base commands: all commands tha result in action of as single action
 -- DED commands
 function F16CBL50CommandGenerator:ufcDcsDedInc(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DED -> INC"):setComment(comment):setDevice(UFC):setCode(3030):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: DED -> INC"):setComment(comment):setDevice(UFC):setCode(3030):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcDcsDedDec(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DED -> DEC"):setComment(comment):setDevice(UFC):setCode(3031):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: DED -> DEC"):setComment(comment):setDevice(UFC):setCode(3031):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 -- keyboard commands
 function F16CBL50CommandGenerator:ufcPressDigitButton(commands, digit, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: press numeric"):setComment(comment):setDevice(UFC):setCode(3002 + digit):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: press numeric"):setComment(comment):setDevice(UFC):setCode(3002 + digit):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
     -- commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay):setIntensity(nil):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcDcsEntr(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DCS -> ENTR"):setComment(comment):setDevice(UFC):setCode(3016):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: DCS -> ENTR"):setComment(comment):setDevice(UFC):setCode(3016):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcDcsRcl(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DCS -> RCL"):setComment(comment):setDevice(UFC):setCode(3017):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: DCS -> RCL"):setComment(comment):setDevice(UFC):setCode(3017):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 -- rocker commands
 function F16CBL50CommandGenerator:ufcDcsRtn(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DCS -> RTN"):setComment(comment):setDevice(UFC):setCode(3032):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: DCS -> RTN"):setComment(comment):setDevice(UFC):setCode(3032):setDelay(delay or self.ufcDelay):setIntensity(-1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay((delay or self.ufcDelay) / 4):setIntensity(nil):setDepress(false)
 end
 
 function F16CBL50CommandGenerator:ufcDcsUp(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DCS -> UP"):setComment(comment):setDevice(UFC):setCode(3034):setDelay(delay):setIntensity(1):setDepress(true)
-    commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay / 4):setIntensity(nil):setDepress(false)
+    commands[#commands + 1] = Command:new():setName("UFC: DCS -> UP"):setComment(comment):setDevice(UFC):setCode(3034):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay((delay or self.ufcDelay) / 1):setIntensity(nil):setDepress(false)
 end
 
 function F16CBL50CommandGenerator:ufcDcsDown(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DCS -> DOWN"):setComment(comment):setDevice(UFC):setCode(3035):setDelay(delay):setIntensity(-1):setDepress(true)
-    --commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay / 4):setIntensity(nil):setDepress(false)
-
+    commands[#commands + 1] = Command:new():setName("UFC: DCS -> DOWN"):setComment(comment):setDevice(UFC):setCode(3035):setDelay(delay or self.ufcDelay):setIntensity(-1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay((delay or self.ufcDelay) / 4):setIntensity(nil):setDepress(false)
 end
 
 function F16CBL50CommandGenerator:ufcDcsSeq(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: DCS -> SEQ"):setComment(comment):setDevice(UFC):setCode(3033):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: DCS -> SEQ"):setComment(comment):setDevice(UFC):setCode(3033):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay((delay or self.ufcDelay) / 4):setIntensity(nil):setDepress(false)
 end
 
 -- override commands
 
 function F16CBL50CommandGenerator:ufcCom1(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: COM1"):setComment(comment):setDevice(UFC):setCode(3012):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: COM1"):setComment(comment):setDevice(UFC):setCode(3012):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcCom2(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: COM2"):setComment(comment):setDevice(UFC):setCode(3013):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: COM2"):setComment(comment):setDevice(UFC):setCode(3013):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcIff(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: IFF"):setComment(comment):setDevice(UFC):setCode(3014):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: IFF"):setComment(comment):setDevice(UFC):setCode(3014):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcList(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: LIST"):setComment(comment):setDevice(UFC):setCode(3015):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: LIST"):setComment(comment):setDevice(UFC):setCode(3015):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcAA(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: A-A"):setComment(comment):setDevice(UFC):setCode(3018):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: A-A"):setComment(comment):setDevice(UFC):setCode(3018):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:ufcAG(commands, comment, delay)
-    commands[#commands + 1] = Command:new():setName("UFC: A-G"):setComment(comment):setDevice(UFC):setCode(3019):setDelay(delay):setIntensity(1):setDepress(true)
+    commands[#commands + 1] = Command:new():setName("UFC: A-G"):setComment(comment):setDevice(UFC):setCode(3019):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
 end
 
 function F16CBL50CommandGenerator:_getWaypointDigits(waypoint)
