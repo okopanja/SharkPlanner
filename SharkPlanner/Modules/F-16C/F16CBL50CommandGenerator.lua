@@ -35,7 +35,6 @@ end
 -- main function for generating commands
 function F16CBL50CommandGenerator:generateCommands(waypoints, fixpoints, targets)
     self.ufcDelay = Configuration:getOption("F-16.UFC.CommandDelay")
-    self.hotasDelay = Configuration:getOption("F-16.HOTAS.CommandDelay")
     local commands = {}
     -- Enter DEST subpage
     self:ufcEnterDEST(commands)
