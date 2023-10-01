@@ -55,7 +55,7 @@ end
 
 -- Sequences of commands
 function F16CBL50CommandGenerator:ufcEnterDEST(commands)
-    -- LIST -> DEST enableds more consistant entry than STRP
+    -- LIST -> DEST enables more consistant entry than STRP
     self:ufcDcsRtn(commands, "Exit current DED mode")
     self:ufcList(commands, "Enter LIST page")
     self:ufcPressDigitButton(commands, 1, "Enter LIST -> DEST subpage")
