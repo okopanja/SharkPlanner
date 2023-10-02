@@ -118,7 +118,7 @@ function F16CBL50CommandGenerator:ufcEnterWaypoint(commands, pos, waypoint)
     self:ufcDcsUp(commands, "Select longitude")
 end
 
--- Base commands: all commands tha result in action of as single action
+-- Base commands: all commands tha result in single action
 -- DED commands
 function F16CBL50CommandGenerator:ufcDcsDedInc(commands, comment, delay)
     commands[#commands + 1] = Command:new():setName("UFC: DED -> INC"):setComment(comment):setDevice(UFC):setCode(3030):setDelay(delay or self.ufcDelay):setIntensity(1):setDepress(true)
