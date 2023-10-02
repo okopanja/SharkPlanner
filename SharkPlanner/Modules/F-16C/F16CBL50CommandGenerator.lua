@@ -205,7 +205,6 @@ function F16CBL50CommandGenerator:_getWaypointDigits(waypoint)
 
 -- Coordinates utility functions
 function F16CBL50CommandGenerator:_getLatitudeDigits(latitude)
-    Logging.debug("Minuti: "..latitude.minutes)
     local buffer = string.format("%02.0f", latitude.degrees)..string.format("%06.3f", latitude.minutes)
     Logging.debug("Latitude buffer: "..buffer)
     local result = {}
