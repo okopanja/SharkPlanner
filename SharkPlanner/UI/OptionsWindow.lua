@@ -58,7 +58,6 @@ function OptionsWindow:new(o)
       end
     end
     o:setBounds(x - h - 95, y, w + 95, h)
-    Logging.debug("Skin methods: "..require("inspect")(Skin))
     return o
 end
 
