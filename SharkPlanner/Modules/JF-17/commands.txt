@@ -1,0 +1,501 @@
+-- Base commands all commands tha result in single action
+-- Left MFCD U2 command_id: 3239
+-- PNT_615 command_id: 3117
+-- Right MFCD R7 command_id: 3324
+-- Emergency Landing Gear Cover command_id: 3456
+-- UFCP Button TOD/6 command_id: 3211
+-- PNT_985 command_id: 3487
+-- Left MFCD L4 command_id: 3247
+-- Center MFCD L3 command_id: 3279
+-- Warning Panel Brightness Knob command_id: 3403
+-- PNT_579 command_id: 3081
+-- PNT_654 command_id: 3156
+-- HUD Contrast Knob command_id: 3230
+-- Left MFCD L2 command_id: 3245
+-- PNT_645 command_id: 3147
+-- Emergency Brake Handle command_id: 3343
+-- Digital Clock UTC command_id: 3350
+-- PNT_999 command_id: 3501
+-- PNT_998 command_id: 3500
+-- Center MFCD U2 command_id: 3272
+-- Center MFCD U1 command_id: 3271
+-- PNT_688 command_id: 3190
+-- Brake Park/Norm command_id: 3013
+-- PNT_606 command_id: 3108
+-- PNT_694 command_id: 3196
+-- PNT_584 command_id: 3086
+-- Inst. Light Knob command_id: 3446
+-- PNT_995 command_id: 3497
+-- UFCP Button L3 command_id: 3219
+-- Center MFCD R5 command_id: 3289
+-- PNT_664 command_id: 3166
+-- Right MFCD L6 command_id: 3315
+-- PNT_994 command_id: 3496
+-- AAP COM1 command_id: 3425
+-- AAP RWR command_id: 3424
+-- PNT_601 command_id: 3103
+-- PNT_992 command_id: 3494
+-- PNT_611 command_id: 3113
+-- PNT_697 command_id: 3199
+-- PNT_991 command_id: 3493
+-- PNT_990 command_id: 3492
+-- Console Light Knob command_id: 3447
+-- PNT_989 command_id: 3491
+-- Brightness Knob command_id: 3411
+-- Mirror Left command_id: 3464
+-- PNT_987 command_id: 3489
+-- PNT_986 command_id: 3488
+-- PNT_984 command_id: 3486
+-- Radio Button 2/- command_id: 3052
+-- PNT_983 command_id: 3485
+-- Right MFCD D2 command_id: 3327
+-- UFCP Button R3 command_id: 3220
+-- PNT_607 command_id: 3109
+-- BARO Altitude Setting Knob command_id: 3342
+-- PNT_634 command_id: 3136
+-- PNT_982 command_id: 3484
+-- Oxygen Indicator Brightness Knob command_id: 3405
+-- DC Gen Switch command_id: 3408
+-- PNT_887 command_id: 3389
+-- Eject Seat Firing Handle command_id: 3483
+-- Eject Seat Position Adjust Switch command_id: 3482
+-- Emergency Jettison Button Cover command_id: 3009
+-- G-Suit Connector command_id: 3481
+-- Eject Seat Emergency O2 command_id: 3480
+-- UFCP Button 3 command_id: 3204
+-- AAP ACMI command_id: 3413
+-- Right MFCD L3 command_id: 3312
+-- Oxygen Supply Valve command_id: 3478
+-- PNT_577 command_id: 3079
+-- Flood Light Direction command_id: 3470
+-- DTC Card Ejection command_id: 3476
+-- PNT_681 command_id: 3183
+-- PNT_594 command_id: 3096
+-- UFCP Button N/A command_id: 3229
+-- Eject Seat Safe/Arm Handle command_id: 3474
+-- A/P Disengage command_id: 3473
+-- Left MFCD R2 command_id: 3253
+-- PNT_599 command_id: 3101
+-- Stick Show/Hide command_id: 3472
+-- Flash Light command_id: 3471
+-- Left MFCD L1 command_id: 3244
+-- Right MFCD Power command_id: 3309
+-- Radio Button 5/A command_id: 3055
+-- Squelch OFF/SQL/ACKN command_id: 3048
+-- Oxygen Tube Connector command_id: 3477
+-- PNT_956 command_id: 3458
+-- Throttle Cage: Idle To Stop command_id: 3074
+-- Radio Button 9/T command_id: 3059
+-- PNT_578 command_id: 3080
+-- Left MFCD Sym + command_id: 3236
+-- PNT_590 command_id: 3092
+-- PNT_625 command_id: 3127
+-- Left MFCD R6 command_id: 3257
+-- PNT_655 command_id: 3157
+-- Flood Light Direction command_id: 3469
+-- PNT_675 command_id: 3177
+-- Right MFCD R6 command_id: 3323
+-- Ground Start Button command_id: 3023
+-- PNT_640 command_id: 3142
+-- PNT_617 command_id: 3119
+-- Mirror Center command_id: 3463
+-- Left MFCD U5 command_id: 3242
+-- Left MFCD D4 command_id: 3265
+-- Flood Light Direction command_id: 3467
+-- PNT_833 command_id: 3335
+-- PNT_642 command_id: 3144
+-- Active Fuel Cut-off Valve Cover command_id: 3018
+-- PNT_882 command_id: 3384
+-- Right MFCD D4 command_id: 3329
+-- Defog Switch command_id: 3445
+-- AAP IFF command_id: 3428
+-- PNT_988 command_id: 3490
+-- Mirror Right command_id: 3462
+-- PNT_851 command_id: 3353
+-- PNT_677 command_id: 3179
+-- Flare Dispense Button Cover command_id: 3039
+-- Left MFCD D2 command_id: 3263
+-- Landing Gear Lever command_id: 3007
+-- Canopy Manual Open/Close Crank command_id: 3461
+-- Canopy Open/Close Handle command_id: 3460
+-- PNT_658 command_id: 3160
+-- Feed Cut-off Valve command_id: 3017
+-- PNT_653 command_id: 3155
+-- Light Switch - Tow/Off/Anti-Collision command_id: 3454
+-- Emergency Landing Gear Handle command_id: 3457
+-- Zeroizer Button Cover command_id: 3044
+-- DTC Card Insertion command_id: 3455
+-- PNT_865 command_id: 3367
+-- PNT_834 command_id: 3336
+-- Anti-Collision Light Knob Selector command_id: 3451
+-- Flight Test Switch 2 command_id: 3036
+-- PNT_592 command_id: 3094
+-- Center MFCD Cont - command_id: 3299
+-- Air Start Button Cover command_id: 3063
+-- PNT_671 command_id: 3173
+-- Center MFCD R7 command_id: 3291
+-- PNT_687 command_id: 3189
+-- Right MFCD R3 command_id: 3320
+-- Active Fuel Cut-off Valve command_id: 3019
+-- AAP N/A command_id: 3416
+-- PNT_878 command_id: 3380
+-- Flood Light Knob command_id: 3448
+-- AAP IRST command_id: 3420
+-- AAR Light Switch command_id: 3465
+-- PNT_698 command_id: 3200
+-- AAP WMMC1 command_id: 3430
+-- Left MFCD D1 command_id: 3262
+-- Air Temp Knob Selector command_id: 3443
+-- MSL Volume Knob command_id: 3442
+-- Left MFCD D3 command_id: 3264
+-- TCN/ILS Volume Knob command_id: 3441
+-- Warning Panel Test Button command_id: 3404
+-- UFCP Button MRK command_id: 3208
+-- EFCS Switch command_id: 3030
+-- PNT_889 command_id: 3391
+-- Afterburner Switch command_id: 3026
+-- PNT_568 command_id: 3070
+-- Speaker Control Box Audio Channel Switch command_id: 3439
+-- Left MFCD L6 command_id: 3249
+-- PNT_896 command_id: 3398
+-- PNT_583 command_id: 3085
+-- Intercom Switch command_id: 3437
+-- PNT_648 command_id: 3150
+-- PNT_862 command_id: 3364
+-- PNT_899 command_id: 3401
+-- Landing Gear Indicator Light Test Button command_id: 3003
+-- PNT_670 command_id: 3172
+-- COM1 Volume Knob command_id: 3436
+-- PNT_867 command_id: 3369
+-- PNT_660 command_id: 3162
+-- AAP OFF command_id: 3435
+-- AAP TRAIN command_id: 3434
+-- AAP CMBT command_id: 3433
+-- AAP CLDP command_id: 3419
+-- PNT_593 command_id: 3095
+-- AAP WMMC2 command_id: 3431
+-- PNT_661 command_id: 3163
+-- INS Mode Knob Selector command_id: 3410
+-- PNT_575 command_id: 3077
+-- ECS Mode Knob Selector command_id: 3444
+-- AAP INS command_id: 3429
+-- Center MFCD D3 command_id: 3295
+-- AAP NAV command_id: 3427
+-- AAP COM2 command_id: 3426
+-- PNT_993 command_id: 3495
+-- AAP OESP command_id: 3423
+-- PNT_873 command_id: 3375
+-- PNT_600 command_id: 3102
+-- PNT_689 command_id: 3191
+-- PNT_569 command_id: 3071
+-- AAP SLNK command_id: 3422
+-- AAP RDR command_id: 3421
+-- AAP SAIU command_id: 3432
+-- PNT_870 command_id: 3372
+-- PNT_628 command_id: 3130
+-- PNT_627 command_id: 3129
+-- UFCP Button VRC/2 command_id: 3203
+-- HUD Symbology Reject Switch command_id: 3412
+-- AAP SPJ command_id: 3418
+-- PNT_684 command_id: 3186
+-- Flight Test Switch 1 command_id: 3035
+-- PNT_650 command_id: 3152
+-- PNT_877 command_id: 3379
+-- AAP N/A command_id: 3415
+-- PNT_666 command_id: 3168
+-- SEC EEC Switch command_id: 3025
+-- AAP N/A command_id: 3414
+-- Landing Gear Indicator Light Knob command_id: 3006
+-- Right MFCD U2 command_id: 3305
+-- HUD/MFCD Day/Night Switch command_id: 3409
+-- Main AC Gen Switch command_id: 3407
+-- PNT_858 command_id: 3360
+-- COM2 Volume Knob command_id: 3440
+-- Warning Panel Day/Night Switch command_id: 3402
+-- PNT_898 command_id: 3400
+-- PNT_641 command_id: 3143
+-- PNT_897 command_id: 3399
+-- PNT_626 command_id: 3128
+-- Left MFCD Cont - command_id: 3261
+-- PNT_855 command_id: 3357
+-- PNT_633 command_id: 3135
+-- PNT_632 command_id: 3134
+-- Center MFCD U3 command_id: 3273
+-- Throttle Friction Handle command_id: 3072
+-- PNT_894 command_id: 3396
+-- PNT_869 command_id: 3371
+-- PNT_893 command_id: 3395
+-- PNT_892 command_id: 3394
+-- PNT_643 command_id: 3145
+-- UFCP Button R4 command_id: 3227
+-- PNT_891 command_id: 3393
+-- PNT_609 command_id: 3111
+-- Backup SAIU Knob Selector command_id: 3002
+-- Center MFCD D2 command_id: 3294
+-- PNT_890 command_id: 3392
+-- PNT_588 command_id: 3090
+-- Left MFCD R3 command_id: 3254
+-- PNT_674 command_id: 3176
+-- Right MFCD Cont - command_id: 3332
+-- PNT_612 command_id: 3114
+-- PNT_836 command_id: 3338
+-- PNT_567 command_id: 3069
+-- PNT_565 command_id: 3067
+-- PNT_884 command_id: 3386
+-- Radio Control Handover command_id: 3050
+-- Right MFCD Brt + command_id: 3333
+-- Center MFCD R1 command_id: 3285
+-- Right MFCD L4 command_id: 3313
+-- Record Switch command_id: 3029
+-- Radio Button <-/MAN command_id: 3060
+-- Right MFCD L7 command_id: 3316
+-- AAR Light Brightness Knob command_id: 3466
+-- PNT_881 command_id: 3383
+-- PNT_853 command_id: 3355
+-- Center MFCD R4 command_id: 3288
+-- Exterior Light Master Switch command_id: 3449
+-- Center MFCD U4 command_id: 3274
+-- Engine Control Switch command_id: 3021
+-- UFCP Button 9 command_id: 3218
+-- PNT_656 command_id: 3158
+-- PNT_876 command_id: 3378
+-- PNT_839 command_id: 3341
+-- PNT_879 command_id: 3381
+-- Radio Volume Knob command_id: 3047
+-- CSS Handle command_id: 3064
+-- PNT_874 command_id: 3376
+-- Yaw/Roll CAS Switch command_id: 3031
+-- PNT_699 command_id: 3201
+-- PNT_872 command_id: 3374
+-- PNT_871 command_id: 3373
+-- PNT_856 command_id: 3358
+-- PNT_868 command_id: 3370
+-- PNT_866 command_id: 3368
+-- Radio Button 4/H command_id: 3054
+-- Navigation Light Switch - Flash/Steady command_id: 3453
+-- AAR Switch command_id: 3066
+-- Left MFCD L7 command_id: 3250
+-- Center MFCD Brt + command_id: 3300
+-- Flare Dispense Button command_id: 3040
+-- UFCP Button A/P command_id: 3221
+-- PNT_863 command_id: 3365
+-- PNT_861 command_id: 3363
+-- Digital Clock Brightness - command_id: 3349
+-- PNT_649 command_id: 3151
+-- SHARS Switch command_id: 3042
+-- PNT_692 command_id: 3194
+-- PNT_644 command_id: 3146
+-- Left MFCD U3 command_id: 3240
+-- Right MFCD D3 command_id: 3328
+-- PNT_682 command_id: 3184
+-- PNT_859 command_id: 3361
+-- PNT_673 command_id: 3175
+-- Right MFCD Brt - command_id: 3334
+-- Radio Button 0/PRE command_id: 3061
+-- UFCP Button FUL/7 command_id: 3216
+-- Center MFCD Sym - command_id: 3270
+-- Battery Switch command_id: 3406
+-- Center MFCD L1 command_id: 3277
+-- PNT_638 command_id: 3140
+-- AG1/AG2 Switch command_id: 3037
+-- UFCP Button L4 command_id: 3226
+-- PNT_857 command_id: 3359
+-- PNT_895 command_id: 3397
+-- Radio Button 3/+ command_id: 3053
+-- Zeroizer Button command_id: 3045
+-- Start Mode Selector - START/ENG COLD/STARTER COLD command_id: 3028
+-- PNT_854 command_id: 3356
+-- UFCP Button PFL/1 command_id: 3202
+-- PNT_880 command_id: 3382
+-- PNT_852 command_id: 3354
+-- PNT_629 command_id: 3131
+-- PNT_850 command_id: 3352
+-- Digital Clock CHR command_id: 3351
+-- Digital Clock Brightness + command_id: 3348
+-- Landing Gear Override Button command_id: 3005
+-- Digital Clock Switch command_id: 3347
+-- UFCP Brightness Knob command_id: 3234
+-- PNT_591 command_id: 3093
+-- Center MFCD Power command_id: 3276
+-- Master Warning command_id: 3344
+-- PNT_662 command_id: 3164
+-- PNT_636 command_id: 3138
+-- PNT_635 command_id: 3137
+-- Flood Light Direction command_id: 3468
+-- UFCP Button DST/4 command_id: 3209
+-- +/,/- Switch command_id: 3232
+-- Ground Jettison Switch command_id: 3008
+-- PNT_695 command_id: 3197
+-- PNT_837 command_id: 3339
+-- PNT_885 command_id: 3387
+-- PNT_620 command_id: 3122
+-- HUD Brightness Knob command_id: 3231
+-- Left MFCD R7 command_id: 3258
+-- PNT_835 command_id: 3337
+-- Navigation Light Switch - Bright/Off/Dim command_id: 3452
+-- PNT_597 command_id: 3099
+-- PNT_685 command_id: 3187
+-- PNT_886 command_id: 3388
+-- Right MFCD Cont + command_id: 3331
+-- Right MFCD D5 command_id: 3330
+-- UFCP Button L2 command_id: 3212
+-- Right MFCD D1 command_id: 3326
+-- Deploy/Jettison Parachute command_id: 3235
+-- Right MFCD R8 command_id: 3325
+-- PNT_838 command_id: 3340
+-- Throttle Uncage: Stop To Idle command_id: 3073
+-- Center MFCD R2 command_id: 3286
+-- Right MFCD R4 command_id: 3321
+-- Right MFCD R2 command_id: 3319
+-- Right MFCD L1 command_id: 3310
+-- Right MFCD R1 command_id: 3318
+-- PNT_680 command_id: 3182
+-- Left MFCD Brt + command_id: 3267
+-- PNT_668 command_id: 3170
+-- Right MFCD L5 command_id: 3314
+-- Oxygen 100% O2 command_id: 3479
+-- PNT_621 command_id: 3123
+-- Right MFCD L2 command_id: 3311
+-- PNT_596 command_id: 3098
+-- Right MFCD R5 command_id: 3322
+-- PNT_678 command_id: 3180
+-- FCS Reset Button command_id: 3046
+-- UFCP Button OAP command_id: 3207
+-- Radio Button 1/TONE command_id: 3051
+-- Fuel Pump Switch command_id: 3020
+-- Right MFCD U4 command_id: 3307
+-- Right MFCD U3 command_id: 3306
+-- PNT_619 command_id: 3121
+-- PNT_566 command_id: 3068
+-- P.H. Test Switch command_id: 3065
+-- Right MFCD Sym - command_id: 3303
+-- Right MFCD Sym + command_id: 3302
+-- PNT_639 command_id: 3141
+-- Fire Warning command_id: 3345
+-- PNT_686 command_id: 3188
+-- Center MFCD Cont + command_id: 3298
+-- PNT_630 command_id: 3132
+-- UFCP Button R1 command_id: 3206
+-- Left MFCD R4 command_id: 3255
+-- PNT_610 command_id: 3112
+-- Left MFCD D5 command_id: 3266
+-- PNT_637 command_id: 3139
+-- Radio Top/Bottom Antenna Switch command_id: 3438
+-- Landing Gear Override Button Cover command_id: 3004
+-- Center MFCD D4 command_id: 3296
+-- Center MFCD D1 command_id: 3293
+-- PNT_582 command_id: 3084
+-- Center MFCD R8 command_id: 3292
+-- PNT_672 command_id: 3174
+-- PNT_676 command_id: 3178
+-- Left MFCD Sym - command_id: 3237
+-- PNT_613 command_id: 3115
+-- PNT_598 command_id: 3100
+-- Brake Test command_id: 3012
+-- Yaw Trim Switch command_id: 3034
+-- Formation Light Knob Selector command_id: 3450
+-- PNT_683 command_id: 3185
+-- BIT Button command_id: 3033
+-- Center MFCD R6 command_id: 3290
+-- Engine Mode Switch command_id: 3024
+-- PNT_875 command_id: 3377
+-- Flap Switch - Up/Down command_id: 3015
+-- Right MFCD U5 command_id: 3308
+-- Center MFCD L8 command_id: 3284
+-- PNT_997 command_id: 3499
+-- PNT_605 command_id: 3107
+-- Center MFCD L6 command_id: 3282
+-- Center MFCD L5 command_id: 3281
+-- Right MFCD U1 command_id: 3304
+-- PNT_665 command_id: 3167
+-- PNT_608 command_id: 3110
+-- Center MFCD L2 command_id: 3278
+-- Center MFCD Brt - command_id: 3301
+-- Center MFCD U5 command_id: 3275
+-- Radio Button 8/C command_id: 3058
+-- Center MFCD L7 command_id: 3283
+-- Center MFCD Sym + command_id: 3269
+-- PNT_616 command_id: 3118
+-- PNT_657 command_id: 3159
+-- Left MFCD Brt - command_id: 3268
+-- PNT_631 command_id: 3133
+-- Right MFCD L8 command_id: 3317
+-- Left MFCD Power command_id: 3243
+-- Left MFCD L5 command_id: 3248
+-- PNT_585 command_id: 3087
+-- AA/AG Switch command_id: 3038
+-- Left MFCD R5 command_id: 3256
+-- PNT_574 command_id: 3076
+-- PNT_679 command_id: 3181
+-- UFCP Button R2 command_id: 3213
+-- Left MFCD R1 command_id: 3252
+-- Left MFCD L8 command_id: 3251
+-- PNT_996 command_id: 3498
+-- Radio Button 6/M command_id: 3056
+-- Left MFCD R8 command_id: 3259
+-- Left MFCD L3 command_id: 3246
+-- PNT_622 command_id: 3124
+-- Radio Mode Selector command_id: 3049
+-- PNT_589 command_id: 3091
+-- Left MFCD Cont + command_id: 3260
+-- Left MFCD U4 command_id: 3241
+-- PNT_580 command_id: 3082
+-- UFCP Button HNS command_id: 3215
+-- PNT_652 command_id: 3154
+-- Left MFCD U1 command_id: 3238
+-- FCS Warning command_id: 3346
+-- Light Switch - Land/Off/Taxi command_id: 3014
+-- HUD Backup Reticle Knob command_id: 3233
+-- PNT_604 command_id: 3106
+-- UFCP Button P.U command_id: 3214
+-- PNT_602 command_id: 3104
+-- PNT_595 command_id: 3097
+-- AAP HMD command_id: 3417
+-- Emergency Hydraulic Pump Switch command_id: 3041
+-- PNT_623 command_id: 3125
+-- UFCP Button L1 command_id: 3205
+-- PNT_646 command_id: 3148
+-- PNT_581 command_id: 3083
+-- UFCP Button N/A command_id: 3228
+-- PNT_587 command_id: 3089
+-- PNT_659 command_id: 3161
+-- UFCP Button N/A command_id: 3225
+-- PNT_651 command_id: 3153
+-- PNT_883 command_id: 3385
+-- UFCP Button 0 command_id: 3224
+-- UFCP Button RTN command_id: 3223
+-- UFCP Button FPM command_id: 3222
+-- PNT_864 command_id: 3366
+-- Ejection Seat Zeroizer Function command_id: 3043
+-- UFCP Button IFF/8 command_id: 3217
+-- PNT_624 command_id: 3126
+-- Radio Button ->/ENT command_id: 3062
+-- Canopy Seal Handle command_id: 3459
+-- PNT_669 command_id: 3171
+-- UFCP Button TOT/5 command_id: 3210
+-- Center MFCD L4 command_id: 3280
+-- PNT_693 command_id: 3195
+-- PNT_696 command_id: 3198
+-- Master Arm Switch command_id: 3011
+-- PNT_614 command_id: 3116
+-- Direct Mode Switch command_id: 3032
+-- PNT_618 command_id: 3120
+-- PNT_860 command_id: 3362
+-- PNT_691 command_id: 3193
+-- PNT_690 command_id: 3192
+-- PNT_647 command_id: 3149
+-- PNT_603 command_id: 3105
+-- Throttle Emergency Button command_id: 3075
+-- Center MFCD D5 command_id: 3297
+-- Emergency Jettison Button command_id: 3010
+-- Radio Button 7/P command_id: 3057
+-- Eject Seat Firing Handle Safety Pin command_id: 3475
+-- Air Start Button command_id: 3022
+-- PNT_888 command_id: 3390
+-- PNT_586 command_id: 3088
+-- Center MFCD R3 command_id: 3287
+-- Feed Cut-off Valve Cover command_id: 3016
+-- PNT_667 command_id: 3169
+-- PNT_663 command_id: 3165
+-- Anti-Surge Switch command_id: 3027
+-- PNT_576 command_id: 3078
