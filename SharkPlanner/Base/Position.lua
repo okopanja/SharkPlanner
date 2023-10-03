@@ -45,6 +45,10 @@ function Position:getAltitude()
   return self.y
 end
 
+function Position:getAltitudeFeet()
+  return self.y * 3.28084
+end
+
 function Position:getLongitude()
   return self.longitude
 end
@@ -67,6 +71,14 @@ end
 
 function Position:getLatitudeDMDec()
   return convertDecimalToDMDec(self.latitude)
+end
+
+function Position:getLatitudeDMSDec()
+  return convertDecimalToDMSDec(self.latitude)
+end
+
+function Position:getLongitudeDMSDec()
+  return convertDecimalToDMSDec(self.longitude)
 end
 
 function Position:getLatitudeHemisphere()
@@ -121,6 +133,19 @@ function convertDecimalToDMDec(decimal)
   result.degrees = math.floor(math.abs(decimal))
   local rest = math.abs(decimal) - result.degrees
   result.minutes = rest * 60
+  if decimal < 0 then result.degrees = - result.degrees end
+  return result
+end
+
+function convertDecimalToDMSDec(decimal)
+  local result = {}
+  result.degrees = math.floor(math.abs(decimal))
+  local rest = math.abs(decimal) - result.degrees
+  result.minutes = math.floor(rest * 60)
+  rest = rest - (result.minutes / 60 )
+  -- round up last digit!
+  result.seconds = rest * 3600
+  -- if input is negative, now that componets got calcualted, return the original sign
   if decimal < 0 then result.degrees = - result.degrees end
   return result
 end
