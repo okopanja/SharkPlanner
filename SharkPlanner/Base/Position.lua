@@ -3,11 +3,11 @@ local Logging = require("SharkPlanner.Utils.Logging")
 local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 
 local Position = {
-  x = 0,
-  y = 0,
-  z = 0,
-  longitude = 0,
-  latitude = 0
+  x = nil,
+  y = nil,
+  z = nil,
+  longitude = nil,
+  latitude = nil
 }
 
 function Position:new (o)

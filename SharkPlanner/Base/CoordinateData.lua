@@ -194,6 +194,8 @@ function CoordinateData:load(filePath)
             -- leave empty for now
             filePath = filePath
         }
+        -- make sure that coordinates are recalculated (e.g. flight plan was loaded on different map)
+        self:recalculateLocalCoordinates()
         Logging.info("Flight plan is loaded.")
         self:dispatchEvent(EventTypes.FlightPlanLoaded, eventArg)
     end
@@ -251,12 +253,35 @@ end
 
 function CoordinateData:recalculateLocalCoordinate(position)
     local localCoordinates = Export.LoGeoCoordinatesToLoCoordinates(position:getLongitude(), position:getLatitude())
-    -- recalculate only if the coordinates differ
-    if localCoordinates.x ~= position:getX() or localCoordinates.z ~= position:getZ() then
+    local elevation = Export.LoGetAltitude(localCoordinates.x, localCoordinates.z)
+    Logging.debug(
+        "Chekcing coordinates,  Lat: "..tostring(position:getLatitude())..
+        " Long: "..tostring(position:getLongitude())..
+        " X: "..tostring(position:getX())..
+        " Z: "..tostring(position:getZ())
+    )
+    -- recalculate only if the coordinates differ or if it is nil
+    if
+        (
+            position:getX() == nil or
+            position:getZ() == nil
+        )
+        or
+        (
+            -- since there can be a numeric error in conversion, we do not wish to recalculate if difference is less than 1
+            math.abs(localCoordinates.x - position:getX()) >= 1 or
+            math.abs(localCoordinates.z - position:getZ()) >= 1
+            -- localCoordinates.x ~= position:getX() or
+            -- localCoordinates.z ~= position:getZ()
+        )
+    then
+        Logging.debug("Updating coordinates,  Lat: "..tostring(position:getLatitude()).." Long: "..tostring(position:getLongitude()))
         position:setX(localCoordinates.x)
         position:setZ(localCoordinates.z)
+        position:setY(elevation)
         return true
     end
+
     return false
 end
 
@@ -265,16 +290,19 @@ function CoordinateData:recalculateLocalCoordinates()
     local wayPointsRecalculated = false
     local fixPointsRecalculated = false
     local targetPointsRecalculated = false
-    for k, position in pairs(self.wayPoints) do
-        wayPointsRecalculated = wayPointsRecalculated or self:recalculateLocalCoordinate(position)
+    for i, position in ipairs(self.wayPoints) do
+        Logging.debug("Recalculating waypoint: "..i)
+        wayPointsRecalculated = self:recalculateLocalCoordinate(position) or wayPointsRecalculated
     end
     Logging.info("Waypoints recalculated: "..tostring(wayPointsRecalculated))
-    for k, position in pairs(self.fixPoints) do
-        fixPointsRecalculated = fixPointsRecalculated or self:recalculateLocalCoordinate(position)
+    for i, position in ipairs(self.fixPoints) do
+        Logging.debug("Recalculating fixpoint: "..i)
+        fixPointsRecalculated = self:recalculateLocalCoordinate(position) or fixPointsRecalculated
     end
     Logging.info("Fixpoints recalculated: "..tostring(fixPointsRecalculated))
-    for k, position in pairs(self.targetPoints) do
-        targetPointsRecalculated = targetPointsRecalculated or self:recalculateLocalCoordinate(position)
+    for i, position in ipairs(self.targetPoints) do
+        Logging.debug("Recalculating targetpoint: "..i)
+        targetPointsRecalculated = self:recalculateLocalCoordinate(position) or targetPointsRecalculated
     end
     Logging.info("Target points recalculated: "..tostring(targetPointsRecalculated))
     local overallResult = wayPointsRecalculated or fixPointsRecalculated or targetPointsRecalculated
