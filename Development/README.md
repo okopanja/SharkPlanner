@@ -31,9 +31,11 @@ Before you start developing you need to perform a number of information collecti
   5. Create symlink to hook entry script, by running 
   
   ```mklink "%USERPROFILE%\sources\SharkPlanner\Hooks\SharkPlanner.lua" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\SharkPlanner.lua"```
-  5. Create synlink to mod folder, by running 
+  
+  6. Create synlink to mod folder, by running 
   
   ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
+  
 5. Copy [Development/MyModuleTemplate](Development/MyModuleTemplate) into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
 7. Rename all occurancies of MyModule to e.g. F18 inside of both lua files (init.lua and rename MyModuleCommandGenerator.lua to e.g. F18UfcCommandGenerator.lua)
