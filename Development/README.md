@@ -16,9 +16,9 @@ Before you start developing you need to perform a number of information collecti
 2. Determine what identifier is needed for your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
 3. Determine what is the device ID of entry device. Read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** and figure out what is the device ID.
 4. Determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua**. Entries in this file are typically: 
-  1. not unique per device, 
-  2. calculated in runtime (no explicitly stated values),
-  3. typically they start with 3000 and get incremented with each listing in line.
+   1. not unique per device, 
+   2. calculated in runtime (no explicitly stated values),
+   3. typically they start with 3000 and get incremented with each listing in line.
 5. Carefully read [example module init script](Development/MyModuleTemplate/init.lua) and [example command generator](Development/MyModuleTemplate/MyModuleCommandGenerator.lua)
 
 ## Development environment setup
@@ -35,7 +35,7 @@ Before you start developing you need to perform a number of information collecti
   6. Create synlink to mod folder, by running 
   
   ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
-  
+
 5. Copy [Development/MyModuleTemplate](Development/MyModuleTemplate) into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
 7. Rename all occurancies of MyModule to e.g. F18 inside of both lua files (init.lua and rename MyModuleCommandGenerator.lua to e.g. F18UfcCommandGenerator.lua)
