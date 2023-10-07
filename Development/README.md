@@ -15,7 +15,10 @@ Before you start developing you need to perform a number of information collecti
 1. Learn well the procedure of entry by reading the sources such as: official module manual and/or [Chuck's guide](https://chucksguides.com/)
 2. Determine what identifier is needed for your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
 3. Determine what is the device ID of entry device. Read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** and figure out what is the device ID.
-4. Determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua**. Entries in this file are typically: 1. not unique per device, 2. calculated in runtime (no explicitly stated values). 3. typically they start with 3000 and get incremented with each listing in line
+4. Determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua**. Entries in this file are typically: 
+  1. not unique per device, 
+  2. calculated in runtime (no explicitly stated values),
+  3. typically they start with 3000 and get incremented with each listing in line.
 5. Carefully read [example module init script](Development/MyModuleTemplate/init.lua) and [example command generator](Development/MyModuleTemplate/MyModuleCommandGenerator.lua)
 
 ## Development environment setup
@@ -25,8 +28,10 @@ Before you start developing you need to perform a number of information collecti
   2. Clone your fork repository to e.g. **%USERPROFILE%\sources\SharkPlanner**. Inside this folder you will see README.md as well as folders SharkPlanner and Hooks.
   3. Create git development branch on your local repository. E.g. implement_f18_module.
   4. run **cmd** as **administrator** (this is needed so you get privilege to create symlink to folder)
-  5. Create symlink to hook entry script, by running ```mklink "%USERPROFILE%\sources\SharkPlanner\Hooks\SharkPlanner.lua" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\SharkPlanner.lua"```
-  5. Create synlink to mod folder, by running ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
+  5. Create symlink to hook entry script, by running 
+  ```mklink "%USERPROFILE%\sources\SharkPlanner\Hooks\SharkPlanner.lua" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\SharkPlanner.lua"```
+  5. Create synlink to mod folder, by running 
+  ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
 5. Copy [Development/MyModuleTemplate](Development/MyModuleTemplate) into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
 7. Rename all occurancies of MyModule to e.g. F18 inside of both lua files (init.lua and rename MyModuleCommandGenerator.lua to e.g. F18UfcCommandGenerator.lua)
