@@ -1,13 +1,14 @@
 # Development of module entry
 ## Pre-requisites
+### Mandatory
 - You have patience and motivation.
 - You know to program lua on basic or intermidiate level.
 - You know how to use git on basic or intermidiate level (forks, pull requests, merge, branch are not foreign concepts to you).
-- You have valid https://github.com account. 
+- You have valid [Github](https://github.com) account. 
 - You have installed a good code editor. E.g. Microsoft Visual Studio Code would be good.
 - You have git client installed. E.g. you can use download Github Desktop or simple command line git.
-## Optional
-- Install log viewer such as [Advanced Log Viewer] https://github.com/Scarfsail/AdvancedLogViewer so you can see the output and understand the errors
+### Optional
+- Install log viewer such as [Advanced Log Viewer](https://github.com/Scarfsail/AdvancedLogViewer) so you can see the output and understand the errors
 
 ## Prepation work
 Before you start developing you need to perform a number of information collecting tasks
@@ -15,7 +16,7 @@ Before you start developing you need to perform a number of information collecti
 2. determine what identifier is needed for your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
 3. determine what is the device ID of entry device. Read Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua and figure out what is the device ID.
 4. determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from Read Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua. Entries in this file are typically: 1. not unique per device, 2. calculated in runtime (no explicit value stated). 3. typically they start with 3000 and get incremented with each listing in line
-5. Carefully read [Development/MyModuleTemplate/init.lua] and [Development/MyModuleTemplate/MyModuleCommandGenerator.lua]
+5. Carefully read [module init script](Development/MyModuleTemplate/init.lua) and [Development/MyModuleTemplate/MyModuleCommandGenerator.lua]
 
 ## Development environment setup
 1. Remove any installed version of SharkPlanner. See main [README.md] on how to uninstall
