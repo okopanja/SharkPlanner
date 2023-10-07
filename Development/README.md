@@ -19,7 +19,7 @@ Before you start developing you need to perform a number of information collecti
    1. not unique per device, 
    2. calculated in runtime (no explicitly stated values),
    3. typically they start with 3000 and get incremented with each listing in line.
-5. Carefully read [example module init script](Development/MyModuleTemplate/init.lua) and [example command generator](Development/MyModuleTemplate/MyModuleCommandGenerator.lua)
+5. Carefully read [example module init script](MyModuleTemplate/init.lua) and [example command generator](MyModuleTemplate/MyModuleCommandGenerator.lua)
 
 ## Development environment setup
 1. Remove any installed version of SharkPlanner. See main [README.md] on how to uninstall
@@ -36,7 +36,7 @@ Before you start developing you need to perform a number of information collecti
     
     ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
 
-5. Copy [Development/MyModuleTemplate](Development/MyModuleTemplate) into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules**
+5. Copy [Development/MyModuleTemplate](MyModuleTemplate) as whole folder into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules\\**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
 7. Rename all occurancies of MyModule to e.g. F18 inside of both lua files (init.lua and rename MyModuleCommandGenerator.lua to e.g. F18UfcCommandGenerator.lua)
 8. Rename all occurance MyEntryDevice/myEntryDevice into .eg. Ufc/ufc in both lua files
