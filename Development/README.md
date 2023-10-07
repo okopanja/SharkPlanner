@@ -14,8 +14,8 @@
 Before you start developing you need to perform a number of information collecting tasks
 1. Learn well the procedure of entry by reading the sources such as: official module manual and/or [Chuck's guide](https://chucksguides.com/)
 2. Determine what identifier is needed for your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
-3. Determine what is the device ID of entry device. Read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** and figure out what is the device ID.
-4. Determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua**. Entries in this file are typically: 
+3. Determine what is the device ID of entry device. Read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** (adjust to your module) and figure out what is the device ID.
+4. Determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua** (adjust to your module). Entries in this file are typically: 
    1. not unique per device, 
    2. calculated in runtime (no explicitly stated values),
    3. typically they start with 3000 and get incremented with each listing in line.
