@@ -24,17 +24,17 @@ Before you start developing you need to perform a number of information collecti
 ## Development environment setup
 1. Remove any installed version of SharkPlanner. See main [README.md] on how to uninstall
 2. Prepare for working with github
-  1. Fork SharkPlanner reposiotory from https://github.com/okopanja/SharkPlanner
-  2. Clone your fork repository to e.g. **%USERPROFILE%\sources\SharkPlanner**. Inside this folder you will see README.md as well as folders SharkPlanner and Hooks.
-  3. Create git development branch on your local repository. E.g. implement_f18_module.
-  4. run **cmd** as **administrator** (this is needed so you get privilege to create symlink to folder)
-  5. Create symlink to hook entry script, by running 
-  
-  ```mklink "%USERPROFILE%\sources\SharkPlanner\Hooks\SharkPlanner.lua" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\SharkPlanner.lua"```
-  
-  6. Create synlink to mod folder, by running 
-  
-  ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
+   1. Fork SharkPlanner reposiotory from https://github.com/okopanja/SharkPlanner
+   2. Clone your fork repository to e.g. **%USERPROFILE%\sources\SharkPlanner**. Inside this folder you will see README.md as well as folders SharkPlanner and Hooks.
+   3. Create git development branch on your local repository. E.g. implement_f18_module.
+   4. run **cmd** as **administrator** (this is needed so you get privilege to create symlink to folder)
+   5. Create symlink to hook entry script, by running 
+   
+   ```mklink "%USERPROFILE%\sources\SharkPlanner\Hooks\SharkPlanner.lua" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\Hooks\SharkPlanner.lua"```
+    
+   6. Create synlink to mod folder, by running 
+    
+    ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
 
 5. Copy [Development/MyModuleTemplate](Development/MyModuleTemplate) into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
