@@ -38,9 +38,9 @@ Before you start developing you need to perform a number of information collecti
 
 5. Copy [Development/MyModuleTemplate](MyModuleTemplate) as whole folder into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules\\**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
-7. Rename all occurancies of MyModule to e.g. F18 inside of both lua files (init.lua and rename MyModuleCommandGenerator.lua to e.g. F18UfcCommandGenerator.lua)
-8. Rename all occurance MyEntryDevice/myEntryDevice into .eg. Ufc/ufc in both lua files
-9. Copy the [Development/experiment.lua] into **"%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"**
+7. Rename all occurancies of **MyModule** to e.g. **F18** inside of both lua files (**init.lua** and rename **MyModuleCommandGenerator.lua** to e.g. **F18UfcCommandGenerator.lua**)
+8. Rename all occurance **MyEntryDevice/myEntryDevice** into e.g. *Ufc/ufc* in *both lua files*/
+9. Copy the [experiment.lua](experiment.lua) into **"%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"**
 
 ## Development process
 ### Common guidelines
