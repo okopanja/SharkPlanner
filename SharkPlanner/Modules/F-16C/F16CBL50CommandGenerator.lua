@@ -237,17 +237,17 @@ function F16CBL50CommandGenerator:_getLongitudeDigits(longitude)
     return result
 end
 
-  function F16CBL50CommandGenerator:_getAltitudeDigits(altitude)
+function F16CBL50CommandGenerator:_getAltitudeDigits(altitude)
     local buffer = string.format("%5.0f", altitude)
     -- Logging.info("Longitude buffer: "..buffer)
     local result = {}
     for i = 1, #buffer do
-      local temp = string.sub(buffer, i, i)
-      if temp ~= '.' then
+        local temp = string.sub(buffer, i, i)
+        if temp ~= '.' then
         result[#result + 1] = tonumber(temp)
-      end
+        end
     end
     return result
-  end
+end
 
 return F16CBL50CommandGenerator
