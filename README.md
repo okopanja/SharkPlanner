@@ -25,6 +25,7 @@ Minimal requirement is **2.8** either **stable** or **openbeta**.
 - Gazelle: SA-342M
 - Gazelle: SA-342Minigun
 - F-16C
+- JF-17
 
 ### How do I report bugs?
 Open the [issues](https://github.com/okopanja/SharkPlanner/issues), read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
