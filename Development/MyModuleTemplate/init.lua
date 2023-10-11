@@ -1,10 +1,10 @@
 -- init.lua file is used by CommandGeneratorFactory to discover the modules, by iterating over folders in SharkPlanner/Modules folder
 -- it defines a module with following functions:
 -- getCommandGenerators -- used to determine which command generators are provided by module and which to use with each discovered variant (e.g. see Ka-50)
--- determinVariant -- used detect the variant of the module (this is sometimes tricky business, e.g. ED's Ka-50 Black Shark 3 has version 2008 and 2022 which share the same identified, but also there is Black Shark 2)
+-- determineVariant -- used to determine variant in cases where this is not possible through builtin ID of the module. E.g. Black Shark and Combined Arms need special handling, while SA-342 Gazelle politely reports different ID for each variant. 
 -- getConfigurationDefinition -- used to define the configuration options for the module
 
--- load all the accutal command generator class (you can have multiple classes if your variants need special handling, depending on variant, e.g. Black Shark or Combined Arms)
+-- load command generator class. Sometimes a module requires multiple generators if it offers multiple versions. E.g Combined Arms, Ka-50. 
 local MyModuleCommandGenerator = require("SharkPlanner.Modules.Module.MyModuleCommandGenerator")
 
 -- definition of variants and associated command generators
@@ -12,7 +12,7 @@ local COMMAND_GENERATORS = {}
 -- as a key use the official identifier of module
 COMMAND_GENERATORS["MyModule"] = MyModuleCommandGenerator
 
--- returns table indicating the supported
+-- returns table indicating the supported varients along their associated command generator. E.g. Ka-50 BS2 and BS3 have slight entry differences inside PVI-800 device.
 local function getCommandGenerators()
     return COMMAND_GENERATORS
 end
@@ -20,12 +20,21 @@ end
 -- define configuration options for module. You do not need to define config file, on first load the SharkPlanner will recognize the options and add them to existing config file or if it does not exist create valid configuration file containing all possible options for all modules.
 local function getConfigurationDefinition()
     return {
-        SectionName = "MyModule", -- defines top most section name
+        SectionName = "MyModule", -- defines top most section name,        
         {
-            SectionName = "MyEntryDevice", -- if the module has multiple devices that need to be interacted with, each should have it's own section
+            SectionName = "MyEntryDevice", -- subsection should be named according to the name of the device. Each used device should have own subsection
             Options = {
                 {
-                    Name = "SelectWaypoint1", -- defines the name of option. Later you can reference this particilar option as 'MyModule.MyEntryDevice.SelectWaypoint1'
+                    Name = "CommandDelay", -- defines the name of option. Later you can reference this particular option as 'MyModule.MyEntryDevice.CommandDelay'
+                    Label = "Command delay (ms)", -- label displayed in configuration menu to end user
+                    Default = 100, -- default value
+                    Control = "HorzSlider", -- control to be used for editing the value, in this case it's a HorzSlided which needs additional parameters
+                    Min = 70, -- minimal value
+                    Max = 500, -- maximal value
+                    Step = 1, -- increment/decrement step
+                },                                
+                {
+                    Name = "SelectWaypoint1", -- defines the name of option. Later you can reference this particular option as 'MyModule.MyEntryDevice.SelectWaypoint1'
                     Label = "E.g. Select waypoint 1", -- label displayed in configuration menu to end user
                     Default = true, -- default value
                     Control = "CheckBox", -- control to be used for editing the value
@@ -47,7 +56,7 @@ local function determineVariant(base_module_name)
     return nil
 end
 
--- return module
+-- return module functions
 return {
     getCommandGenerators = getCommandGenerators,
     determineVariant = determineVariant,

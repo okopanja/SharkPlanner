@@ -1,10 +1,10 @@
--- Logging package is extremly important in order to debug issues
+-- Logging package is extremely important in order to debug issues
 local Logging = require("SharkPlanner.Utils.Logging")
 -- Your command generators must be derived from class BaseCommandGenerator
 local BaseCommandGenerator = require("SharkPlanner.Base.BaseCommandGenerator")
 -- Command is a class representing single entry event into the device
 local Command = require("SharkPlanner.Base.Command")
--- Position is a class, representing coordinates that get prepared by UI part of Black Shark. They represent waypoints, fixpoints, target points, mark points itc.
+-- Position is a class, representing coordinates prepared by UI part of Black Shark. They can be used to represent waypoints, fixpoints, target points, mark points etc.
 local Position = require("SharkPlanner.Base.Position")
 -- Enumeration for Hemispheres
 local Hemispheres = require("SharkPlanner.Base.Hemispheres")
@@ -12,9 +12,6 @@ local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 local Configuration = require("SharkPlanner.Base.Configuration")
 -- for coordinate conversion you might need math module
 require("math")
-
--- it is recommended to have default delay between 2 commands, e.g. 100ms. The delay value depends on the module implementation, and it may even vary from command to command. Safe value should be 100ms, but sometimes lower values are used, even 0. Many buttons will not reacto properly if this value is lower than 70-75ms
-local default_delay = 100 -- default delay in ms
 
 -- constuct the new class (derive from BaseCommandGenerator)
 MyModuleCommandGenerator = BaseCommandGenerator:new()
@@ -47,13 +44,18 @@ function MyModuleCommandGenerator:getMaximalTargetPointCount()
   return 0
 end
 
--- Function that generates sequence of commands, which is used by SharkPlanner to perform entry. Consider this to be the "main" of your module. It will be called each time you click on Transfer button in UI
+-- Function generates sequence of commands, which are used by SharkPlanner to perform entry. 
+-- Consider this to be the "main" of your module. It will be called each time you click on Transfer button in UI.
 -- - waypoints, list of Position objects designated as waypoints
 -- - fixpoints, list of Position objects designated as fix points (fix points are normally used for )
 -- - targetpoints, list of Position objects designated as target points
 function MyModuleCommandGenerator:generateCommands(waypoints, fixpoints, targets)
-  -- define local delay that will be passed later, derived from default_delay
-  local delay = default_delay
+  -- define device delay that will be passed later, derived from default_delay
+  -- it is recommended to have default delay between 2 commands, e.g. 100ms. 
+  -- The delay value depends on the module implementation, and it may even vary from command to command. 
+  -- Safe value should be 100ms, but sometimes lower values are used, even 0. 
+  -- Many buttons will not reacto properly if this value is lower than 70-75ms
+  self.myDevice_default_delay = Configuration.getOption("MyModule.MyEntryDevice.CommandDelay")
   -- declare empty list of commands
   local commands = {}
   -- following are high level sequences of commands, each takes commands list and adds additional command to it
@@ -67,6 +69,8 @@ function MyModuleCommandGenerator:generateCommands(waypoints, fixpoints, targets
   self:myEntryDeviceReturnToMainMode(commands, waypoints)
   -- If you ever wish to have optional commands, you can use the Configuration object to lookup for the option
   if Configuration:getOption("MyModule.MyEntryDevice.SelectWaypoint1") then
+    -- in this case we specified non a specific delay for this particular command
+    local delay = 200
     self:myEntryDevicePressDigitButton(commands, 1, "Selected waypoint: 1", delay)
   end
 
@@ -79,7 +83,7 @@ function MyModuleCommandGenerator:myEntryDeviceEnterEntryMode(commands, comment,
 
   -- in this long line the following is done:
   -- - Command object is created with new()
-  -- - Name of command is set, along with commant useful to figure out what is going on in log file
+  -- - Name of command is set, along with comment useful to figure out what is going on in log file
   -- - Device - id of device
   -- - Code - code of the command, e.g. each buttton/rocker/dial/trigger has unique ID within the device
   -- - Delay - declares delay, in this case if delay is nil, it will use default_delay value, but you need to decide on delay.  Typically dials require delay of 0, for buttons use default_delay (or simply ommit declaration), if you wish to use default_delay, just leave this out. Other command will not be pressed until delay expires
@@ -87,13 +91,13 @@ function MyModuleCommandGenerator:myEntryDeviceEnterEntryMode(commands, comment,
   -- - Depress, if this is true, the button will be pressed and remain pressed until delay expires. At that point SharkPlanner will issue explicit depress command. 
   local delay = 0
   local intensity = 0.2
-  commands[#commands + 1] = Command:new():setName("MyDevice: rotate to entry mode"):setComment(comment):setDevice(22):setCode(3003):setDelay(delay or default_delay):setIntensity(intensity):setDepress(false)
+  commands[#commands + 1] = Command:new():setName("MyDevice: rotate to entry mode"):setComment(comment):setDevice(22):setCode(3003):setDelay(delay or self.myDevice_default_delay):setIntensity(intensity):setDepress(false)
 end
 
 function MyModuleCommandGenerator:myEntryDeviceReturnToMainMode(commands, comment, intensity)
   local delay = 0  
   local intensity = -0.2 -- for opposite direction clearly equal negative value if we are using dials
-  commands[#commands + 1] = Command:new():setName("MyDevice: rotate to entry mode"):setComment(comment):setDevice(22):setCode(3003):setDelay(delay or default_delay):setIntensity(intensity):setDepress(false)
+  commands[#commands + 1] = Command:new():setName("MyDevice: rotate to entry mode"):setComment(comment):setDevice(22):setCode(3003):setDelay(delay or self.myDevice_default_delay):setIntensity(intensity):setDepress(false)
 end
 
 
@@ -106,12 +110,13 @@ function MyModuleCommandGenerator:myEntryDeviceEnterWapoints(commands, waypoints
   end
 end
 
--- Example sequence which makes input of single waypoint, this is typically the most complex function 
+-- Example sequence for entering single waypoint, this is typically the most complex function.
 function MyModuleCommandGenerator:myEntryDeviceEnterWaypoint(commands, position, waypoint)
   -- the actual sequence depends from device to device, so use this as a general rule of thumb
-  -- first step select the waypoint
+  -- first step: select the waypoint
   self:myEntryDevicePressDigitButton(commands, position, "Select waypoint: "..position)
-  -- enter hemisphere. Normally keyboard entry assumes that 2 is NORTH, 8 is SOUTH, 4 is WEST, and 6 is EAST. Look at your numeric keyboard if you ever need to get reminder which one
+  -- enter hemisphere. Normally keyboard entry assumes that 2 is NORTH, 8 is SOUTH, 4 is WEST, and 6 is EAST. 
+  -- Look at your numeric keyboard if you ever need to get reminder which value is needed.
   if waypoint:getLatitudeHemisphere() == Hemispheres.LatHemispheres.NORTH then
     -- we will use command which allows us to enter specific digit in this case 2 for NORTH
     self:myEntryDevicePressDigitButton(commands, 2, "Hemisphere: NORTH")
@@ -119,9 +124,10 @@ function MyModuleCommandGenerator:myEntryDeviceEnterWaypoint(commands, position,
     -- we will use command which allows us to enter specific digit in this case 8 for SOUTH
     self:myEntryDevicePressDigitButton(commands, 8, "Hemisphere: SOUTH")
   end
-  -- enter numeric part. In this case we get numeric values from waypoint (e.g. function getLatitudeDMDec, gives the Latitude in Degree and Minutes, where minutes have fractional part)  adjust this to the needed format with _getLatitudeDigits function (module specific - e.g. you may need minutes in specific precision)
+  -- enter numeric part. In this case we have to numeric values from waypoint. Function getLatitudeDMDec, returns the Latitude in Degree and Minutes, where minutes have fractional part.
+  -- Adjust this to the needed format with your own _getLatitudeDigits function (module specific - e.g. you may need minutes in specific precision).
   local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMDec())
-  -- now that we have actual digits we enter it one my one
+  -- now that we have actual digits we enter it one by one
   for pos, digit in pairs(latitude_digits) do
     self:myEntryDevicePressDigitButton(commands, digit, "Latitude digit: "..digit)
   end
@@ -146,11 +152,12 @@ end
 
 -- an example of digit entry sequence where device id is 22 and starting digit 0 is 3009 followed by 3010, 3011, 3012...
 function MyModuleCommandGenerator:myEntryDevicePressDigitButton(commands, digit, comment, delay)
-  commands[#commands + 1] = Command:new():setName("My Device: press numeric"):setComment(comment):setDevice(22):setCode(3009 + digit):setDelay(delay):setIntensity(1):setDepress(true)
-  -- NOP stands for no operation. It's avery special command set for device=nil and code = nil. Very often the entry may require additional pause. E.g. this can happen if the module needs time for key press to register as an impulse of certain width. 
+  commands[#commands + 1] = Command:new():setName("My Device: press numeric"):setComment(comment):setDevice(22):setCode(3009 + digit):setDelay(delay or self.myDevice_default_delay):setIntensity(1):setDepress(true)
+  -- NOP stands for no operation. It's a very special command, with values set as device=nil and code = nil. 
+  -- Very often the entry may require additional pause. E.g. this can happen if the module needs time for key press to register as an impulse of certain width. 
   -- Those familiar with digital electronics will relate this behavior to edge-triggered/level-triggered. 
   -- :) Trial and error if the entry behaves oddly or unrealiable, introduce the NOP command
-  commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay):setIntensity(nil):setDepress(true)
+  commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay or self.myDevice_default_delay):setIntensity(nil):setDepress(true)
 end
 
 -- Coordinates utility functions
