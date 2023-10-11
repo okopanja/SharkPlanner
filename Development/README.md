@@ -12,17 +12,17 @@
 
 ## Prepation work
 Before you start developing you need to perform a number of information-gathering tasks
-1. Learn well the procedure of entry by reading the sources such as: official module manual and/or [Chuck's guide](https://chucksguides.com/)
-2. Determine what identifier is needed for your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
-3. Determine the device ID of entry device. Within the module located relative to DCS installation folder, read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** (adjust to your module). This file defines devices and corresponding IDs. 
-4. Determine which ID codes correspond to each command (valid for button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua** (adjust according to your module). Entries in this file are typically: 
+1. Learn well the procedure of entry by reading the sources such as: official module manual and/or [Chuck's guide](https://chucksguides.com/). A single module can have multiple input devices. Sometimes they act independently (e.g. Ka-50), and sometimes they are actually alternative methods of input (e.g. JF-17).
+2. Determine identifier of your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
+4. Determine ID of the entry device. Within the module located relative to DCS installation folder, read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** (adjust to your module). This file defines devices and corresponding IDs. 
+5. Determine which ID codes correspond to each command (valid for button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua** (adjust according to your module). Entries in this file are typically: 
    1. not unique per device, 
    2. calculated in runtime via counter function (no explicitly stated values),
    3. typically they start with 3000 and get incremented by each entry which assigns the value by calling counter function.
-5. Carefully read [example module init script](MyModuleTemplate/init.lua) and [example command generator](MyModuleTemplate/MyModuleCommandGenerator.lua)
+6. Carefully read [example module init script](MyModuleTemplate/init.lua) and [example command generator](MyModuleTemplate/MyModuleCommandGenerator.lua)
 
 ## Development environment setup
-1. Remove any installed version of SharkPlanner. See main [README.md](README.md) on how to uninstall
+1. Remove any installed version of SharkPlanner. See main [README.md](README.md) on how to uninstall existing SharkPlanner
 2. Prepare for working with github
    1. Fork SharkPlanner reposiotory from https://github.com/okopanja/SharkPlanner
    2. Clone your fork repository to e.g. **%USERPROFILE%\sources\SharkPlanner**. Inside this folder you will see README.md as well as folders SharkPlanner and Hooks.
@@ -36,11 +36,11 @@ Before you start developing you need to perform a number of information-gatherin
     
     ```mklink /D "%USERPROFILE%\sources\SharkPlanner\SharkPlanner" "%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"```
 
-5. Copy [Development/MyModuleTemplate](MyModuleTemplate) as whole folder into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules\\**
+5. Copy [Development/MyModuleTemplate](MyModuleTemplate) as complete folder into **%USERPROFILE%\sources\SharkPlanner\SharkPlanner\Modules\**
 6. Rename the resulting folder to resamble the name corresponding to your module e.g. you should have folder **SharkPlanner/Modules/F-18A**
-7. Rename all occurancies of **MyModule** to e.g. **F18** inside of both lua files (**init.lua** and rename **MyModuleCommandGenerator.lua** to e.g. **F18UfcCommandGenerator.lua**)
-8. Rename all occurance **MyEntryDevice/myEntryDevice** into e.g. **Ufc/ufc** in **both lua files**.
-9. Copy the [experiment.lua](experiment.lua) into **"%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"**
+7. Replace all occurancies of **MyModule** to e.g. **F18** inside of both lua files (rename **MyModuleCommandGenerator.lua** to e.g. **F18UfcCommandGenerator.lua**)
+8. Replace all occurance **MyEntryDevice/myEntryDevice** with e.g. **Ufc/ufc** in **both lua files**.
+9. Copy the [experiment.lua](experiment.lua) into **"%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner"**. You also need to edit this file to reload correct entry module.
 
 ## Development process
 ### Common guidelines
