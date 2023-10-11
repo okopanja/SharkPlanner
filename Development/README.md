@@ -11,18 +11,18 @@
 - Install log viewer such as [Advanced Log Viewer](https://github.com/Scarfsail/AdvancedLogViewer) so you can see the output and understand the errors
 
 ## Prepation work
-Before you start developing you need to perform a number of information collecting tasks
+Before you start developing you need to perform a number of information-gathering tasks
 1. Learn well the procedure of entry by reading the sources such as: official module manual and/or [Chuck's guide](https://chucksguides.com/)
 2. Determine what identifier is needed for your module. No official documentation exists, but this is the best unofficial source I could find: https://github.com/pydcs/dcs/blob/bbd92f7c3aa67a8b6f7e1bb1f5534580ca05e892/tools/pydcs_export.lua#L213
-3. Determine what is the device ID of entry device. Read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** (adjust to your module) and figure out what is the device ID.
-4. Determine which ID codes correspond to the each command (button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua** (adjust to your module). Entries in this file are typically: 
+3. Determine the device ID of entry device. Within the module located relative to DCS installation folder, read **Mods\aircraft\F-16C\Cockpit\Scripts\devices.lua** (adjust to your module). This file defines devices and corresponding IDs. 
+4. Determine which ID codes correspond to each command (valid for button, lever, dial, switch, etc) from **Mods\aircraft\F-16C\Cockpit\Scripts\command_defs.lua** (adjust according to your module). Entries in this file are typically: 
    1. not unique per device, 
-   2. calculated in runtime (no explicitly stated values),
-   3. typically they start with 3000 and get incremented with each listing in line.
+   2. calculated in runtime via counter function (no explicitly stated values),
+   3. typically they start with 3000 and get incremented by each entry which assigns the value by calling counter function.
 5. Carefully read [example module init script](MyModuleTemplate/init.lua) and [example command generator](MyModuleTemplate/MyModuleCommandGenerator.lua)
 
 ## Development environment setup
-1. Remove any installed version of SharkPlanner. See main [README.md] on how to uninstall
+1. Remove any installed version of SharkPlanner. See main [README.md](README.md) on how to uninstall
 2. Prepare for working with github
    1. Fork SharkPlanner reposiotory from https://github.com/okopanja/SharkPlanner
    2. Clone your fork repository to e.g. **%USERPROFILE%\sources\SharkPlanner**. Inside this folder you will see README.md as well as folders SharkPlanner and Hooks.
