@@ -20,8 +20,7 @@ end
 -- define configuration options for module. You do not need to define config file, on first load the SharkPlanner will recognize the options and add them to existing config file or if it does not exist create valid configuration file containing all possible options for all modules.
 local function getConfigurationDefinition()
     return {
-        SectionName = "MyModule", -- defines top most section name,
-        
+        SectionName = "MyModule", -- defines top most section name,        
         {
             SectionName = "MyEntryDevice", -- subsection should be named according to the name of the device. Each used device should have own subsection
             Options = {
