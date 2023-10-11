@@ -44,17 +44,19 @@ Before you start developing you need to perform a number of information-gatherin
 
 ## Development process
 ### Common guidelines
-- log your operations using class Logging whith methods error, info, warning and debug.
+- log your operations using class Logging with methods error, info, warning and debug.
 - module entry must fulfill following requirements:
-  - Entry can be performed with no errors multiple times withion mission lifecycle. 
+  - Entry can be performed with no errors multiple times within mission lifecycle.
+  - Entry should return the device to the default mod.
 
 ### Log files
-Logs files of interest are located in **%USERPROFILE%\Saved Games\DCS.openbeta\Logs**:
-- **dcs.log** is the ED's log system, you should only see one mention of SharkPlanner with no errors there. However, if you see more than one it means there is an error you need to read and understand
-- **SharkPlanner.log**, it's own log, which details stuff done by SharkPlanner but also your module
+Logs files are located in **%USERPROFILE%\Saved Games\DCS.openbeta\Logs**:
+- **dcs.log** is the ED's log system, you should only see one mention of SharkPlanner with no errors there. However, if you see more than one it means there is an error you need to read and understand. The message my give you information on which file and line the SharkPlanner has failed to initialize
+- **SharkPlanner.log**, it's own log, which details operations performed by SharkPlanner but also your the entry module extension.
 I recommend using of AvancedLogView for log insepction.  
 
 ### Updating of code
-Normally each restart will load your newest version of code. This means for a single line change you may end up restarting whole DCS. This is where patience comes handy. Remember: Patient! => Saved!
-However we did install **experiment.lua** file, which will allow us to reload without restarting. If the file is properly installed **SharkPlanner** will display the **Exp** button in UI. Clicking on the **Exp** will reload the module. Be sure to edit the **experiment.lua** to match the name of your CommandGenerator class for reloading. In 99% of cases you will not need to reload DCS.
+Witch each restart DCS will load your newest code changes. This means for a single line change you may end up restarting whole DCS. This is where patience comes handy. Remember: Patient! => Saved!
+
+In order to avoid restart, we have install **experiment.lua** file, which will allow us to reload without restarting DCS. If the file is properly installed **SharkPlanner** will display the **Exp** button in UI. Clicking on the **Exp** will execute experiment.lua which in turn will reload the module. Be sure to edit the **experiment.lua** to match the name of your CommandGenerator class for reloading. In 99% of cases you will not need to reload DCS.
 
