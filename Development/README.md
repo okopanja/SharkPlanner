@@ -22,7 +22,7 @@ Before you start developing you need to perform a number of information-gatherin
 6. Carefully read [example module init script](MyModuleTemplate/init.lua) and [example command generator](MyModuleTemplate/MyModuleCommandGenerator.lua)
 
 ## Development environment setup
-1. Remove any installed version of SharkPlanner. See main [README.md](README.md) on how to uninstall existing SharkPlanner
+1. Remove any installed version of SharkPlanner. See main [README.md](../README.md) on how to uninstall existing SharkPlanner
 2. Prepare for working with github
    1. Fork SharkPlanner reposiotory from https://github.com/okopanja/SharkPlanner
    2. Clone your fork repository to e.g. **%USERPROFILE%\sources\SharkPlanner**. Inside this folder you will see README.md as well as folders SharkPlanner and Hooks.
