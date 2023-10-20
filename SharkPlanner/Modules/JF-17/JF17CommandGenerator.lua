@@ -183,11 +183,11 @@ function JF17CommandGenerator:getMaximalWaypointCount()
 end
 
 function JF17CommandGenerator:getMaximalFixPointCount()
-    return 4
+    return 6
 end
 
 function JF17CommandGenerator:getMaximalTargetPointCount()
-    return 6
+    return 4
 end
 
 -- main function for generating commands
@@ -197,19 +197,30 @@ function JF17CommandGenerator:generateCommands(waypoints, fixpoints, targets)
     local commands = {}
     -- Enter DEST subpage
     self:ufcpEnterDST(commands)
+    
     -- enter waypoints
     self:enterWaypoints(commands, waypoints, 1)
     -- clear unused waypoints
     self:clearWaypoints(commands, #waypoints + 1, self:getMaximalWaypointCount())
-    -- select Waypoint 1
-    self:enterWaypointNumber(commands, 1)
 
-    -- -- Enter target points
-    -- for i, target in ipairs(targets) do
-    --     self:ufcpEnterWaypoint(commands, i + 26 - 1, target)
-    -- end
-    -- exit to main screen
+    -- enter missile steer points
+    local missile_offset = 30
+    self:enterWaypoints(commands, fixpoints, missile_offset)
+    -- clear unused missile steer points
+    self:clearWaypoints(commands, missile_offset + #fixpoints + 1, missile_offset + self:getMaximalFixPointCount() - #fixpoints + 1)
+
+    -- enter missile/bomb target points
+    local target_offset = 36
+    self:enterWaypoints(commands, targets, target_offset)
+    -- clear unused missile steer points
+    self:clearWaypoints(commands, target_offset + #targets + 1, target_offset + self:getMaximalTargetPointCount() - #targets + 1)
+
+    -- select Waypoint 1 in FPL
+    self:enterWaypointNumber(commands, 1)
     self:ufcpRTN(commands, "Exit to main screen")
+    
+    -- select Waypoint 1 in main mode
+    self:enterWaypointNumber(commands, 1)
     return commands
 end
 
@@ -230,8 +241,8 @@ function JF17CommandGenerator:clearWaypoints(commands, start_point, end_point)
     self:enterWaypointNumber(commands, start_point)
     -- self:mfcdU5(commands, "Clear waypoint: "..start_point, 0)
     for i = start_point, end_point do
-        self:mfcdU5(commands, "Clear waypoint: "..i, 0)
-        self:mfcdL2(commands, "Step next", 0)
+        self:mfcdU5(commands, "Clear waypoint: "..i)
+        self:mfcdL2(commands, "Step next")
     end
 end
 
