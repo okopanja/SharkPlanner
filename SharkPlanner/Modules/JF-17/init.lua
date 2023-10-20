@@ -26,6 +26,20 @@ local function getConfigurationDefinition()
                 },
             }
         },
+        {
+            SectionName = "MFCD",
+            Options = {
+                {
+                    Name = "CommandDelay",
+                    Label = "Command delay (ms)",
+                    Default = 100,
+                    Control = "HorzSlider",
+                    Min = 70,
+                    Max = 2000,
+                    Step = 1,
+                },
+            }
+        },
     }
 end
 -- Function tries to determine sub variant based on base_module_name and module specific criteria. E.g. by checking if certain device is implemented or not

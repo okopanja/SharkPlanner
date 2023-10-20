@@ -6,9 +6,9 @@ local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 local Configuration = require("SharkPlanner.Base.Configuration")
 
 local JF17CommandGenerator = BaseCommandGenerator:new{}
+-- UFCP is the front keyboard
 local UFCP = 46
-
--- Easy to us dictionary
+-- Easy to us dictionary of commands
 JF17CommandGenerator.UFCP_buttons = {
     NUM_1 = 3202,
     PFL = 3202,
@@ -45,6 +45,110 @@ JF17CommandGenerator.UFCP_buttons = {
     R4 = 3227,
     NA_2 = 3228, -- N/A
     NA_3 = 3229, -- N/A
+}
+
+-- MFCD represents all MFCD in module
+local MFCD = 47
+JF17CommandGenerator.MFCD_buttons = {
+    Center_MFCD_Brt_MINUS = 3301,
+    Center_MFCD_Brt_PLUS = 3300,
+    Center_MFCD_Cont_MINUS = 3299,
+    Center_MFCD_Cont_PLUS = 3298,
+    Center_MFCD_D1 = 3293,
+    Center_MFCD_D2 = 3294,
+    Center_MFCD_D3 = 3295,
+    Center_MFCD_D4 = 3296,
+    Center_MFCD_D5 = 3297,
+    Center_MFCD_L1 = 3277,
+    Center_MFCD_L2 = 3278,
+    Center_MFCD_L3 = 3279,
+    Center_MFCD_L4 = 3280,
+    Center_MFCD_L5 = 3281,
+    Center_MFCD_L6 = 3282,
+    Center_MFCD_L7 = 3283,
+    Center_MFCD_L8 = 3284,
+    Center_MFCD_Power = 3276,
+    Center_MFCD_R1 = 3285,
+    Center_MFCD_R2 = 3286,
+    Center_MFCD_R3 = 3287,
+    Center_MFCD_R4 = 3288,
+    Center_MFCD_R5 = 3289,
+    Center_MFCD_R6 = 3290,
+    Center_MFCD_R7 = 3291,
+    Center_MFCD_R8 = 3292,
+    Center_MFCD_Sym_MINUS = 3270,
+    Center_MFCD_Sym_PLUS = 3269,
+    Center_MFCD_U1 = 3271,
+    Center_MFCD_U2 = 3272,
+    Center_MFCD_U3 = 3273,
+    Center_MFCD_U4 = 3274,
+    Center_MFCD_U5 = 3275,
+    Left_MFCD_Brt_MINUS = 3268,
+    Left_MFCD_Brt_PLUS = 3267,
+    Left_MFCD_Cont_MINUS = 3261,
+    Left_MFCD_Cont_PLUS = 3260,
+    Left_MFCD_D1 = 3262,
+    Left_MFCD_D2 = 3263,
+    Left_MFCD_D3 = 3264,
+    Left_MFCD_D4 = 3265,
+    Left_MFCD_D5 = 3266,
+    Left_MFCD_L1 = 3244,
+    Left_MFCD_L2 = 3245,
+    Left_MFCD_L3 = 3246,
+    Left_MFCD_L4 = 3247,
+    Left_MFCD_L5 = 3248,
+    Left_MFCD_L6 = 3249,
+    Left_MFCD_L7 = 3250,
+    Left_MFCD_L8 = 3251,
+    Left_MFCD_Power = 3243,
+    Left_MFCD_R1 = 3252,
+    Left_MFCD_R2 = 3253,
+    Left_MFCD_R3 = 3254,
+    Left_MFCD_R4 = 3255,
+    Left_MFCD_R5 = 3256,
+    Left_MFCD_R6 = 3257,
+    Left_MFCD_R7 = 3258,
+    Left_MFCD_R8 = 3259,
+    Left_MFCD_Sym_MINUS = 3237,
+    Left_MFCD_Sym_PLUS = 3236,
+    Left_MFCD_U1 = 3238,
+    Left_MFCD_U2 = 3239,
+    Left_MFCD_U3 = 3240,
+    Left_MFCD_U4 = 3241,
+    Left_MFCD_U5 = 3242,
+    Right_MFCD_Brt_MINUS = 3334,
+    Right_MFCD_Brt_PLUS = 3333,
+    Right_MFCD_Cont_MINUS = 3332,
+    Right_MFCD_Cont_PLUS = 3331,
+    Right_MFCD_D1 = 3326,
+    Right_MFCD_D2 = 3327,
+    Right_MFCD_D3 = 3328,
+    Right_MFCD_D4 = 3329,
+    Right_MFCD_D5 = 3330,
+    Right_MFCD_L1 = 3310,
+    Right_MFCD_L2 = 3311,
+    Right_MFCD_L3 = 3312,
+    Right_MFCD_L4 = 3313,
+    Right_MFCD_L5 = 3314,
+    Right_MFCD_L6 = 3315,
+    Right_MFCD_L7 = 3316,
+    Right_MFCD_L8 = 3317,
+    Right_MFCD_Power = 3309,
+    Right_MFCD_R1 = 3318,
+    Right_MFCD_R2 = 3319,
+    Right_MFCD_R3 = 3320,
+    Right_MFCD_R4 = 3321,
+    Right_MFCD_R5 = 3322,
+    Right_MFCD_R6 = 3323,
+    Right_MFCD_R7 = 3324,
+    Right_MFCD_R8 = 3325,
+    Right_MFCD_Sym_MINUS = 3303,
+    Right_MFCD_Sym_PLUS = 3302,
+    Right_MFCD_U1 = 3304,
+    Right_MFCD_U2 = 3305,
+    Right_MFCD_U3 = 3306,
+    Right_MFCD_U4 = 3307,
+    Right_MFCD_U5 = 3308,
 }
 
 -- JF-17 UFCP buttons are organized into grid, so the digits codes are taken row by row, which in turn results in need to 
@@ -89,19 +193,23 @@ end
 -- main function for generating commands
 function JF17CommandGenerator:generateCommands(waypoints, fixpoints, targets)
     self.ufcpDelay = Configuration:getOption("JF-17.UFCP.CommandDelay")
+    self.mfcdDelay = Configuration:getOption("JF-17.MFCD.CommandDelay")
     local commands = {}
     -- Enter DEST subpage
     self:ufcpEnterDST(commands)
-    -- Enter waypoints
-    for i, waypoint in ipairs(waypoints) do
-        self:ufcpEnterWaypoint(commands, i, waypoint)
-    end
+    -- enter waypoints
+    self:enterWaypoints(commands, waypoints, 1)
+    -- clear unused waypoints
+    self:clearWaypoints(commands, #waypoints + 1, self:getMaximalWaypointCount())
+    -- select Waypoint 1
+    self:enterWaypointNumber(commands, 1)
+
     -- -- Enter target points
     -- for i, target in ipairs(targets) do
     --     self:ufcpEnterWaypoint(commands, i + 26 - 1, target)
     -- end
-    -- -- exit to main screen
-    -- self:ufcpRTN(commands, "Exit to main screen")
+    -- exit to main screen
+    self:ufcpRTN(commands, "Exit to main screen")
     return commands
 end
 
@@ -111,8 +219,44 @@ function JF17CommandGenerator:ufcpEnterDST(commands)
     self:ufcpDST(commands, "Enter DST")
 end
 
-function JF17CommandGenerator:ufcpEnterWaypoint(commands, i, waypoint)
+function JF17CommandGenerator:enterWaypoints(commands, waypoints, start)
+    -- Enter waypoints
+    for i, waypoint in ipairs(waypoints) do
+        self:ufcpEnterWaypoint(commands, i + start - 1, waypoint)
+    end
+end
+
+function JF17CommandGenerator:clearWaypoints(commands, start_point, end_point)
+    self:enterWaypointNumber(commands, start_point)
+    self:mfcdU5(commands, "Clear waypoint: "..start_point, 0)
+    for i = start_point + 1, end_point do
+        self:mfcdU5(commands, "Clear waypoint: "..i, 0)
+        self:mfcdL2(commands, "Step next", 0)
+    end
+end
+
+function JF17CommandGenerator:ufcpEnterWaypoint(commands, waypoint_number, waypoint)
     -- first we select waypoint number
+    self:enterWaypointNumber(commands, waypoint_number)
+
+    -- clear waypoint => we wish to make sure that hemispheres and altitude sign are clear with this.
+    -- For 100% proper functioning depends on:
+    -- https://forum.dcs.world/topic/335543-upfc-entry-dst-clr-does-not-fully-clear-waypoint
+    -- https://forum.dcs.world/topic/335539-ufcp-coordinate-entry-unable-the-toggle-westereastern-hemisphere
+    self:mfcdU5(commands, "Clear waypoint")
+
+    -- enter latitude
+    self:enterLatitude(commands, waypoint)
+
+    -- enter longitude
+    self:enterLongitude(commands, waypoint)
+
+    -- enter altitude
+    self:enterAltitude(commands, waypoint)
+end
+
+-- sequence functions
+function JF17CommandGenerator:enterWaypointNumber(commands, i)
     self:ufcpR1(commands, "Enter waypoint number entry")
     local waypointDigits = self:_getWaypointDigits(i)
     for i, v in ipairs(waypointDigits) do
@@ -120,8 +264,9 @@ function JF17CommandGenerator:ufcpEnterWaypoint(commands, i, waypoint)
         self:ufcpPressDigitButton(commands, v, "Enter digit: "..v)
     end
     self:ufcpR1(commands, "Exit waypoint number entry")
-    
-    -- enter latitude
+end
+
+function JF17CommandGenerator:enterLatitude(commands, waypoint)
     -- enter numeric part
     self:ufcpL2(commands, "Enter waypoint latitude numeric entry")
     local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMSDec())
@@ -131,16 +276,13 @@ function JF17CommandGenerator:ufcpEnterWaypoint(commands, i, waypoint)
     end
     self:ufcpL2(commands, "Exit waypoint latitude numeric entry")
     -- enter hemisphere
-    if waypoint:getLatitudeHemisphere() == Hemispheres.LatHemispheres.NORTH then
-        -- assumption: once for North, 2 times for south
-        self:ufcpR2(commands, "North")
-    else
-        self:ufcpR2(commands, "North")
+    if waypoint:getLatitudeHemisphere() == Hemispheres.LatHemispheres.SOUTH then
         self:ufcpR2(commands, "South")
     end
-    -- completed latitude
+end
 
-    -- enter longitude
+function JF17CommandGenerator:enterLongitude(commands, waypoint)
+    -- enter numeric part
     self:ufcpL3(commands, "Enter waypoint latitude numeric entry")
     local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMSDec())
     for pos, digit in pairs(longitude_digits) do
@@ -149,22 +291,19 @@ function JF17CommandGenerator:ufcpEnterWaypoint(commands, i, waypoint)
     end
     self:ufcpL3(commands, "Exit waypoint longitude numeric entry")
     -- enter hemisphere
-    if waypoint:getLatitudeHemisphere() == Hemispheres.LatHemispheres.EAST then
-        -- assumption: once for East, 2 times for West
-        self:ufcpR3(commands, "East")
-    else
-        self:ufcpR3(commands, "East")
+    if waypoint:getLatitudeHemisphere() == Hemispheres.LatHemispheres.WEST then
         self:ufcpR3(commands, "West")
     end
+end
 
-    -- enter altitude
-    self:ufcpL4(commands, "Enter waypoint altitude entry")
+function JF17CommandGenerator:enterAltitude(commands, waypoint)
+    self:ufcpR4(commands, "Enter waypoint altitude entry")
     local altitude_digits = self:_getAltitudeDigits(waypoint:getAltitudeFeet())
     for pos, digit in pairs(altitude_digits) do
         Logging.debug("Altitude digit: "..digit)
         self:ufcpPressDigitButton(commands, digit, "Altitude digit: "..digit)
     end
-    self:ufcpL4(commands, "Exit waypoint altitude entry")
+    self:ufcpR4(commands, "Exit waypoint altitude entry")
 end
 
 -- keyboard commands
@@ -210,7 +349,18 @@ end
 
 function JF17CommandGenerator:ufcpPressDigitButton(commands, digit, comment, delay)
     commands[#commands + 1] = Command:new():setName("UFCP: press numeric "..digit):setComment(comment):setDevice(UFCP):setCode(self.UFCP_digits[digit]):setDelay(delay or self.ufcpDelay):setIntensity(1):setDepress(true)
-    -- commands[#commands + 1] = Command:new():setName("UFCP: NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay):setIntensity(nil):setDepress(true)
+end
+
+function JF17CommandGenerator:mfcdL2(commands, comment, delay)
+    commands[#commands + 1] = Command:new():setName("MFCD: L2"):setComment(comment):setDevice(MFCD):setCode(JF17CommandGenerator.MFCD_buttons.Left_MFCD_L2):setDelay(delay or self.ufcpDelay):setIntensity(1):setDepress(true)
+end
+
+function JF17CommandGenerator:mfcdL3(commands, comment, delay)
+    commands[#commands + 1] = Command:new():setName("MFCD: L3"):setComment(comment):setDevice(MFCD):setCode(JF17CommandGenerator.MFCD_buttons.Left_MFCD_L3):setDelay(delay or self.ufcpDelay):setIntensity(1):setDepress(true)
+end
+
+function JF17CommandGenerator:mfcdU5(commands, comment, delay)
+    commands[#commands + 1] = Command:new():setName("MFCD: U5"):setComment(comment):setDevice(MFCD):setCode(JF17CommandGenerator.MFCD_buttons.Left_MFCD_U5):setDelay(delay or self.mfcdDelay):setIntensity(1):setDepress(true)
 end
 
 -- Waypoint utility functions
@@ -244,7 +394,7 @@ function JF17CommandGenerator:_getLatitudeDigits(latitude)
 end
 
 function JF17CommandGenerator:_getLongitudeDigits(longitude)
-    local buffer = string.format("%03.0f", longitude.degrees)..string.format("%02.0f", longitude.minutes)..string.format("%04.1f", longitude.minutes)
+    local buffer = string.format("%03.0f", longitude.degrees)..string.format("%02.0f", longitude.minutes)..string.format("%04.1f", longitude.seconds)
 
     Logging.debug("Longitude buffer: "..buffer)
     local result = {}
@@ -261,7 +411,7 @@ function JF17CommandGenerator:_getLongitudeDigits(longitude)
 end
 
 function JF17CommandGenerator:_getAltitudeDigits(altitude)
-    local buffer = string.format("%5.0f", altitude)
+    local buffer = string.format("%05.0f", altitude)
     -- Logging.info("Longitude buffer: "..buffer)
     local result = {}
     for i = 1, #buffer do
