@@ -228,8 +228,8 @@ end
 
 function JF17CommandGenerator:clearWaypoints(commands, start_point, end_point)
     self:enterWaypointNumber(commands, start_point)
-    self:mfcdU5(commands, "Clear waypoint: "..start_point, 0)
-    for i = start_point + 1, end_point do
+    -- self:mfcdU5(commands, "Clear waypoint: "..start_point, 0)
+    for i = start_point, end_point do
         self:mfcdU5(commands, "Clear waypoint: "..i, 0)
         self:mfcdL2(commands, "Step next", 0)
     end
