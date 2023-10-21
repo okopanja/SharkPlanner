@@ -1,10 +1,12 @@
 # SharkPlanner
-SharkPlanner is a MOD for entry of waypoints into DCS modules:
+SharkPlanner started as a MOD for entry of waypoints into **Ka-50** attack helicopters. In the meanwhile support of additional modules has been added:
 - **Ka-50** attack helicopter
   - **ABRIS** 
-  - **PVI-800** 
+  - **PVI-800**
 - **SA-342 Gazelle** light attack helicopter
   - **NADIR**
+- **JF-17 Thunder** lightweight multi-role combat aircraft.
+  - **UFCP**
 
 It is 100% implemented in LUA and integrates into the DCS UI.
 
@@ -25,6 +27,7 @@ Minimal requirement is **2.8** either **stable** or **openbeta**.
 - Gazelle: SA-342M
 - Gazelle: SA-342Minigun
 - F-16C
+- [JF-17](Documentation/JF-17/README.md)
 
 ### How do I report bugs?
 Open the [issues](https://github.com/okopanja/SharkPlanner/issues), read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
@@ -53,5 +56,5 @@ To remove SharkPlanner:
 2. Delete folder **%USERPROFILE%\Saved Games\DCS.openbeta\Scripts\SharkPlanner** or **%USERPROFILE%\Saved Games\DCS\Scripts\SharkPlanner** depending on version of the DCS you are using.
 3. Restart DCS if it was running
 ## Kudos
-* [TheWay](https://github.com/aronCiucu/DCSTheWay) is a very cool project which enables entry of waypoints for a rather large number of DCS airframes. My initial motivation was to provide the ABRIS support as code contribution to [TheWay](https://github.com/aronCiucu/DCSTheWay/pull/24/), but ABRIS proved to be very challanging to implement within existing framework since coordinates entry can be done only non-numerically through dials. This limitation has resulted in large changes that could not be easily harmonized and tested with existing code base. Please note that [TheWay](https://github.com/aronCiucu/DCSTheWay) remains to be the most comprehensive software for waypoint entry in DCS and is highly recommended to use for all other supported aircrafts. You can use both **SharkPlanner** and [TheWay](https://github.com/aronCiucu/DCSTheWay/pull/24/) as long as you remember not to invoke transfer of waypoints at the same time!
+* [TheWay](https://github.com/aronCiucu/DCSTheWay) is a very cool project which enables entry of waypoints for a rather large number of DCS airframes. My initial motivation was to provide the ABRIS support as code contribution to [TheWay](https://github.com/aronCiucu/DCSTheWay/pull/24/), but ABRIS proved to be very challenging to implement within existing framework since coordinates entry can be done only non-numerically through dials. This limitation has resulted in large changes that could not be easily harmonized and tested with existing code base. Please note that [TheWay](https://github.com/aronCiucu/DCSTheWay) remains to be the most comprehensive software for waypoint entry in DCS and is highly recommended to use for all other supported airplanes. You can use both **SharkPlanner** and [TheWay](https://github.com/aronCiucu/DCSTheWay/pull/24/) as long as you remember not to invoke transfer of waypoints at the same time!
 * [DCS Scratchpad](https://github.com/rkusa/dcs-scratchpad) provided the idea how to inject the UI and trigger it with a keyboard shortcut.
