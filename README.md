@@ -1,10 +1,12 @@
 # SharkPlanner
-SharkPlanner is a MOD for entry of waypoints into DCS modules:
+SharkPlanner started as a MOD for entry of waypoints into **Ka-50** attack helicopters. In the meanwhile support of additional modules has been added:
 - **Ka-50** attack helicopter
   - **ABRIS** 
-  - **PVI-800** 
+  - **PVI-800**
 - **SA-342 Gazelle** light attack helicopter
   - **NADIR**
+- **JF-17 Thunder** lightweight multi-role combat aircraft.
+  - **UFCP**
 
 It is 100% implemented in LUA and integrates into the DCS UI.
 
