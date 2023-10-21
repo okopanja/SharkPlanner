@@ -54,11 +54,11 @@ It is possible to enter up to 4 missile waypoints, these can be used to prepare 
 
 ![missile target points](images/designation_of_missile_target_points.png)
 
-Following the entry the target points can be seen on DST page
+Following the entry the target points can be seen on DST page.
 
 | Description | Cockpit screenshot|
 | --- | --- |
-| DST page with entered target points | ![DST page with entered waypoints](images/entered_target_point.png) |
+| DST page with entered target point | ![DST page with entered waypoints](images/entered_target_point.png) |
 
 # Known limitations
 
