@@ -35,7 +35,7 @@ local function getConfigurationDefinition()
                     Default = 100,
                     Control = "HorzSlider",
                     Min = 70,
-                    Max = 2000,
+                    Max = 500,
                     Step = 1,
                 },
             }
