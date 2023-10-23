@@ -1,8 +1,12 @@
 # JF-17 Module capabilities
 
-JF-17 offers a rather atractive selection of precision ammunition, which combined with the advanced navigation system enables not only precision navigation, but also a selection interesting tactics based on pre planning of flights and targets.
-However in most cases the interaction takes place through DTC mechanism, which limits the updates to on ground interaction. They users can update the data inside navigation system through UFCP or oboard sensors. In case of UFCP this can be a bit cumbersome and labor intensive.
-SharkPlanner allows such interaction even during the flight, by utilizing UFCP and Left MFCD.
+JF-17 offers a rather attractive selection of precision ammunition, which combined with the advanced navigation system enables not only precision navigation, but also a selection of interesting tactics based on pre planning of flights and targets.
+Normally interaction takes place through and F10 map and DTC mechanism, which limits the updates only to ground. The users can update the data inside navigation system through UFCP or onboard sensors. In case of UFCP this can be a bit cumbersome and labor intensive.
+
+SharkPlanner can help with enabling you to:
+- update flight plan during the flight with less effort and more precision,
+- save the flight plan for future use into file,
+- load the flight plan from file.
 
 ![JF-17 armed with 2 cruise missiles and a datalink pod](images/jf-17_outside.jpg)
 
@@ -50,7 +54,7 @@ After transfer, the entered missile waypoints will be shown used in different pl
 
 ## Entry of pre planned target points (36-39)
 
-It is possible to enter up to 4 missile waypoints, these can be used to prepare the attack on ground targets. To enter them you need to toggle **T**.
+It is possible to enter up to 4 pre-planned points, these can be used to prepare the attack on ground targets. To enter them you need to toggle **T**.
 
 ![missile target points](images/designation_of_missile_target_points.png)
 
