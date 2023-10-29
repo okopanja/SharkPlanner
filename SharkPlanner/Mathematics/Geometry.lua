@@ -60,18 +60,19 @@ local function degAngleToDMSAngle(decimal, degrees_precision, minutes_precision,
         round_dms(result)
         return result
     end
-    -- assert(minutes_fraction >= 0)
+    print("AAAAA")    -- assert(minutes_fraction >= 0)
 
     local seconds_precision_multiplier = 10 ^ (seconds_precision + 16)
 
     local seconds = minutes_fraction * 60
-    local seconds_rounded = seconds_precision > 0 and round_with_precision(seconds, seconds_precision) or math.floor(seconds)
+    local seconds_rounded = round_with_precision(seconds, seconds_precision)
     local seconds_fraction = ((seconds * seconds_precision_multiplier) - (seconds_rounded * seconds_precision_multiplier)) / seconds_precision_multiplier
     print(
         "seconds: "..seconds..", "..
         "seconds_rounded: "..seconds_rounded..", "..
         "seconds_fraction: "..seconds_fraction
     )
+    result.seconds = seconds_rounded
     round_dms(result)
     return result
 end
