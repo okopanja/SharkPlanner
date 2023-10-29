@@ -2,25 +2,7 @@ local latitude = 43.358880080789
 local longitude = 44.055429646183
 local Geometry = require("SharkPlanner.Mathematics.Geometry")
 local tests = {}
-Geometry.enable_debug()
--- print("Hello world")
--- local dms = Geometry.degAngleToDMSAngle(43.358880080789, 0, 0)
--- assert(dms.degrees == 43)
--- assert(dms.minutes == 21)
--- print(inspect(dms))
--- local dms = Geometry.degAngleToDMSAngle(43.358880080789, 0, 1)
--- print(inspect(dms))
--- local dms = Geometry.degAngleToDMSAngle(43.5, 0, 0)
--- print(inspect(dms))
-
--- local dms = Geometry.degAngleToDMSAngle(3.001, 0, 1)
--- print(inspect(dms))
--- local dms = Geometry.degAngleToDMSAngle(3.50, 0, 3)
--- print(inspect(dms))
--- local dms = Geometry.degAngleToDMSAngle(3.51, 0, 3)
--- print(inspect(dms))
--- local dms = Geometry.degAngleToDMSAngle(3.51, 0, 1)
--- print(inspect(dms))
+-- Geometry.enable_debug()
 
 local function test_degAngleToDMSAngle_degree_with_precission_0()
     local dms = Geometry.degAngleToDMSAngle(43.358880080789, 0)
