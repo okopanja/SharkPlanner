@@ -24,6 +24,7 @@ local inspect = require("SharkPlanner.inspect")
 
 local function test_degAngleToDMSAngle_degree_with_precission_0()
     local dms = Geometry.degAngleToDMSAngle(43.358880080789, 0)
+    print(inspect(dms))
     assert(dms.degrees == 43)
     assert(dms.minutes == 0)
     assert(dms.seconds == 0)
@@ -33,6 +34,7 @@ tests["test_degAngleToDMSAngle_degree_with_precission_0"] = test_degAngleToDMSAn
 
 local function test_degAngleToDMSAngle_degree_with_precission_1()
     local dms = Geometry.degAngleToDMSAngle(43.358880080789, 1)
+    print(inspect(dms))
     assert(dms.degrees == 43.4)
     assert(dms.minutes == 0)
     assert(dms.seconds == 0)
@@ -42,6 +44,7 @@ tests["test_degAngleToDMSAngle_degree_with_precission_1"] = test_degAngleToDMSAn
 
 local function test_degAngleToDMSAngle_degree_with_precission_2()
     local dms = Geometry.degAngleToDMSAngle(43.358880080789, 2)
+    print(inspect(dms))
     assert(dms.degrees == 43.36)
     assert(dms.minutes == 0)
     assert(dms.seconds == 0)
