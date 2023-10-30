@@ -280,7 +280,8 @@ end
 function JF17CommandGenerator:enterLatitude(commands, waypoint)
     -- enter numeric part
     self:ufcpL2(commands, "Enter waypoint latitude numeric entry")
-    local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMSDec())
+    -- local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMSDec())
+    local latitude_digits = waypoint:getLatitudeAsDMSBuffer{precision = 1, seconds_format = "%04.1f"}
     for pos, digit in pairs(latitude_digits) do
         Logging.debug("Latitude digit: "..digit)
         self:ufcpPressDigitButton(commands, digit, "Latitude digit: "..digit)
@@ -295,7 +296,8 @@ end
 function JF17CommandGenerator:enterLongitude(commands, waypoint)
     -- enter numeric part
     self:ufcpL3(commands, "Enter waypoint latitude numeric entry")
-    local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMSDec())
+    -- local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMSDec())
+    local longitude_digits = waypoint:getLongitudeAsDMSBuffer{precision = 1, seconds_format = "%04.1f"}
     for pos, digit in pairs(longitude_digits) do
         Logging.debug("Longitude digit: "..digit)
         self:ufcpPressDigitButton(commands, digit, "Longitude digit: "..digit)
