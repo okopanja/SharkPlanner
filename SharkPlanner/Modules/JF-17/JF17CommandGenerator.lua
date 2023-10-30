@@ -280,7 +280,6 @@ end
 function JF17CommandGenerator:enterLatitude(commands, waypoint)
     -- enter numeric part
     self:ufcpL2(commands, "Enter waypoint latitude numeric entry")
-    -- local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMSDec())
     local latitude_digits = waypoint:getLatitudeAsDMSBuffer{precision = 1, seconds_format = "%04.1f"}
     for pos, digit in pairs(latitude_digits) do
         Logging.debug("Latitude digit: "..digit)
@@ -296,7 +295,6 @@ end
 function JF17CommandGenerator:enterLongitude(commands, waypoint)
     -- enter numeric part
     self:ufcpL3(commands, "Enter waypoint latitude numeric entry")
-    -- local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMSDec())
     local longitude_digits = waypoint:getLongitudeAsDMSBuffer{precision = 1, seconds_format = "%04.1f"}
     for pos, digit in pairs(longitude_digits) do
         Logging.debug("Longitude digit: "..digit)
@@ -386,39 +384,6 @@ function JF17CommandGenerator:_getWaypointDigits(waypointNumber)
       if temp ~= '.' then
         result[#result + 1] = tonumber(temp)
       end
-    end
-    return result
-end
-
-function JF17CommandGenerator:_getLatitudeDigits(latitude)
-    local buffer = string.format("%02.0f", latitude.degrees)..string.format("%02.0f", latitude.minutes)..string.format("%04.1f", latitude.seconds)
-    Logging.debug("Latitude buffer: "..buffer)
-    local result = {}
-    for i = 1, #buffer do
-      local temp = string.sub(buffer, i, i)
-      if temp ~= '.' and temp then
-        result[#result + 1] = tonumber(temp)
-      end
-    end
-    for i = 0, 7 - #buffer do
-        result[#result + 1] = 0
-    end
-    return result
-end
-
-function JF17CommandGenerator:_getLongitudeDigits(longitude)
-    local buffer = string.format("%03.0f", longitude.degrees)..string.format("%02.0f", longitude.minutes)..string.format("%04.1f", longitude.seconds)
-
-    Logging.debug("Longitude buffer: "..buffer)
-    local result = {}
-    for i = 1, #buffer do
-        local temp = string.sub(buffer, i, i)
-        if temp ~= '.' then
-        result[#result + 1] = tonumber(temp)
-        end
-    end
-    for i = 0, 8 - #buffer do
-        result[#result + 1] = 0
     end
     return result
 end
