@@ -1,5 +1,5 @@
-local Geometry = require("Tests.Mathematics.Geometry")
+local TestGeometry = require("Tests.Mathematics.Geometry")
 
 return {
-    Geometry = Geometry,
+    TestGeometry = TestGeometry,
 }

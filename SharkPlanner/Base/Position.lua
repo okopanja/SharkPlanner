@@ -1,6 +1,8 @@
 local math = require("math")
-local Logging = require("SharkPlanner.Utils.Logging")
+-- local Logging = require("SharkPlanner.Utils.Logging")
 local Hemispheres = require("SharkPlanner.Base.Hemispheres")
+local Geometry = require("SharkPlanner.Mathematics.Geometry")
+
 
 local Position = {
   x = nil,
@@ -55,6 +57,96 @@ end
 
 function Position:getLatitude()
   return self.latitude
+end
+
+function Position:getLatitudeAsDMS(precision)
+  precision = precision or 0
+  local result = Geometry.degAngleToDMSAngle(self.latitude, 0, 0, precision)
+  return result
+end
+
+function Position:getLongitudeAsDMS(precision)
+  precision = precision or 0
+  local result = Geometry.degAngleToDMSAngle(self.longitude, 0, 0, precision)
+  return result
+end
+
+function Position:getLatitudeAsDMSString(format_spec)
+  format_spec.precision = format_spec.precision or 0
+  format_spec.degrees_format = format_spec.degrees_format or "%02.0f "
+  format_spec.minutes_format = format_spec.minutes_format or "%02.0f "
+  format_spec.seconds_format = format_spec.seconds_format or "%02.0f" -- "%04.1f"
+  format_spec.hemisphere_format = format_spec.hemisphere_format or "%s "
+
+  local latitude = self:getLatitudeAsDMS(format_spec.precision)
+
+  local latitudeString = string.format(
+    format_spec.hemisphere_format, Hemispheres.LatHemispheresStr[self:getLatitudeHemisphere()])..
+    string.format(format_spec.degrees_format, latitude.degrees)..
+    string.format(format_spec.minutes_format, latitude.minutes)..
+    string.format(format_spec.seconds_format, latitude.seconds
+  )
+
+  return latitudeString
+end
+
+function Position:getLongitudeAsDMSString(format_spec)
+  format_spec.precision = format_spec.precision or 0
+  format_spec.degrees_format = format_spec.degrees_format or "%03.0f "
+  format_spec.minutes_format = format_spec.minutes_format or "%02.0f "
+  format_spec.seconds_format = format_spec.seconds_format or "%02.0f" -- "%04.1f"
+  format_spec.hemisphere_format = format_spec.hemisphere_format or "%s "
+
+  local latitude = self:getLongitudeAsDMS(format_spec.precision)
+
+  local longitudeString = string.format(
+    format_spec.hemisphere_format, Hemispheres.LongHemispheresStr[self:getLongitudeHemisphere()])..
+    string.format(format_spec.degrees_format, latitude.degrees)..
+    string.format(format_spec.minutes_format, latitude.minutes)..
+    string.format(format_spec.seconds_format, latitude.seconds
+  )
+
+  return longitudeString
+end
+
+function Position:getLatitudeAsDMSBuffer(format_spec)
+  format_spec.precision = format_spec.precision or 0
+  format_spec.degrees_format = format_spec.degrees_format or "%02.0f"
+  format_spec.minutes_format = format_spec.minutes_format or "%02.0f"
+  format_spec.seconds_format = format_spec.seconds_format or "%02.0f"
+  format_spec.hemisphere_format = format_spec.hemisphere_format or ""
+
+  local latitudeString = self:getLatitudeAsDMSString(format_spec)
+
+  local result = {}
+  for i = 1, #latitudeString do
+    local temp = string.sub(latitudeString, i, i)
+    if temp ~= '.' and temp then
+      result[#result + 1] = tonumber(temp)
+    end
+  end
+
+  return result
+end
+
+function Position:getLongitudeAsDMSBuffer(format_spec)
+  format_spec.precision = format_spec.precision or 0
+  format_spec.degrees_format = format_spec.degrees_format or "%02.0f"
+  format_spec.minutes_format = format_spec.minutes_format or "%02.0f"
+  format_spec.seconds_format = format_spec.seconds_format or "%02.0f"
+  format_spec.hemisphere_format = format_spec.hemisphere_format or ""
+
+  local latitudeString = self:getLongitudeAsDMSString(format_spec)
+
+  local result = {}
+  for i = 1, #latitudeString do
+    local temp = string.sub(latitudeString, i, i)
+    if temp ~= '.' and temp then
+      result[#result + 1] = tonumber(temp)
+    end
+  end
+
+  return result
 end
 
 function Position:getLongitudeDMS()
