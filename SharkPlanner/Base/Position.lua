@@ -131,16 +131,16 @@ end
 
 function Position:getLongitudeAsDMSBuffer(format_spec)
   format_spec.precision = format_spec.precision or 0
-  format_spec.degrees_format = format_spec.degrees_format or "%02.0f"
+  format_spec.degrees_format = format_spec.degrees_format or "%03.0f"
   format_spec.minutes_format = format_spec.minutes_format or "%02.0f"
   format_spec.seconds_format = format_spec.seconds_format or "%02.0f"
   format_spec.hemisphere_format = format_spec.hemisphere_format or ""
 
-  local latitudeString = self:getLongitudeAsDMSString(format_spec)
+  local longitudeString = self:getLongitudeAsDMSString(format_spec)
 
   local result = {}
-  for i = 1, #latitudeString do
-    local temp = string.sub(latitudeString, i, i)
+  for i = 1, #longitudeString do
+    local temp = string.sub(longitudeString, i, i)
     if temp ~= '.' and temp then
       result[#result + 1] = tonumber(temp)
     end

@@ -90,4 +90,47 @@ end
 tests["test_Position_getLongitudeAsDMSString"] = test_Position_getLongitudeAsDMSString
 
 
+local function test_Position_getLatitudeAsDMSBuffer()
+    local pos = Position:new{
+        latitude=21.4356,
+        longitude=46.12655,
+    }
+    local latitudeBuffer = pos:getLatitudeAsDMSBuffer{}
+    local expected = {2, 1, 2, 6 ,0, 8}
+    assert(#latitudeBuffer == #expected)
+    for i, v in ipairs(latitudeBuffer) do
+        assert(v == expected[i])
+    end
+
+    local latitudeBuffer = pos:getLatitudeAsDMSBuffer{degrees_format="%02.0f ", minutes_format = "%02.0f ", seconds_format = "%04.1f", precision = 1}
+    local expected = {2, 1, 2, 6, 0, 8, 2}
+    assert(#latitudeBuffer == #expected)
+    for i, v in ipairs(latitudeBuffer) do
+        assert(v == expected[i])
+    end
+end
+tests["test_Position_getLatitudeAsDMSBuffer"] = test_Position_getLatitudeAsDMSBuffer
+
+
+local function test_Position_getLongitudeAsDMSBuffer()
+    local pos = Position:new{
+        latitude=21.4356,
+        longitude=46.12655,
+    }
+    local longitudeBuffer = pos:getLongitudeAsDMSBuffer{}
+    local expected = {0, 4, 6, 0, 7, 3, 6}
+    assert(#longitudeBuffer == #expected)
+    for i, v in ipairs(longitudeBuffer) do
+        assert(v == expected[i])
+    end
+
+    local longitudeBuffer = pos:getLongitudeAsDMSBuffer{degrees_format="%03.0f ", minutes_format = "%02.0f ", seconds_format = "%04.1f", precision = 1}
+    local expected = {0, 4, 6, 0, 7, 3, 5, 6}
+    assert(#longitudeBuffer == #expected)
+    for i, v in ipairs(longitudeBuffer) do
+        assert(v == expected[i])
+    end
+end
+tests["test_Position_getLongitudeAsDMSBuffer"] = test_Position_getLongitudeAsDMSBuffer
+
 return  tests
