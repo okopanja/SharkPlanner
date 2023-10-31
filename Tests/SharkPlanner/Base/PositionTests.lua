@@ -133,4 +133,43 @@ local function test_Position_getLongitudeAsDMSBuffer()
 end
 tests["test_Position_getLongitudeAsDMSBuffer"] = test_Position_getLongitudeAsDMSBuffer
 
+local function test_Position_getLatitudeAsDMString()
+    local pos = Position:new{
+        latitude=21.4356,
+        longitude=46.12655,
+    }
+
+    local latitudeStr = pos:getLatitudeAsDMString{}
+    assert(latitudeStr == "N 21 26")
+
+    local latitudeStr = pos:getLatitudeAsDMString{hemisphere_format = "%s "}
+    assert(latitudeStr == "N 21 26")
+
+    local latitudeStr = pos:getLatitudeAsDMString{hemisphere_format = "%s ", degrees_format="%02.0f ", minutes_format = "%02.0f"}
+    assert(latitudeStr == "N 21 26")
+
+    local latitudeStr = pos:getLatitudeAsDMString{hemisphere_format = "%s ", degrees_format="%02.0f ", minutes_format = "%04.1f", precision = 1}
+    assert(latitudeStr == "N 21 26.1")
+
+    local latitudeStr = pos:getLatitudeAsDMString{hemisphere_format = "%s ", degrees_format="%02.0f ", minutes_format = "%05.2f", precision = 2}
+    assert(latitudeStr == "N 21 26.14")
+
+    local pos = Position:new{
+        latitude=1.4356,
+        longitude=46.12655,
+    }
+
+    local latitudeStr = pos:getLatitudeAsDMString{hemisphere_format = "%s ", degrees_format="%02.0f ", minutes_format = "%05.2f", precision = 2}
+    assert(latitudeStr == "N 01 26.14")
+
+    local pos = Position:new{
+        latitude=0,
+        longitude=0,
+    }
+
+    local latitudeStr = pos:getLatitudeAsDMString{hemisphere_format = "%s ", degrees_format="%02.0f ", minutes_format = "%05.2f", precision = 2}
+    assert(latitudeStr == "N 00 00.00")
+end
+tests["test_Position_getLatitudeAsDMString"] = test_Position_getLatitudeAsDMString
+
 return  tests
