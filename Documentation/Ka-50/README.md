@@ -59,9 +59,10 @@ It is possible to enter up to 6 target points, these can be used to prepare the 
 
 # Known limitations
 
+- Target entry to PVI-800 does not allow you to directly slew SHKVAL onto target due to insufficient precision of entered coordinates. You will have to search the target in the general vicinity.
 - Entry of target points into ABRIS is experimental.
 - Experimental target point may fail, and will the entry of waypoints. To fix this: reslot or reload the mission.
-- PVI-800 offers reduced precision of entry compared to ABRIS. 
+- PVI-800 offers reduced precision of entry compared to ABRIS. This is best seen when you select target point and compare the point entered into ABRIS. 
 - Entry of FIX points is not yet implemented.
 
 # References:
