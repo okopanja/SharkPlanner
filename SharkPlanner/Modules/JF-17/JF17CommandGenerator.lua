@@ -401,5 +401,4 @@ function JF17CommandGenerator:_getAltitudeDigits(altitude)
     return result
 end
 
-
 return JF17CommandGenerator
