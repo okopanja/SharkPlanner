@@ -20,9 +20,9 @@ No, SharkPlanner runs within the DCS, and as such does not require external tool
 ### Which DCS versions are supported?
 Minimal requirement is **2.8** either **stable** or **openbeta**.
 ### Which airframes are supported?
-- BlackShark 3: Ka-50 version 2022
-- BlackShark 3: Ka-50 version 2011
-- BlackShark 2: Ka-50
+- [BlackShark 3: Ka-50 version 2022](Documentation/Ka-50/README.md)
+- [BlackShark 3: Ka-50 version 2011](Documentation/Ka-50/README.md)
+- [BlackShark 2: Ka-50](Documentation/Ka-50/README.md)
 - Gazelle: SA-342L
 - Gazelle: SA-342M
 - Gazelle: SA-342Minigun
