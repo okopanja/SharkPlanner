@@ -1,5 +1,3 @@
-local net = require("net")
-
 local LOG_LEVELS = {
   INFO    = { name = "INFO",    value = 0 },
   WARNING = { name = "WARNING", value = 1 },
@@ -12,7 +10,6 @@ local verbosity = LOG_LEVELS.ERROR
 -- logs message into log file with info severity
 local function log(level, message)
   fp:write(os.date("%Y-%m-%d %H:%M:%S").." "..level.name.." "..message.."\n")
-  -- net.log("[SharkPlanner] "..message)
 end
 
 local function info(message)

@@ -124,9 +124,34 @@ function MyModuleCommandGenerator:myEntryDeviceEnterWaypoint(commands, position,
     -- we will use command which allows us to enter specific digit in this case 8 for SOUTH
     self:myEntryDevicePressDigitButton(commands, 8, "Hemisphere: SOUTH")
   end
-  -- enter numeric part. In this case we have to numeric values from waypoint. Function getLatitudeDMDec, returns the Latitude in Degree and Minutes, where minutes have fractional part.
-  -- Adjust this to the needed format with your own _getLatitudeDigits function (module specific - e.g. you may need minutes in specific precision).
-  local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMDec())
+  -- Enter numeric part of longitude. 
+  -- This part largely depends on what coordinate system precision is supported by module itself. 
+  -- In most cases the format is either degree/minute based or degree/minute/seconds based
+  -- For this reason the Position class provides several methods allowing you to get these values as either stiring or numeric array (buffer).
+  -- Here are several examples and needed parameters
+  -- N 44° 52.1'        
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 1, minutes_format = "%04.1f")
+
+  -- N 44° 52.12'
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 2, minutes_format = "%05.2f")
+
+  -- N 44° 52.123'
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 3, minutes_format = "%06.3f")
+
+  -- N 44° 52' 10''
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 0, seconds_format = "%02.0f")
+
+  -- N 44° 52' 10.1''
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 1, seconds_format = "%04.1f")
+
+  -- N 44° 52' 10.12''
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 2, seconds_format = "%05.2f")
+
+  -- N 44° 52' 10.123''
+  -- local latitude_digits = waypoint:getLatitudeAsDMBuffer(precision = 3, seconds_format = "%06.3f")
+
+  local latitude_digits = waypoint:getLatitudeAsDMBuffer{precision = 1, minutes_format = "%04.1f"}
+
   -- now that we have actual digits we enter it one by one
   for pos, digit in pairs(latitude_digits) do
     self:myEntryDevicePressDigitButton(commands, digit, "Latitude digit: "..digit)
@@ -139,14 +164,15 @@ function MyModuleCommandGenerator:myEntryDeviceEnterWaypoint(commands, position,
     -- we will use command which allows us to enter specific digit in this case 4 for EAST
     self:myEntryDevicePressDigitButton(commands, 4, "Hemisphere: WEST")
   end
-  -- enter numeric part. In this case we get numeric values from waypoint (e.g. function getLatitudeDMDec, gives the Latitude in Degree and Minutes, where minutes have fractional part)  adjust this to the needed format with _getLatitudeDigits function (module specific - e.g. you may need minutes in specific precision)
-  local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMDec())
+  -- enter numeric part. 
+  -- for example of parameters please see the example for latitude above
+  local longitude_digits = waypoint:getLongitudeAsDMBuffer{precision = 1, minutes_format = "%04.1f"}
   -- now that we have actual digits we enter it one my one
-  for pos, digit in pairs(latitude_digits) do
+  for pos, digit in pairs(longitude_digits) do
     self:myEntryDevicePressDigitButton(commands, digit, "Latitude digit: "..digit)
   end
 
-  -- similar process is done for altitude if the device supports this
+  -- similar process is done for altitude if the device supports it
   -- ...
 end
 

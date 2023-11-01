@@ -79,7 +79,8 @@ function F16CBL50CommandGenerator:ufcEnterWaypoint(commands, pos, waypoint)
         self:ufcPressDigitButton(commands, 8, "Hemisphere: SOUTH")
     end
     -- enter numeric part
-    local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMDec())
+
+    local latitude_digits = waypoint:getLatitudeAsDMBuffer{precision = 3, minutes_format = "%06.3f"}
     for pos, digit in pairs(latitude_digits) do
         Logging.debug("Latitude digit: "..digit)
         self:ufcPressDigitButton(commands, digit, "Latitude digit: "..digit)
@@ -95,7 +96,7 @@ function F16CBL50CommandGenerator:ufcEnterWaypoint(commands, pos, waypoint)
         self:ufcPressDigitButton(commands, 4, "Hemisphere: WEST")
     end
     -- enter numeric part
-    local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMDec())
+    local longitude_digits = waypoint:getLongitudeAsDMBuffer{precision = 3, minutes_format = "%06.3f"}
     for pos, digit in pairs(longitude_digits) do
         Logging.debug("Longitude digit: "..digit)
         self:ufcPressDigitButton(commands, digit, "Longitude digit: "..digit)
@@ -201,41 +202,6 @@ function F16CBL50CommandGenerator:_getWaypointDigits(waypoint)
     end
     return result
   end
-
-
--- Coordinates utility functions
-function F16CBL50CommandGenerator:_getLatitudeDigits(latitude)
-    local buffer = string.format("%02.0f", latitude.degrees)..string.format("%06.3f", latitude.minutes)
-    Logging.debug("Latitude buffer: "..buffer)
-    local result = {}
-    for i = 1, #buffer do
-      local temp = string.sub(buffer, i, i)
-      if temp ~= '.' and temp then
-        result[#result + 1] = tonumber(temp)
-      end
-    end
-    for i = 0, 7 - #buffer do
-        result[#result + 1] = 0
-    end
-    return result
-end
-
-
-function F16CBL50CommandGenerator:_getLongitudeDigits(longitude)
-    local buffer = string.format("%03.0f", longitude.degrees)..string.format("%06.3f", longitude.minutes)
-    Logging.debug("Longitude buffer: "..buffer)
-    local result = {}
-    for i = 1, #buffer do
-        local temp = string.sub(buffer, i, i)
-        if temp ~= '.' then
-        result[#result + 1] = tonumber(temp)
-        end
-    end
-    for i = 0, 8 - #buffer do
-        result[#result + 1] = 0
-    end
-    return result
-end
 
 function F16CBL50CommandGenerator:_getAltitudeDigits(altitude)
     local buffer = string.format("%5.0f", altitude)

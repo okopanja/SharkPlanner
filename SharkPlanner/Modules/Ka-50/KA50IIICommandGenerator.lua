@@ -144,14 +144,14 @@ function KA50IIICommandGenerator:pvi800EnterPositions(commands, positions)
     -- enter lat hemisphere
     self:pvi800PressDigitBtn(commands, position:getLatitudeHemisphere(), "Latitude Hemisphere")
     -- enter latitude
-    local latitude_digits = self:_getLatitudeDigits(position:getLatitudeDMDec())
+    local latitude_digits = position:getLatitudeAsDMBuffer{precision = 1, minutes_format = "%04.1f"}
     for pos, digit in pairs(latitude_digits) do
       self:pvi800PressDigitBtn(commands, digit, "Latitude digit: "..digit)
     end
     -- enter long hemisphere
     self:pvi800PressDigitBtn(commands, position:getLongitudeHemisphere(), "Longitude Hemisphere")
     -- enter longitude
-    local longitude_digits = self:_getLongitudeDigits(position:getLongitudeDMDec())
+    local longitude_digits = position:getLongitudeAsDMBuffer{precision = 1, minutes_format = "%04.1f"}
     for pos, digit in pairs(longitude_digits) do
       self:pvi800PressDigitBtn(commands, digit, "Latitude digit: "..digit)
     end
@@ -830,33 +830,6 @@ function KA50IIICommandGenerator:_determineNumberOfModePresses()
   end
   -- Logging.info("ABRIS Mode: "..mode)
   return 5
-end
-
--- Coordinates utility functions
-function KA50IIICommandGenerator:_getLatitudeDigits(latitude)
-  local buffer = string.format("%02.0f", latitude.degrees)..string.format("%04.1f", latitude.minutes)
-  -- Logging.info("Latitude buffer: "..buffer)
-  local result = {}
-  for i = 1, #buffer do
-    local temp = string.sub(buffer, i, i)
-    if temp ~= '.' and temp then
-      result[#result + 1] = tonumber(temp)
-    end
-  end
-  return result
-end
-
-function KA50IIICommandGenerator:_getLongitudeDigits(longitude)
-  local buffer = string.format("%03.0f", longitude.degrees)..string.format("%04.1f", longitude.minutes)
-  -- Logging.info("Longitude buffer: "..buffer)
-  local result = {}
-  for i = 1, #buffer do
-    local temp = string.sub(buffer, i, i)
-    if temp ~= '.' then
-      result[#result + 1] = tonumber(temp)
-    end
-  end
-  return result
 end
 
 function KA50IIICommandGenerator:starts_with(str, start)

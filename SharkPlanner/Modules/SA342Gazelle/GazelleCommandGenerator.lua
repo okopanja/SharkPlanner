@@ -75,7 +75,7 @@ function GazelleCommandGenerator:NadirEnterWaypoint(commands, position, waypoint
     self:nadirPressDigitButton(commands, 8, "Hemisphere: SOUTH", delay)
   end
   -- enter numeric part
-  local latitude_digits = self:_getLatitudeDigits(waypoint:getLatitudeDMDec())
+  local latitude_digits = waypoint:getLatitudeAsDMBuffer{precision = 1, minutes_format = "%04.1f"}
   for pos, digit in pairs(latitude_digits) do
     self:nadirPressDigitButton(commands, digit, "Latitude digit: "..digit, delay)
   end
@@ -92,7 +92,7 @@ function GazelleCommandGenerator:NadirEnterWaypoint(commands, position, waypoint
     self:nadirPressDigitButton(commands, 4, "Hemisphere: WEST", delay)
   end
   -- enter numeric part
-  local longitude_digits = self:_getLongitudeDigits(waypoint:getLongitudeDMDec())
+  local longitude_digits = waypoint:getLongitudeAsDMBuffer{precision = 1, minutes_format = "%04.1f"}
   for pos, digit in pairs(longitude_digits) do
     self:nadirPressDigitButton(commands, digit, "Longitude digit: "..digit, delay)
   end
@@ -120,33 +120,6 @@ end
 
 function GazelleCommandGenerator:nadirParameterRotate(commands, intensity, comment)
   commands[#commands + 1] = Command:new():setName("NADIR: rotate"):setComment(comment):setDevice(22):setCode(3003):setDelay(0):setIntensity(intensity):setDepress(false)
-end
-
--- Coordinates utility functions
-function GazelleCommandGenerator:_getLatitudeDigits(latitude)
-  local buffer = string.format("%02.0f", latitude.degrees)..string.format("%04.1f", latitude.minutes)
-  -- Logging.info("Latitude buffer: "..buffer)
-  local result = {}
-  for i = 1, #buffer do
-    local temp = string.sub(buffer, i, i)
-    if temp ~= '.' and temp then
-      result[#result + 1] = tonumber(temp)
-    end
-  end
-  return result
-end
-
-function GazelleCommandGenerator:_getLongitudeDigits(longitude)
-  local buffer = string.format("%03.0f", longitude.degrees)..string.format("%04.1f", longitude.minutes)
-  -- Logging.info("Longitude buffer: "..buffer)
-  local result = {}
-  for i = 1, #buffer do
-    local temp = string.sub(buffer, i, i)
-    if temp ~= '.' then
-      result[#result + 1] = tonumber(temp)
-    end
-  end
-  return result
 end
 
 return GazelleCommandGenerator
