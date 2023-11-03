@@ -26,43 +26,29 @@ Following table provides the overview of different types of points, along the in
 
 ## Entry of aircraft navigation waypoints
 
-For entry of navigation waypoints please use the standard waypoint entry mode. Up to 29 waypoints can be entered.
-
-![waypoints designation](images/designation_of_aircraft_waypoints.png)
-
-Later once you trigger the transfer of waypoints, you can find them in **left MFCD** within **DST** page. You can user MAN/AUTO mode to automatically switch to next waypoint or use UFCP to select the waypoint by entering it's number. 
-
 | Description | Cockpit screenshot|
 | --- | --- |
+| For entry of navigation waypoints please use the standard **waypoint entry mode**. Up to **29** waypoints can be entered.<br>Once you trigger the transfer of waypoints, you can find them in **left MFCD** within **DST** page. You can use MAN/AUTO mode to automatically switch to next waypoint or use UFCP to select the waypoint by entering it's number.  | ![waypoints designation](images/designation_of_aircraft_waypoints.png) | 
 | DST page with entered waypoints | ![DST page with entered waypoints](images/entered_aircraft_waypoints_dst_page.png) |
 | HSD page with entered waypoints | ![HSD page with entered waypoints](images/entered_aircraft_waypoints_hsd_page.png) |
 
 
 ## Entry of cruise missile waypoints (30-35)
 
-It is possible to enter up to 6 missile waypoints, these can be used to program the flight path of CM-802AKG cruise missile when using in **MANUAL** mode. To enter them you need to toggle **F**.
-
-![missile waypoints designation](images/designation_of_missile_waypoints.png)
-
 After transfer, the entered missile waypoints will be shown used in different places.
 
 | Description | Cockpit screenshot|
 | --- | --- |
+| It is possible to enter up to 6 missile waypoints, these can be used to program the flight path of CM-802AKG cruise missile when using in **MANUAL** mode. To enter them you need to toggle **F**. | ![missile waypoints designation](images/designation_of_missile_waypoints.png) |
 | DST page with entered missile waypoints | ![DST page with entered missile waypoints](images/entered_missile_waypoints.png) |
 | SMS page with CM-802AKG in MANUAL mode and missile waypoints | ![allocated missile waypoints in manual mode](images/allocation_manual_mode.png) |
 
-
 ## Entry of pre planned target points (36-39)
-
-It is possible to enter up to 4 pre-planned points, these can be used to prepare the attack on ground targets. To enter them you need to toggle **T**.
-
-![missile target points](images/designation_of_missile_target_points.png)
-
-Following the entry the target points can be seen on DST page.
 
 | Description | Cockpit screenshot|
 | --- | --- |
-| DST page with entered target point | ![DST page with entered waypoints](images/entered_target_point.png) |
+| It is possible to enter up to **4** pre-planned points, these can be used to prepare the attack on ground targets. To enter them you need to toggle **T**.<br> | ![missile target points](images/designation_of_missile_target_points.png) |
+| Once the entry of  target points is complete, they can be seen on DST page. | ![DST page with entered waypoints](images/entered_target_point.png) |
 
 # Known limitations
 
