@@ -20,8 +20,9 @@ SA-342 Gazelle poses 2 navigation devices:
 
 - **NADIR** provides only navigation aid. 
 - Automatic switching of waypoints is not implemented. Each waypoint has to be selected manually based to the remaining distance. 
-- **Tablet** device does not provide the entry method at this moment.
+- **Tablet** device does not provide the entry method at this moment. Depending on future development of this device support may be added.
 
 # References:
 
-- DCS: SA342 Gazelle NADIR MARK I (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\SA342\Doc\DCS SA342M Gazelle NADIR Manual_en.pdf)
+- **DCS: SA342 Gazelle - NADIR MARK I** (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\SA342\Doc\DCS SA342M Gazelle NADIR Manual_en.pdf)
+- **DCS: SA342 Gazelle - Flight Manual** (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\SA342\Doc\DCS SA342M Flight manual_en.pdf)
