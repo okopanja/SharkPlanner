@@ -3,8 +3,12 @@ SharkPlanner started as a MOD for entry of waypoints into **Ka-50** attack helic
 - **Ka-50** attack helicopter
   - **ABRIS** 
   - **PVI-800**
+- **Combined Arms**
+  - allows capture of points for other modules through visibility provided to JTAC roles.
 - **SA-342 Gazelle** light attack helicopter
   - **NADIR**
+- **F-16C** 
+  - **UFC**
 - **JF-17 Thunder** lightweight multi-role combat aircraft.
   - **UFCP**
 
