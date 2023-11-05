@@ -47,9 +47,6 @@ It is possible to enter up to 4 fix points.
 
 It is possible to enter up to 6 target points, these can be used to prepare the attack on ground targets. To enter them you need to toggle **T**.
 
-
-
-
 | Description | Cockpit screenshot|
 | --- | --- |
 | Entry of target points | ![missile target points](images/designation_of_target_points.png) |
@@ -59,7 +56,7 @@ It is possible to enter up to 6 target points, these can be used to prepare the 
 
 # Known limitations
 
-- Target entry to PVI-800 does not allow you to directly slew SHKVAL onto target due to insufficient precision of entered coordinates. You will have to search the target in the general vicinity.
+- Target entry to PVI-800 does not allow you to directly slew SHKVAL onto target due to insufficient precision of entered coordinates. You will have to search the target in the general vicinity. For **latitude** the error is **185m**. For **longitude** it depends on latitude, but is generally from 90-110m for majority of maps.
 - Entry of target points into ABRIS is experimental.
 - Experimental target point may fail, and will the entry of waypoints. To fix this: reslot or reload the mission.
 - PVI-800 offers reduced precision of entry compared to ABRIS. This is best seen when you select target point and compare the point entered into ABRIS. 

@@ -59,6 +59,6 @@ After transfer, the entered missile waypoints will be shown used in different pl
 
 # References:
 
-- DCS JF-17 Quick Guide EN (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\JF-17\Doc\DCS JF-17 Quick Guide EN.pdf).
-- DCS JF-17 Flight Manual CN, located in the DOC folder of the module within your installation (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\JF-17\Doc\DCS JF-17 Flight Manual CN.pdf). 
+- **DCS JF-17 Quick Guide EN** (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\JF-17\Doc\DCS JF-17 Quick Guide EN.pdf).
+- **DCS JF-17 Flight Manual CN**, located in the DOC folder of the module within your installation (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\JF-17\Doc\DCS JF-17 Flight Manual CN.pdf). 
 - [Chuck's Guide: DCS Guide - JF-16 Thunder](https://chucksguides.com/aircraft/dcs/jf-17/#[322,%22XYZ%22,-8e-06,540,1])
