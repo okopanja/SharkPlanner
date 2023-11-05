@@ -12,9 +12,9 @@ SharkPlanner supports entry of:
 
 - up to **6 waypoints** into **PVI-800** (Rubikon),
 - up to **4 fixpoints** into **PVI-800**,
-- up to **9 target points** into **PVI-800**,
+- up to **10 target points** into **PVI-800**,
 - up to **6 waypoints** into **ABRIS** (there is no technical limitation, but this feature is best used together with Rubikon, so limit was set to 6),
-- up to **9 target points** into **ABRIS** (there is no technical limitation, but this feature is best used together with Rubikon, so limit was set to 9). 
+- up to **10 target points** into **ABRIS** (there is no technical limitation, but this feature is best used together with Rubikon, so limit was set to 10). 
 
 
 ## Entry of aircraft navigation waypoints
