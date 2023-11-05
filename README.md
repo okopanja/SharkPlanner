@@ -45,7 +45,7 @@ Please try to be precise and provide the steps for reproduction and if needed:
 1. Download the latest [release](https://github.com/okopanja/SharkPlanner/releases). The needed package is named like this: SharkPlanner-VERSION.zip
 2. Unpack the content of the zip file into **%USERPROFILE%\Saved Games\DCS.openbeta\Scripts** or **%USERPROFILE%\Saved Games\DCS\Scripts** depending on version of the DCS you are using.
 3. Start or restart DCS
-## Usage instractions
+## Usage instructions
 1. Start DCS
 2. Hop into your Black Shark
 3. Switch to F10 mode
