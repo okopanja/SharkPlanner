@@ -26,7 +26,7 @@ Minimal requirement is **2.8** either **stable** or **openbeta**.
 - [Gazelle: SA-342L](Documentation/SA-342%20Gazelle/README.md)
 - [Gazelle: SA-342M](Documentation/SA-342%20Gazelle/README.md)
 - [Gazelle: SA-342Minigun](Documentation/SA-342%20Gazelle/README.md)
-- F-16C
+- [F-16C](Documentation/F-16C/README.md)
 - [JF-17](Documentation/JF-17/README.md)
 
 ### How do I report bugs?

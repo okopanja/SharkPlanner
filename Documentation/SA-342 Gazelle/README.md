@@ -1,6 +1,6 @@
 # SA-342 Module capabilities
 
-SA-342 Gazelle poses 2 navigation devices:
+SA-342 Gazelle in DCS has 2 navigation devices:
 - **NADIR**, a hybrid navigation system based on: doppler navigation, gyrocompass, vertical compass and air speed sensor in order to implement navigation through dead reckoning.
 - **Tablet**, generic tablet device used as moving map. It allows selection of zoom and different map types.
 
@@ -26,3 +26,4 @@ SA-342 Gazelle poses 2 navigation devices:
 
 - **DCS: SA342 Gazelle - NADIR MARK I** (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\SA342\Doc\DCS SA342M Gazelle NADIR Manual_en.pdf)
 - **DCS: SA342 Gazelle - Flight Manual** (e.g. C:\Program Files\Eagle Dynamics\DCS World OpenBeta\Mods\aircraft\SA342\Doc\DCS SA342M Flight manual_en.pdf)
+- [Chuck's Guide: DCS Guide - SA-342 Gazelle](https://chucksguides.com/aircraft/dcs/sa-342/)
