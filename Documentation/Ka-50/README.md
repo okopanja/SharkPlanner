@@ -16,7 +16,6 @@ SharkPlanner supports entry of:
 - up to **6 waypoints** into **ABRIS** (there is no technical limitation, but this feature is best used together with Rubikon, so limit was set to 6),
 - up to **10 target points** into **ABRIS** (there is no technical limitation, but this feature is best used together with Rubikon, so limit was set to 10). 
 
-
 ## Entry of aircraft navigation waypoints
 
 For entry of navigation waypoints please use the standard waypoint entry mode. Up to 6 waypoints can be entered. SharkPlanner will display the flight profile of the flight plan. 
@@ -28,9 +27,6 @@ For entry of navigation waypoints please use the standard waypoint entry mode. U
 | Flight plan in ABRIS | ![Flight plan in ABRIS](images/flight_plan_in_ABRIS.png) |
 | Current Waypoint in PVI-800 | ![Current Waypoint in PVI-800](images/current_waypoint_PVI-800.png) |
 | Current Waypoint in HUD, designated with rectangle on heading indiction | ![Current Waypoint in HUD](images/current_waypoint_HUD.png) |
-
-
-
 
 ## Entry of fix points
 
