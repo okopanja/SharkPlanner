@@ -27,6 +27,7 @@ Minimal requirement is **2.8** either **stable** or **openbeta**.
 - [BlackShark 3: Ka-50 version 2022](Documentation/Ka-50/README.md)
 - [BlackShark 3: Ka-50 version 2011](Documentation/Ka-50/README.md)
 - [BlackShark 2: Ka-50](Documentation/Ka-50/README.md)
+- [Combined Arms](Documentation/CA/README.md)
 - [Gazelle: SA-342L](Documentation/SA-342%20Gazelle/README.md)
 - [Gazelle: SA-342M](Documentation/SA-342%20Gazelle/README.md)
 - [Gazelle: SA-342Minigun](Documentation/SA-342%20Gazelle/README.md)
