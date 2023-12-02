@@ -12,6 +12,8 @@ local Input = require("Input")
 local lfs = require("lfs")
 local Skin = require("Skin")
 local SkinUtils = require("SkinUtils")
+local Utils = require("SharkPlanner.Utils")
+
 local ENTRY_STATES = {
   WAYPOINTS = "W",
   FIXPOINTS = "F",
@@ -146,11 +148,21 @@ function ControlWindow:new(o)
                     DCSEventHandlers:onSimulationStart()
                   end
                   o:show()
+                  self:disableKeyboardCommands(o.AlwaysEnabledKeys)
               else
                   o:hide()
+                  self:enableKeyboardCommands()
               end
             else
               Logging.info("Airframe is not supported: "..tostring(currentAircraftModel))
+            end
+        end
+    )
+    o:addHotKeyCallback(
+        "space",
+        function()
+            if o:getVisible() and o.AddWaypointButton:getEnabled() then
+              o:addWaypoint()
             end
         end
     )
@@ -204,11 +216,43 @@ function ControlWindow:new(o)
       )
       o.ExperimentButton:addMouseUpCallback(
         function(button)
-          button:setFocused(false)
+            button:setFocused(false)
         end
       )
     end
-
+    local eventTable = Input.getEnvTable()
+    o.AlwaysEnabledKeys = {
+      eventTable.Events.KEY_F1,
+      eventTable.Events.KEY_F2,
+      eventTable.Events.KEY_F3,
+      eventTable.Events.KEY_F4,
+      eventTable.Events.KEY_F5,
+      eventTable.Events.KEY_F6,
+      eventTable.Events.KEY_F7,
+      eventTable.Events.KEY_F8,
+      eventTable.Events.KEY_F9,
+      eventTable.Events.KEY_F10,
+      eventTable.Events.KEY_F11,
+      eventTable.Events.KEY_F12,
+      eventTable.Events.KEY_F13,
+      eventTable.Events.KEY_F14,
+      eventTable.Events.KEY_F15,
+      eventTable.Events.KEY_ESCAPE,
+      eventTable.Events.KEY_NUMPAD0,
+      eventTable.Events.KEY_NUMPAD1,
+      eventTable.Events.KEY_NUMPAD2,
+      eventTable.Events.KEY_NUMPAD3,
+      eventTable.Events.KEY_NUMPAD4,
+      eventTable.Events.KEY_NUMPAD5,
+      eventTable.Events.KEY_NUMPAD6,
+      eventTable.Events.KEY_NUMPAD7,
+      eventTable.Events.KEY_NUMPAD8,
+      eventTable.Events.KEY_NUMPAD9,
+      eventTable.Events.KEY_PAUSE,
+      eventTable.Events.KEY_LSHIFT,   -- must be disabled for hot key to work, otherwise it looks the state
+      eventTable.Events.KEY_LCONTROL, -- must be disabled for hot key to work, otherwise it looks the state
+      -- eventTable.Events.KEY_SPACE -- this one does not need to be locked
+}
     return o
 end
 
@@ -288,6 +332,26 @@ end
 
 function ControlWindow:isHidden()
   return self.is_hidden
+end
+
+function ControlWindow:disableKeyboardCommands(alwaysEnabledKeys)
+  Logging.debug("Getting keyboardEvents")
+  local keyboardEvents	= Input.getDeviceKeys(Input.getKeyboardDeviceName())
+  local lockedKeyboardEvents = {}
+  Logging.debug("Filtering out always enabled keys")
+  for i, v in ipairs(keyboardEvents) do
+    if Utils.Table.is_in_values(alwaysEnabledKeys, v) == false then
+      Logging.debug("Included: "..v)
+      lockedKeyboardEvents[#lockedKeyboardEvents + 1] = v
+    else
+      Logging.debug("Excluded: "..v)
+    end
+  end
+	DCS.lockKeyboardInput(lockedKeyboardEvents)
+end
+
+function ControlWindow:enableKeyboardCommands()
+  DCS.unlockKeyboardInput(false)
 end
 
 function ControlWindow:addWaypoint()
