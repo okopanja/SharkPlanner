@@ -195,8 +195,8 @@ function ControlWindow:new(o)
         "Shift+return",
         function()
             Logging.info("Pressed shift+return")
-            if o:getVisible() and o.ExerimentButton:getEnabled() then
-              o:transfer()
+            if o:getVisible() and o.ExperimentButton:getEnabled() then
+              o:runExperiment()
             end
         end
     )
@@ -226,27 +226,9 @@ function ControlWindow:new(o)
     if o.ExperimentButton then
       Logging.info("Exeprimental mode activated")
       o.ExperimentButton:setSkin(buttonAmberSkin)
-      local context = {
-        coordinateData = o.coordinateData,
-        statusWindow = o.statusWindow,
-        crosshairWindow = o.crosshairWindow,
-        optionsWindow = o.optionsWindow,
-        controlWindow = o
-      }
       o.ExperimentButton:addChangeCallback(
         function(button)
-          o:updateUIState()
-          Logging.info("Unloading old expirimental code")
-          package["SharkPlanner.experiment"] = nil
-          package.loaded["SharkPlanner.experiment"] = nil
-          _G["SharkPlanner.experiment"] = nil
-          Logging.info("Loading new expirimental code")
-          local status, experiment  = pcall(require("SharkPlanner.experiment"), context)
-          if status then
-            Logging.info("Experimental code finished!")
-          else
-            Logging.error("Loading of experiment.lua has failed due to: "..experiment)
-          end
+          o:runExperiment()
         end
       )
       o.ExperimentButton:addMouseUpCallback(
@@ -433,6 +415,28 @@ function ControlWindow:removeLastPoint()
     Logging.debug("Removed last target point")
   else
     Logging.error("Unknown Entry State.")
+  end
+end
+
+function ControlWindow:runExperiment()
+  self:updateUIState()
+  Logging.info("Unloading old expirimental code")
+  package["SharkPlanner.experiment"] = nil
+  package.loaded["SharkPlanner.experiment"] = nil
+  _G["SharkPlanner.experiment"] = nil
+  Logging.info("Loading new expirimental code")
+  local context = {
+    coordinateData = self.coordinateData,
+    statusWindow = self.statusWindow,
+    crosshairWindow = self.crosshairWindow,
+    optionsWindow = self.optionsWindow,
+    controlWindow = self
+  }
+  local status, experiment  = pcall(require("SharkPlanner.experiment"), context)
+  if status then
+    Logging.info("Experimental code finished!")
+  else
+    Logging.error("Loading of experiment.lua has failed due to: "..experiment)
   end
 end
 
