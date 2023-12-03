@@ -140,13 +140,11 @@ end
 function WaypointListWindow:loadPositions()
   Logging.info("Loading positions")
   FileDialog.reset()
-  self:disableKeyboardCommands()
   local filePath = FileDialog.open(lfs.writedir(), {{'Flight Paths'	, '(*.json)'}}, "Load Flight Plan", "*.json", "")
   if filePath ~= nil then
     Logging.info("Selected load path: "..filePath)
     coordinateData:load(filePath)
   end
-  self:enableKeyboardCommands()
 end
 
 function WaypointListWindow:savePositions(filePath)
@@ -159,7 +157,6 @@ end
 
 function WaypointListWindow:savePositionsAs()
   Logging.info("Saving positions As")
-  self:disableKeyboardCommands()
   local filePath = self.filePath
   if filePath == nil then filePath = "" end
   --   function save(path, filters, caption, a_typeFile, a_preName)
@@ -170,7 +167,6 @@ function WaypointListWindow:savePositionsAs()
     Logging.info("Selected save path: "..filePath)
     coordinateData:save(filePath)
   end
-  self:enableKeyboardCommands()
 end
 
 function WaypointListWindow:OnAddWaypoint(eventArgs)
@@ -223,15 +219,6 @@ function WaypointListWindow:OnPositionSelected(currSelectedRow, prevSelectedRow)
   cameraPosition['p']['z'] = position:getZ()
 
   Export.LoSetCameraPosition(cameraPosition)
-end
-
-function WaypointListWindow:disableKeyboardCommands()
-	local keyboardEvents	= Input.getDeviceKeys(Input.getKeyboardDeviceName())
-	DCS.lockKeyboardInput(keyboardEvents)
-end
-
-function WaypointListWindow:enableKeyboardCommands()
-  DCS.unlockKeyboardInput(false)
 end
 
 function WaypointListWindow:OnRemoveWaypoint(eventArgs)
