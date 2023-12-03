@@ -166,6 +166,41 @@ function ControlWindow:new(o)
             end
         end
     )
+    o:addHotKeyCallback(
+        "Shift+delete",
+        function()
+            if o:getVisible() and o.ResetButton:getEnabled() then
+              o:reset()
+            end
+        end
+    )
+    o:addHotKeyCallback(
+        "delete",
+        function()
+          if o:getVisible() and o.TransferButton:getEnabled() then
+            o:removeLastPoint()
+          end
+        end
+    )
+    o:addHotKeyCallback(
+        "return",
+        function()
+            Logging.info("Pressed return")
+            if o:getVisible() and o.TransferButton:getEnabled() then
+              o:transfer()
+            end
+        end
+    )
+    o:addHotKeyCallback(
+        "Shift+return",
+        function()
+            Logging.info("Pressed shift+return")
+            if o:getVisible() and o.ExerimentButton:getEnabled() then
+              o:transfer()
+            end
+        end
+    )
+
     o.eventHandlers = {
       [EventTypes.EntryModeChanged] = {},
     }
@@ -383,6 +418,22 @@ end
 
 function ControlWindow:reset()
   self.coordinateData:reset()
+end
+
+function ControlWindow:removeLastPoint()
+  local entryState = self:getEntryState()
+  if entryState == ENTRY_STATES.WAYPOINTS then
+    self.coordinateData:removeWaypoint(#self.coordinateData.wayPoints)
+    Logging.debug("Removed last waypoint")
+  elseif entryState == ENTRY_STATES.FIXPOINTS then
+    self.coordinateData:removeFixpoint(#self.coordinateData.fixPoints)
+    Logging.debug("Removed last fixpoint")
+  elseif entryState == ENTRY_STATES.TARGET_POINTS then
+    self.coordinateData:removeTargetpoint(#self.coordinateData.targetPoints)
+    Logging.debug("Removed last target point")
+  else
+    Logging.error("Unknown Entry State.")
+  end
 end
 
 function ControlWindow:transfer()
