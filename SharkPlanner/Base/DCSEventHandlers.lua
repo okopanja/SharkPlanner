@@ -2,6 +2,8 @@ local Logging = require("SharkPlanner.Utils.Logging")
 local GameState = require("SharkPlanner.Base.GameState")
 local coordinateData = require("SharkPlanner.Base.CoordinateData")
 local CommandGeneratorFactory = require("SharkPlanner.Base.CommandGeneratorFactory")
+local Camera = require("SharkPlanner.Base.Camera")
+
 local DCSEventHandlers = {}
 
 local EventTypes = {
@@ -19,6 +21,7 @@ DCSEventHandlers.lastTime = DCS.getModelTime()
 DCSEventHandlers.commands = {}
 DCSEventHandlers.delayed_depress_commands = {}
 DCSEventHandlers.EventTypes = EventTypes
+DCSEventHandlers.camera = Camera:new{}
 DCSEventHandlers.eventHandlers = {
   [EventTypes.TransferStarted] = {},
   [EventTypes.TransferFinished] = {},
@@ -33,6 +36,7 @@ function DCSEventHandlers.onSimulationFrame()
   -- ensure we run command checks at most every minimalInterval miliseconds
   local current_time = DCS.getModelTime()
   if( DCSEventHandlers.lastTime + DCSEventHandlers.minimalInterval <= current_time) then
+      DCSEventHandlers.camera:update()
       -- lastTime = current_time
       if DCSEventHandlers.transferIsActive() then
       -- determine what can be depressed

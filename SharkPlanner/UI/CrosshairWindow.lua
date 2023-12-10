@@ -34,7 +34,6 @@ function CrosshairWindow:new(o)
     o:setTransparentForUserInput(true)
     Logging.info("Showing the crosshair window")
     o:setVisible(true)
-
     return o
 end
 
