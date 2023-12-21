@@ -47,6 +47,8 @@ function ControlWindow:new(o)
       self.TargetPointToggle
     }
 
+    o.hotKeyCallbacks = {}
+
     self.WaypointToggle:addChangeCallback(
       function(button)
         o:OnToggleStateChanged(button)
@@ -158,48 +160,6 @@ function ControlWindow:new(o)
             end
         end
     )
-    o:addHotKeyCallback(
-        "space",
-        function()
-            if o:getVisible() and o.AddWaypointButton:getEnabled() then
-              o:addWaypoint()
-            end
-        end
-    )
-    o:addHotKeyCallback(
-        "Shift+delete",
-        function()
-            if o:getVisible() and o.ResetButton:getEnabled() then
-              o:reset()
-            end
-        end
-    )
-    o:addHotKeyCallback(
-        "delete",
-        function()
-          if o:getVisible() and o.TransferButton:getEnabled() then
-            o:removeLastPoint()
-          end
-        end
-    )
-    o:addHotKeyCallback(
-        "return",
-        function()
-            Logging.info("Pressed return")
-            if o:getVisible() and o.TransferButton:getEnabled() then
-              o:transfer()
-            end
-        end
-    )
-    o:addHotKeyCallback(
-        "Shift+return",
-        function()
-            Logging.info("Pressed shift+return")
-            if o:getVisible() and o.ExperimentButton:getEnabled() then
-              o:runExperiment()
-            end
-        end
-    )
 
     o.eventHandlers = {
       [EventTypes.EntryModeChanged] = {},
@@ -272,6 +232,51 @@ function ControlWindow:new(o)
 }
     return o
 end
+function ControlWindow:unRegisterHotKeyCallbacks()
+  for hotKeyString, callback in pairs(self.hotKeyCallbacks) do
+    self:removeHotKeyCallback(hotKeyString, callback)
+  end
+  self.hotKeyCallbacks = {}
+end
+
+function ControlWindow:registerHotKeyCallbacks()
+  self:unRegisterHotKeyCallbacks()
+  self.hotKeyCallbacks["space"] =
+    function()
+      if self:getVisible() and self.AddWaypointButton:getEnabled() then
+        self:addWaypoint()
+      end
+    end
+  self.hotKeyCallbacks["Shift+delete"] =
+    function()
+        if self:getVisible() and self.ResetButton:getEnabled() then
+          self:reset()
+        end
+    end
+  self.hotKeyCallbacks["delete"] =
+    function()
+      if self:getVisible() and self.TransferButton:getEnabled() then
+        self:removeLastPoint()
+      end
+    end
+  self.hotKeyCallbacks["return"] =
+    function()
+        Logging.info("Pressed return")
+        if self:getVisible() and self.TransferButton:getEnabled() then
+          self:transfer()
+        end
+    end
+  self.hotKeyCallbacks["Shift+return"] =
+    function()
+        Logging.info("Pressed shift+return")
+        if self:getVisible() and self.ExperimentButton:getEnabled() then
+          self:runExperiment()
+        end
+    end
+  for hotKeyString, callback in pairs(self.hotKeyCallbacks) do
+    self:addHotKeyCallback(hotKeyString, callback)
+  end
+end
 
 function ControlWindow:updateBounds()
       local x, y, w, h = self.crosshairWindow:getBounds()
@@ -321,10 +326,12 @@ function ControlWindow:show()
     self.optionsWindow:show()
   end
   self:updateUIState()
+  self:registerHotKeyCallbacks()
 end
 
 function ControlWindow:hide()
   Logging.info("Hidding ControlWindow")
+  self:unRegisterHotKeyCallbacks()
   self:setSkin(self.windowSkinHidden)
   self.is_hidden = true
   -- do not: window:setVisible(false) it will remove the window from event loop
