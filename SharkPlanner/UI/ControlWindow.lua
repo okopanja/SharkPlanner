@@ -243,33 +243,33 @@ function ControlWindow:registerHotKeyCallbacks()
   self:unRegisterHotKeyCallbacks()
   self.hotKeyCallbacks["space"] =
     function()
-      if self:getVisible() and self.AddWaypointButton:getEnabled() then
+      if not self:isHidden() and self.AddWaypointButton:getEnabled() then
         self:addWaypoint()
       end
     end
   self.hotKeyCallbacks["Shift+delete"] =
     function()
-        if self:getVisible() and self.ResetButton:getEnabled() then
+        if not self:isHidden() and self.ResetButton:getEnabled() then
           self:reset()
         end
     end
   self.hotKeyCallbacks["delete"] =
     function()
-      if self:getVisible() and self.TransferButton:getEnabled() then
+      if not self:isHidden() and self.TransferButton:getEnabled() then
         self:removeLastPoint()
       end
     end
   self.hotKeyCallbacks["return"] =
     function()
         Logging.info("Pressed return")
-        if self:getVisible() and self.TransferButton:getEnabled() then
+        if not self:isHidden() and self.TransferButton:getEnabled() then
           self:transfer()
         end
     end
   self.hotKeyCallbacks["Shift+return"] =
     function()
         Logging.info("Pressed shift+return")
-        if self:getVisible() and self.ExperimentButton:getEnabled() then
+        if not self:isHidden() and self.ExperimentButton:getEnabled() then
           self:runExperiment()
         end
     end
