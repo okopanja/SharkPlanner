@@ -1,6 +1,5 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local Table = require("SharkPlanner.Utils.Table")
-local inspect = require("SharkPlanner.inspect")
 local Camera = {}
 
 local EventTypes = {
@@ -53,7 +52,6 @@ function Camera:update()
         -- dispatch CameraMoved if camera was moved
         if comparison_result == PositionCompResult.PositionChanged or comparison_result == PositionCompResult.PositionAndOrientationChanged then
         -- if Table.is_in_values({PositionCompResult.PositionChanged, PositionCompResult.PositionAndOrientationChanged}, comparison_result) then
-            Logging.info(inspect(currentCameraPosition))
             self:dispatchEvent(EventTypes.CameraMoved, eventArg)
         end
     end
@@ -100,7 +98,7 @@ function Camera:comparePositions(pos1, pos2)
 end
 
 function Camera:addEventHandler(eventType, object, eventHandler)
-    self.eventHandlers[eventType][#Camera.eventHandlers[eventType] + 1] = { object = object, eventHandler = eventHandler }
+    self.eventHandlers[eventType][#self.eventHandlers[eventType] + 1] = { object = object, eventHandler = eventHandler }
 end
 
 -- the dispatchEvent for now executes directly the event handlers

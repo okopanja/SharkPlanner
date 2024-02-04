@@ -8,6 +8,10 @@ local lfs = require("lfs")
 local Skin = require("Skin")
 local SkinUtils = require("SkinUtils")
 local window = nil
+local Camera = require("SharkPlanner.Base.Camera")
+local Position = require("SharkPlanner.Base.Position")
+local Mathematics = require("SharkPlanner.Mathematics")
+local SkinHelper = require("SharkPlanner.UI.SkinHelper")
 
 local CrosshairWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\CrosshairWindow.dlg"
@@ -23,17 +27,21 @@ function CrosshairWindow:new(o)
     local crosshair_picture_path = lfs.writedir()..skin.skinData.states.released[1].picture.file
     Logging.info("Path to crosshair picture: "..crosshair_picture_path)
     o.WaypointCrosshair:setSkin(SkinUtils.setStaticPicture(crosshair_picture_path, skin))
+    local staticCrosshairValueSkin = SkinHelper.loadSkin('staticCrosshairRightValue')
 
-
+    o.Longitude:setSkin(staticCrosshairValueSkin)
+    o.Latitude:setSkin(staticCrosshairValueSkin)
+    o.Elevation:setSkin(staticCrosshairValueSkin)
     local screenWidth, screenHeight = dxgui.GetScreenSize()
     local x = math.floor(screenWidth/2) - 200
-    local y = math.floor(screenHeight/2) - 200    
+    local y = math.floor(screenHeight/2) - 200
     Logging.info("X: "..x.." Y: "..y)
     Logging.info("Setting bounds")
     o:setBounds(x, y, 400, 400)
     o:setTransparentForUserInput(true)
     Logging.info("Showing the crosshair window")
     o:setVisible(true)
+    Camera:addEventHandler(Camera.EventTypes.CameraMoved, o, o.OnCameraMoved)
     return o
 end
 
@@ -61,6 +69,20 @@ function CrosshairWindow:hide()
   end
   self:setHasCursor(false)
   self:setVisible(false)
+end
+
+function CrosshairWindow:OnCameraMoved(eventArgs)
+  if eventArgs.cameraState == Camera.CameraState.InMapView then
+      Logging.info("Camera moved!")
+      local elevation = Export.LoGetAltitude(eventArgs.newPosition.p.x, eventArgs.newPosition.p.z)
+      local geoCoordinates = Export.LoLoCoordinatesToGeoCoordinates(eventArgs.newPosition.p.x, eventArgs.newPosition.p.z)
+      local position = Position:new{x = eventArgs.newPosition.p.x, y = eventArgs.newPosition.p.y, z = eventArgs.newPosition.p.z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
+      Logging.info(position:getLongitudeDMSstr())
+      Logging.info(position:getLatitudeDMSstr())
+      self.Longitude:setText(position:getLongitudeDMSstr())
+      self.Latitude:setText(position:getLatitudeDMSstr())
+      self.Elevation:setText(string.format("%3.1f m", Mathematics.Arithmetic.round_with_precision(elevation, 1)))
+  end
 end
 
 return CrosshairWindow

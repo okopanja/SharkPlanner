@@ -4,7 +4,6 @@ local DialogLoader = require("DialogLoader")
 local dxgui = require('dxgui')
 local lfs = require("lfs")
 local SkinHelper = require("SharkPlanner.UI.SkinHelper")
-
 local StatusWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\StatusWindow.dlg"
 )
@@ -27,7 +26,6 @@ function StatusWindow:new(o)
     o.VersionInfo:setText(require("SharkPlanner.VersionInfo"))
     Logging.info("Showing StatusWindow")
     o:setVisible(true)
-
     return o
 end
 
