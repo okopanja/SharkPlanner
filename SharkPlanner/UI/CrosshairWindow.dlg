@@ -63,11 +63,11 @@ dialog = {
                 }
             }
         },
-        ["Distance"] = {
+        ["Latitude"] = {
             ["params"] = {
               ["bounds"] = {
-                ["x"] = 0,
-                ["y"] = 0,
+                ["x"] = 400 - 100,
+                ["y"] = 400 - 26 * 3,
                 ["h"] = 26,
                 ["w"] = 100,
               },
@@ -85,5 +85,71 @@ dialog = {
             },
             ["type"] = "Static",
           },
+          ["Longitude"] = {
+            ["params"] = {
+              ["bounds"] = {
+                ["x"] = 400 - 100,
+                ["y"] = 400 - 26 * 2,
+                ["h"] = 26,
+                ["w"] = 100,
+              },
+              ["enabled"] = false,
+              ["text"] = "",
+              ["tooltip"] = "",
+              ["visible"] = true,
+              ["zindex"] = 0,
+            },
+            ["skin"] = {
+              ["params"] = {
+                ["name"] = "buttonSkinAwacs",
+                -- ["name"] = "staticSkin_ME",
+              },
+            },
+            ["type"] = "Static",
+          },
+          ["Elevation"] = {
+            ["params"] = {
+              ["bounds"] = {
+                ["x"] = 400 - 100,
+                ["y"] = 400 - 26,
+                ["h"] = 26,
+                ["w"] = 100,
+              },
+              ["enabled"] = false,
+              ["text"] = "",
+              ["tooltip"] = "",
+              ["visible"] = true,
+              ["zindex"] = 0,
+            },
+            ["skin"] = {
+              ["params"] = {
+                ["name"] = "buttonSkinAwacs",
+                -- ["name"] = "staticSkin_ME",
+              },
+            },
+            ["type"] = "Static",
+          },
+        --   ["Distance"] = {
+        --     ["params"] = {
+        --       ["bounds"] = {
+        --         ["x"] = 400 - 100,
+        --         ["y"] = 400 - 26,
+        --         ["h"] = 26,
+        --         ["w"] = 100,
+        --       },
+        --       ["enabled"] = false,
+        --       ["text"] = "",
+        --       ["tooltip"] = "",
+        --       ["visible"] = true,
+        --       ["zindex"] = 0,
+        --     },
+        --     ["skin"] = {
+        --       ["params"] = {
+        --         ["name"] = "buttonSkinAwacs",
+        --         -- ["name"] = "staticSkin_ME",
+        --       },
+        --     },
+        --     ["type"] = "Static",
+        --   },
     }
 }
