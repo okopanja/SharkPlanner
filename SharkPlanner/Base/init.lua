@@ -8,5 +8,6 @@ return {
   GameState = require("SharkPlanner.Base.GameState"),
   CoordinateData = require("SharkPlanner.Base.CoordinateData"),
   DCSEventHandlers = require("SharkPlanner.Base.DCSEventHandlers"),
-  Configuration = require("SharkPlanner.Base.Configuration")
+  Configuration = require("SharkPlanner.Base.Configuration"),
+  Camera = require("SharkPlanner.Base.Camera"),
 }
