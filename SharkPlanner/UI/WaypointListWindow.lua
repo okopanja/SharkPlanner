@@ -10,8 +10,11 @@ local Skin = require("Skin")
 local SkinUtils = require("SkinUtils")
 local window = nil
 local Static = require('Static')
+local SpinBox = require('SpinBox')
+local VertLayout = require("VertLayout")
 local Button = require('Button')
 local Panel = require('Panel')
+local LayoutFactory = require("LayoutFactory")
 local Utils = require("SharkPlanner.Utils")
 local math = require('math')
 local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
@@ -23,7 +26,9 @@ local templateDialog	= DialogLoader.spawnDialogFromFile(lfs.writedir() .. 'Scrip
 local templates = {
   buttonTemplate = templateDialog.buttonTemplate,
   staticCellValidNotSelectedTemplate = templateDialog.staticCellValidNotSelectedTemplate,
-  staticCellValidSelected = templateDialog.staticCellValidSelected
+  staticCellValidSelected = templateDialog.staticCellValidSelected,
+  editBoxTemplate = templateDialog.staticCellValidSelected2,
+  spinBox = templateDialog.spinBox
 }
 -- remove tempalte widgets from templatDialog
 for k, v in pairs(templates) do
@@ -60,6 +65,7 @@ function WaypointListWindow:new(o)
   o.scrollGrid.gridHeaderCellNo:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellCoordinates:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellAltitude:setSkin(cellHeaderSkin)
+  o.scrollGrid.gridHeaderCellElevation:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDistance:setSkin(cellHeaderSkin)
   o.scrollGrid.gridHeaderCellDelete:setSkin(cellHeaderSkin)
 
@@ -228,7 +234,7 @@ function WaypointListWindow:OnRemoveWaypoint(eventArgs)
   for i = eventArgs.wayPointIndex, #eventArgs.wayPoints  do
     Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
-    self.scrollGrid:getCell(4, i - 1):getWidget(0).row_number = i
+    self.scrollGrid:getCell(5, i - 1):getWidget(0).row_number = i
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
@@ -249,7 +255,7 @@ function WaypointListWindow:OnRemoveFixpoint(eventArgs)
   for i = eventArgs.fixPointIndex, #eventArgs.fixPoints  do
     Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
-    self.scrollGrid:getCell(4, i - 1):getWidget(0).row_number = i
+    self.scrollGrid:getCell(5, i - 1):getWidget(0).row_number = i
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
@@ -270,7 +276,7 @@ function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
   for i = eventArgs.targetPointIndex, #eventArgs.targetPoints  do
     Logging.info("Renumbering: "..tostring(i))
     -- renumber button row_number
-    self.scrollGrid:getCell(4, i - 1):getWidget(0).row_number = i
+    self.scrollGrid:getCell(5, i - 1):getWidget(0).row_number = i
     -- renumber visible ordinal
     self.scrollGrid:getCell(0, i - 1):setText(tostring(i))
   end
@@ -346,6 +352,49 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   )
   self.scrollGrid:setCell(2, row_number - 1, static)
 
+  -- add elevation
+  -- local editBox = EditBox.new()
+  -- editBox:setNumeric(true)
+  -- editBox:setMultiline(false)
+  -- editBox:setText("1")
+  -- editBox:setSkin(templates.editBoxTemplate:getSkin())
+  -- self.scrollGrid:setCell(3, row_number - 1, editBox)
+  local elevationPanel = Panel.new()
+  local elevationPanelLayout = LayoutFactory.createLayout("vert", VertLayout.newLayout())
+
+  elevationPanelLayout:setGap(0)
+  elevationPanelLayout:setVertAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  elevationPanelLayout:setHorzAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  elevationPanel:setLayout(elevationPanelLayout)
+  elevationPanel:setSize(120, 40)
+  elevationPanel:setVisible(true)
+  local deltaElevation = Static.new()
+  deltaElevation:setVisible(true)
+  deltaElevation:setText('-250')
+  deltaElevation:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+
+  local elevation = SpinBox.new()
+  elevation:setVisible(true)
+  elevation:setValue(0)
+  elevation:setRange(0,60000)
+  elevation:setStep(1000)
+  elevation:setButtonsVisible(true)
+  elevation:setSize(180,26)
+  elevation:setSkin(templates.spinBox:getSkin())
+  elevationPanel:insertWidget(deltaElevation)
+  elevationPanel:insertWidget(elevation)
+  self.scrollGrid:setCell(3, row_number - 1, elevationPanel)
+
   -- add distance
   static = Static.new()
   static:setText("")
@@ -355,7 +404,7 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
       self:OnMouseDown(self, x, y, button)
     end
   )
-  self.scrollGrid:setCell(3, row_number - 1, static)
+  self.scrollGrid:setCell(4, row_number - 1, static)
 
   local panel = Panel.new()
   panel:setVisible(true)
@@ -385,8 +434,7 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
     end
   )
   panel:insertWidget(button, 1)
-  -- self.scrollGrid:setCell(4, row_number - 1, button)
-  self.scrollGrid:setCell(4, row_number - 1, panel)
+  self.scrollGrid:setCell(5, row_number - 1, panel)
 end
 
 function WaypointListWindow:_calculateDistances(positions)
@@ -402,7 +450,7 @@ function WaypointListWindow:_calculateDistances(positions)
     local deltaH = position:getAltitude() - priorPosition:getAltitude()
     distance = math.sqrt(math.pow(deltaX, 2) + math.pow(deltaY, 2))
     totalDistance = totalDistance + distance
-    self.scrollGrid:getCell(3, i - 1):setText(
+    self.scrollGrid:getCell(4, i - 1):setText(
       string.format("%.2f", distance / 1000) .." km".."\n"..
       string.format("%.2f", totalDistance / 1000) .." km"
     )

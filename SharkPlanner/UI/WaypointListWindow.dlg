@@ -115,7 +115,7 @@ dialog = {
         },
         ["columnMouseResizing"] = true,
         ["enabled"] = true,
-        ["fixedColumns"] = 5,
+        ["fixedColumns"] = 6,
         ["horzScrollBarPageStep"] = 0,
         ["horzScrollBarStep"] = 1,
         ["rows"] = 0,
@@ -132,7 +132,7 @@ dialog = {
             ["bounds"] = {
               ["x"] = 0,
               ["y"] = 0,
-              ["w"] = 40,
+              ["w"] = 30,
               ["h"] = 30
             },
             ["draggable"] = false,
@@ -151,7 +151,7 @@ dialog = {
             ["bounds"] = {
               ["x"] = 0,
               ["y"] = 0,
-              ["w"] = 120,
+              ["w"] = 100,
               ["h"] = 30,
             },
             ["draggable"] = true,
@@ -170,7 +170,7 @@ dialog = {
             ["bounds"] = {
               ["x"] = 0,
               ["y"] = 0,
-              ["w"] = 80,
+              ["w"] = 60,
               ["h"] = 30,
             },
             ["draggable"] = true,
@@ -184,12 +184,31 @@ dialog = {
           },
           ["type"] = "GridHeaderCell",
         },
+        ["gridHeaderCellElevation"] = {
+          ["params"] = {
+            ["bounds"] = {
+              ["x"] = 0,
+              ["y"] = 0,
+              ["w"] = 80,
+              ["h"] = 30,
+            },
+            ["draggable"] = true,
+            ["enabled"] = true,
+            ["layout"] = {
+            },
+            ["text"] = "Delta/Elev",
+            ["tooltip"] = "",
+            ["visible"] = true,
+            ["zindex"] = 3,
+          },
+          ["type"] = "GridHeaderCell",
+        },
         ["gridHeaderCellDistance"] = {
           ["params"] = {
             ["bounds"] = {
               ["x"] = 0,
               ["y"] = 0,
-              ["w"] = 120,
+              ["w"] = 100,
               ["h"] = 30,
             },
             ["draggable"] = true,
@@ -199,7 +218,7 @@ dialog = {
             ["text"] = "Delta/Distance",
             ["tooltip"] = "",
             ["visible"] = true,
-            ["zindex"] = 3,
+            ["zindex"] = 4,
           },
           ["type"] = "GridHeaderCell",
         },
@@ -224,7 +243,7 @@ dialog = {
             ["text"] = "",
             ["tooltip"] = "",
             ["visible"] = true,
-            ["zindex"] = 4,
+            ["zindex"] = 5,
           },
           ["type"] = "GridHeaderCell",
         }

@@ -9,7 +9,8 @@ local Position = {
   y = nil,
   z = nil,
   longitude = nil,
-  latitude = nil
+  latitude = nil,
+  elevation = nil
 }
 
 function Position:new (o)
@@ -47,8 +48,20 @@ function Position:getAltitude()
   return self.y
 end
 
+function Position:getElevation()
+  return self.elevation
+end
+
+function Position:setElevation(elevation)
+  self.elevation = elevation
+end
+
 function Position:getAltitudeFeet()
   return self.y * 3.28084
+end
+
+function Position:getElevationFeet()
+  return self.elevation * 3.28084
 end
 
 function Position:getLongitude()
