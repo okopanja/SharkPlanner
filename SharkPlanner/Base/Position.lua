@@ -2,7 +2,7 @@ local math = require("math")
 -- local Logging = require("SharkPlanner.Utils.Logging")
 local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 local Geometry = require("SharkPlanner.Mathematics.Geometry")
-
+local Utils = require("SharkPlanner.Utils")
 
 local Position = {
   x = nil,
@@ -45,11 +45,11 @@ function Position:setZ(z)
 end
 
 function Position:getAltitude()
-  return self.y
+  return self.y or 0
 end
 
 function Position:getElevation()
-  return self.elevation
+  return self.elevation or self:getAltitude()
 end
 
 function Position:setElevation(elevation)
@@ -57,11 +57,11 @@ function Position:setElevation(elevation)
 end
 
 function Position:getAltitudeFeet()
-  return self.y * 3.28084
+  return self:getAltitude() * 3.28084
 end
 
 function Position:getElevationFeet()
-  return self.elevation * 3.28084
+  return self:getElevation() * 3.28084
 end
 
 function Position:getLongitude()

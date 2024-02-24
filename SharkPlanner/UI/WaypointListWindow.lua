@@ -28,7 +28,9 @@ local templates = {
   staticCellValidNotSelectedTemplate = templateDialog.staticCellValidNotSelectedTemplate,
   staticCellValidSelected = templateDialog.staticCellValidSelected,
   editBoxTemplate = templateDialog.staticCellValidSelected2,
-  spinBox = templateDialog.spinBox
+  -- spinBox = templateDialog.spinBox
+  spinBox = SkinHelper.setMinSize(Utils.Table.clone(SkinHelper.loadSkin("spinBox")), 80, 26),
+  deltaElevation = SkinHelper.setMinSize(Utils.Table.clone(templateDialog.staticCellValidNotSelectedTemplate:getSkin()),80,17)
 }
 -- remove tempalte widgets from templatDialog
 for k, v in pairs(templates) do
@@ -352,13 +354,6 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   )
   self.scrollGrid:setCell(2, row_number - 1, static)
 
-  -- add elevation
-  -- local editBox = EditBox.new()
-  -- editBox:setNumeric(true)
-  -- editBox:setMultiline(false)
-  -- editBox:setText("1")
-  -- editBox:setSkin(templates.editBoxTemplate:getSkin())
-  -- self.scrollGrid:setCell(3, row_number - 1, editBox)
   local elevationPanel = Panel.new()
   local elevationPanelLayout = LayoutFactory.createLayout("vert", VertLayout.newLayout())
 
@@ -376,23 +371,36 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
     }
   )
   elevationPanel:setLayout(elevationPanelLayout)
-  elevationPanel:setSize(120, 40)
+  -- elevationPanel:setBounds(0, 0, 80, 60)
   elevationPanel:setVisible(true)
   local deltaElevation = Static.new()
   deltaElevation:setVisible(true)
-  deltaElevation:setText('-250')
-  deltaElevation:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
+  deltaElevation:setText('0m')
+  deltaElevation:setSize(80,26)
+  deltaElevation:setSkin(templates.deltaElevation)
 
   local elevation = SpinBox.new()
   elevation:setVisible(true)
-  elevation:setValue(0)
-  elevation:setRange(0,60000)
+  elevation:setRange(position:getAltitude(),20000)
   elevation:setStep(1000)
   elevation:setButtonsVisible(true)
-  elevation:setSize(180,26)
-  elevation:setSkin(templates.spinBox:getSkin())
+  elevation:setSize(80,26)
+  elevation:setSkin(templates.spinBox)
+  elevation.position = position
+  elevation:addChangeCallback(
+    function(elevation)
+      elevation.position:setElevation(elevation:getValue())
+      local deltaH = elevation.position:getElevation() - elevation.position:getAltitude()
+      deltaElevation:setText(
+        string.format("%s", math.floor(deltaH + 0.5)).." m"
+      )
+    end
+  )
+
   elevationPanel:insertWidget(deltaElevation)
   elevationPanel:insertWidget(elevation)
+  elevationPanel.deltaElevation = deltaElevation
+  elevationPanel.elevation = elevation
   self.scrollGrid:setCell(3, row_number - 1, elevationPanel)
 
   -- add distance
@@ -458,7 +466,11 @@ function WaypointListWindow:_calculateDistances(positions)
       string.format("%s", math.floor(deltaH + 0.5)).." m".."\n"..
       string.format("%s", math.floor(position:getAltitude() + 0.5)) .." m"
     )
-
+    local elevationCell = self.scrollGrid:getCell(3, i - 1)
+    -- elevationCell.elevation:setText(
+    --   string.format("%s", math.floor(position:getElevation() + 0.5))
+    -- )
+    elevationCell.elevation:setValue(math.floor(position:getElevation() + 0.5))
     priorPosition = position
   end
 end

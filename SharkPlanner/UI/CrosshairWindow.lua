@@ -73,12 +73,12 @@ end
 
 function CrosshairWindow:OnCameraMoved(eventArgs)
   if eventArgs.cameraState == Camera.CameraState.InMapView then
-      Logging.info("Camera moved!")
+      Logging.debug("Camera moved!")
       local elevation = Export.LoGetAltitude(eventArgs.newPosition.p.x, eventArgs.newPosition.p.z)
       local geoCoordinates = Export.LoLoCoordinatesToGeoCoordinates(eventArgs.newPosition.p.x, eventArgs.newPosition.p.z)
       local position = Position:new{x = eventArgs.newPosition.p.x, y = eventArgs.newPosition.p.y, z = eventArgs.newPosition.p.z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
-      Logging.info(position:getLongitudeDMSstr())
-      Logging.info(position:getLatitudeDMSstr())
+      Logging.debug(position:getLongitudeDMSstr())
+      Logging.debug(position:getLatitudeDMSstr())
       self.Longitude:setText(position:getLongitudeDMSstr())
       self.Latitude:setText(position:getLatitudeDMSstr())
       self.Elevation:setText(string.format("%3.1f m", Mathematics.Arithmetic.round_with_precision(elevation, 1)))

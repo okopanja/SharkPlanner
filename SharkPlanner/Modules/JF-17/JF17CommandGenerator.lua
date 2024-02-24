@@ -263,7 +263,7 @@ function JF17CommandGenerator:ufcpEnterWaypoint(commands, waypoint_number, waypo
     self:enterLongitude(commands, waypoint)
 
     -- enter altitude
-    self:enterAltitude(commands, waypoint)
+    self:enterAltitude(commands, waypoint_number, waypoint)
 end
 
 -- sequence functions
@@ -307,9 +307,16 @@ function JF17CommandGenerator:enterLongitude(commands, waypoint)
     end
 end
 
-function JF17CommandGenerator:enterAltitude(commands, waypoint)
+function JF17CommandGenerator:enterAltitude(commands, waypoint_number, waypoint)
     self:ufcpR4(commands, "Enter waypoint altitude entry")
-    local altitude_digits = self:_getAltitudeDigits(waypoint:getAltitudeFeet())
+    local altitude_digits
+    if waypoint_number < 36 then
+        -- for waypoints and missile steer points take elevation in feet
+        altitude_digits = self:_getAltitudeDigits(waypoint:getElevationFeet())
+    else
+        -- for rest take altitude
+        altitude_digits = self:_getAltitudeDigits(waypoint:getAltitudeFeet())
+    end
     for pos, digit in pairs(altitude_digits) do
         Logging.debug("Altitude digit: "..digit)
         self:ufcpPressDigitButton(commands, digit, "Altitude digit: "..digit)
