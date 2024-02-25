@@ -215,12 +215,25 @@ function JF17CommandGenerator:generateCommands(waypoints, fixpoints, targets)
     -- clear unused missile steer points
     self:clearWaypoints(commands, target_offset + #targets + 1, target_offset + self:getMaximalTargetPointCount() - #targets + 1)
 
-    -- select Waypoint 1 in FPL
-    self:enterWaypointNumber(commands, 1)
-    self:ufcpRTN(commands, "Exit to main screen")
+    -- select Waypoint 1 in FPL or 0 if no waypoints
+    if #waypoints > 0 then
+        -- select Waypoint 1 in main mode if there is at least one waypoint
+        self:enterWaypointNumber(commands, 1)
+    else
+        -- no waypoints: select 0
+        self:enterWaypointNumber(commands, 0)
+    end
     
-    -- select Waypoint 1 in main mode
-    self:enterWaypointNumber(commands, 1)
+    self:ufcpRTN(commands, "Exit to main screen")
+
+    if #waypoints > 0 then
+        -- select Waypoint 1 in main mode if there is at least one waypoint
+        self:enterWaypointNumber(commands, 1)
+    else
+        -- no waypoints: select 0
+        self:enterWaypointNumber(commands, 0)
+    end
+
     return commands
 end
 
