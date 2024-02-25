@@ -345,7 +345,6 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
   -- add altitude
   static = Static.new()
   static:setText("")
-  -- static:setText(""..math.floor(position:getAltitude() + 0.5).."m")
   static:setSkin(templates.staticCellValidNotSelectedTemplate:getSkin())
   static:addMouseDownCallback(
     function (cell, x, y, button)
@@ -371,7 +370,6 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
     }
   )
   elevationPanel:setLayout(elevationPanelLayout)
-  -- elevationPanel:setBounds(0, 0, 80, 60)
   elevationPanel:setVisible(true)
   local deltaElevation = Static.new()
   deltaElevation:setVisible(true)
@@ -467,9 +465,6 @@ function WaypointListWindow:_calculateDistances(positions)
       string.format("%s", math.floor(position:getAltitude() + 0.5)) .." m"
     )
     local elevationCell = self.scrollGrid:getCell(3, i - 1)
-    -- elevationCell.elevation:setText(
-    --   string.format("%s", math.floor(position:getElevation() + 0.5))
-    -- )
     elevationCell.elevation:setValue(math.floor(position:getElevation() + 0.5))
     priorPosition = position
   end
