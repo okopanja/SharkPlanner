@@ -16,7 +16,26 @@ local function is_in_keys(inspected_table, inspected_key)
     return false
 end
 
+--from https://forum.cockos.com/showthread.php?t=221712
+--from stackoverflow
+--modified
+local function clone(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[clone(orig_key)] = clone(orig_value)
+        end
+        setmetatable(copy, clone(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
 return {
     is_in_keys = is_in_keys,
-    is_in_values = is_in_values
+    is_in_values = is_in_values,
+    clone = clone
 }

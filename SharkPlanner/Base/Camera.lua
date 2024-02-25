@@ -1,5 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local Table = require("SharkPlanner.Utils.Table")
+
+local inspect = require("SharkPlanner.inspect")
 local Camera = {}
 
 local EventTypes = {
@@ -53,6 +55,7 @@ function Camera:update()
         if comparison_result == PositionCompResult.PositionChanged or comparison_result == PositionCompResult.PositionAndOrientationChanged then
         -- if Table.is_in_values({PositionCompResult.PositionChanged, PositionCompResult.PositionAndOrientationChanged}, comparison_result) then
             self:dispatchEvent(EventTypes.CameraMoved, eventArg)
+            -- Logging.info(inspect(terrain.getObjectsAtMapPoint(currentCameraPosition['p']['x'], currentCameraPosition['p']['z'])))
         end
     end
     self.position = currentCameraPosition

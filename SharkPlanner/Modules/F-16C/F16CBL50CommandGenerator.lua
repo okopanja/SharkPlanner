@@ -105,7 +105,14 @@ function F16CBL50CommandGenerator:ufcEnterWaypoint(commands, pos, waypoint)
     
     -- enter altitude
     self:ufcDcsDown(commands, "Select altitude")
-    local altitude_feet_digits = self:_getAltitudeDigits(waypoint:getAltitudeFeet())
+    local altitude_feet_digits
+    if pos < 26 then
+        -- for waypoints take elevation
+        altitude_feet_digits = self:_getAltitudeDigits(waypoint:getElevationFeet())
+    else
+        -- otherwise use altitude
+        altitude_feet_digits = self:_getAltitudeDigits(waypoint:getAltitudeFeet())
+    end
 
     for pos, digit in pairs(altitude_feet_digits) do
         Logging.debug("Altitude digit: "..digit)

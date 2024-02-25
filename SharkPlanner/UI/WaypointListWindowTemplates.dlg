@@ -150,24 +150,37 @@ dialog = {
             },
             ["type"] = "Static",
         },
-        ["staticCellValidSelected"] = {
+        ["staticCellValidSelected2"] = {
             ["params"] = {
                 ["angle"] = 0,
                 ["bounds"] = {
                     ["h"] = 20,
                     ["w"] = 100,
-                    ["x"] = 346,
-                    ["y"] = 287,
+                    ["x"] = 0,
+                    ["y"] = 0,
                 },
                 ["enabled"] = true,
                 ["pivotPoint"] = {
                     ["x"] = 0,
                     ["y"] = 0,
                 },
-                ["text"] = "static0",
+                ["text"] = "0",
                 ["tooltip"] = "",
                 ["visible"] = false,
                 ["zindex"] = 0,
+                ["vertAlign"] = {
+                    ["type"] = "max",
+                },
+                ["horzAlign"] = {
+                    ["type"] = "max",
+                },
+                ["maxSize"] = {
+                    ["vert"] = 24,
+                },
+                ["minSize"] = {
+                    ["horz"] = 160,
+                    ["vert"] = 26,
+                }
             },
             ["skin"] = {
                 ["params"] = {
@@ -240,6 +253,7 @@ dialog = {
                                 ["fontSize"] = 13,
                                 ["horzAlign"] = {
                                     ["offset"] = 15,
+                                    ["type"] = "max",
                                 },
                                 ["lineHeight"] = 0,
                                 ["lineThroughColor"] = "0x00000000",

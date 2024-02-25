@@ -174,18 +174,21 @@ function CoordinateData:load(filePath)
         if flightPathInput.wayPoints then
             for i, v in ipairs(flightPathInput.wayPoints) do
                 local position = Position:new(v)
+                self:recalculateLocalCoordinate(position)
                 self:addWaypoint(position)
             end
         end
         if flightPathInput.fixPoints then
             for i, v in ipairs(flightPathInput.fixPoints) do
                 local position = Position:new(v)
+                self:recalculateLocalCoordinate(position)
                 self:addFixpoint(position)
             end
         end
         if flightPathInput.targetPoints then
             for i, v in ipairs(flightPathInput.targetPoints) do
                 local position = Position:new(v)
+                self:recalculateLocalCoordinate(position)
                 self:addTargetpoint(position)
             end
         end
@@ -194,8 +197,8 @@ function CoordinateData:load(filePath)
             -- leave empty for now
             filePath = filePath
         }
-        -- make sure that coordinates are recalculated (e.g. flight plan was loaded on different map)
-        self:recalculateLocalCoordinates()
+        -- -- make sure that coordinates are recalculated (e.g. flight plan was loaded on different map)
+        -- self:recalculateLocalCoordinates()
         Logging.info("Flight plan is loaded.")
         self:dispatchEvent(EventTypes.FlightPlanLoaded, eventArg)
     end
