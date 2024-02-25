@@ -11,8 +11,8 @@ Each of these can be used for navigation purposes, but also to slew other sensor
 
 | Description | Cockpit screenshot|
 | --- | --- |
-| Waypoints are designated in waypoint mode selected and indicated by **W** button. Markpoints can be entered by activating **T** button. | ![waypoints designation](images/designation_of_aircraft_waypoints.png) |
-| Once the waypoints/markpoints are entered **UFC up/down** switches can be used to select them. The selected waypoint/markpoint is shown in upper right corner of **DED** display. | ![Selection of waypoint/markpoint](images/UFC_DED.png) |
+| Waypoints are designated in waypoint mode selected and indicated by **W** button. Markpoints can be entered by activating **T** button. **Elevation** is by default set to **altitude**. User can modify elevation and delta will be displayed above | ![waypoints designation](images/designation_of_aircraft_waypoints.png) |
+| Once the waypoints/markpoints are entered **UFC up/down** switches can be used to select. The selected waypoint/markpoint is shown in upper right corner of **DED** display. | ![Selection of waypoint/markpoint](images/UFC_DED.png) |
 
 # Known limitations
 

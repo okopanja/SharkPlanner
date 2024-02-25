@@ -28,7 +28,7 @@ Following table provides the overview of different types of points, along the in
 
 | Description | Cockpit screenshot|
 | --- | --- |
-| For entry of navigation waypoints please use the standard **waypoint entry mode**. Up to **29** waypoints can be entered.<br>Once you trigger the transfer of waypoints, you can find them in **left MFCD** within **DST** page. You can use MAN/AUTO mode to automatically switch to next waypoint or use UFCP to select the waypoint by entering it's number.  | ![waypoints designation](images/designation_of_aircraft_waypoints.png) | 
+| For entry of navigation waypoints please use the standard **waypoint entry mode**. Up to **29** waypoints can be entered. **Elevation** is by default set to **altitude**. User can modify elevation and delta will be displayed above.<br>Once you trigger the transfer of waypoints, you can find them in **left MFCD** within **DST** page. You can use MAN/AUTO mode to automatically switch to next waypoint or use UFCP to select the waypoint by entering it's number.  | ![waypoints designation](images/designation_of_aircraft_waypoints.png) | 
 | DST page with entered waypoints | ![DST page with entered waypoints](images/entered_aircraft_waypoints_dst_page.png) |
 | HSD page with entered waypoints | ![HSD page with entered waypoints](images/entered_aircraft_waypoints_hsd_page.png) |
 
