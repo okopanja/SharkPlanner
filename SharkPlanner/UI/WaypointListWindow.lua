@@ -19,6 +19,7 @@ local Utils = require("SharkPlanner.Utils")
 local math = require('math')
 local FileDialog = require("SharkPlanner.UI.FileDialogWorkaround")
 local ControlWindow = require("SharkPlanner.UI.ControlWindow")
+local MouseCursor = require("SharkPlanner.UI.MouseCursor")
 
 -- Boilercode to load templates for dynamicly created controls
 local templateDialog	= DialogLoader.spawnDialogFromFile(lfs.writedir() .. 'Scripts\\SharkPlanner\\UI\\WaypointListWindowTemplates.dlg')
@@ -62,6 +63,9 @@ function WaypointListWindow:new(o)
   local x, y, w, h = o.crosshairWindow:getBounds()
 
   local width, height = self.scrollGrid:getSize()
+  o.scrollGrid.isDragged = false
+  o.scrollGrid.dragStartX = -1
+  o.scrollGrid.dragStartY = -1
   o.scrollGrid:setSize(width, h + 27)
   local cellHeaderSkin = SkinHelper.loadSkin("gridHeaderSharkPlannerCellHeader")
   o.scrollGrid.gridHeaderCellNo:setSkin(cellHeaderSkin)
@@ -328,7 +332,43 @@ function WaypointListWindow:_createPositionRow(row_number, position, removalFunc
       self:OnMouseDown(self, x, y, button)
     end
   )
+  static.parent = self.scrollGrid
   static:addMouseDoubleDownCallback(self.OnMouseDoubleDown)
+  static:addMouseDownCallback(
+    function(self, x, y, button)
+      if button == 1 then
+        Logging.info("Mouse DOWN: ".."X: "..tostring(x).." Y: "..tostring(y))
+        self.parent.dragStartX = x
+        self.parent.dragStartY = y
+        self.parent.isDragged = true
+        self:getRoot():pushMouseCursor(MouseCursor.HAND_UP)
+        self:captureMouse()
+      end
+    end
+  )
+  static:addMouseUpCallback(
+    function(self, x, y, button)
+      if button == 1 then
+        Logging.info("Mouse UP: ".."X: "..tostring(x).." Y: "..tostring(y))
+        local startRow, startColumn = self.parent:getMouseCursorColumnRow(self.parent.dragStartX, self.parent.dragStartY)
+        Logging.info("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
+        local endRow, endColumn = self.parent:getMouseCursorColumnRow(x, y)
+        Logging.info("endRow: "..tostring(endRow).." endColumn: "..tostring(endColumn) )
+        self.parent.isDragged = false
+        self.parent.dragStartX = -1
+        self.parent.dragStartY = -1
+        self:getRoot():popMouseCursor()
+        self:releaseMouse()
+      end
+    end
+  )
+  static:addMouseLeaveCallback(
+    function(self, x, y, button)
+      -- if button == 1 then
+      Logging.info("Mouse LEAVE: ".."X: "..tostring(x).." Y: "..tostring(y))
+      -- end
+    end
+  )
   self.scrollGrid:setCell(0, row_number - 1, static)
 
   -- add Geographical coordindates
