@@ -130,11 +130,22 @@ function WaypointListWindow:new(o)
         local endColumn, endRow = self:getMouseCursorColumnRow(x, y)
         Logging.info("endRow: "..tostring(endRow).." endColumn: "..tostring(endColumn) )
         if self.isDragged then
+          Logging.debug("Drag ended")
           self.isDragged = false
           self.dragStartX = -1
           self.dragStartY = -1
           if endColumn ~= DRAG_COLUMN then
             self:getRoot():popMouseCursor()
+          end
+          if startRow ~= endRow then
+            if o.entryMode == ControlWindow.EntryStates.WAYPOINTS then
+              coordinateData:moveWaypoint(startRow + 1, endRow + 1)
+            elseif  o.entryMode == ControlWindow.EntryStates.FIXPOINTS then
+              coordinateData:moveFixpoint(startRow + 1, endRow + 1)
+            elseif  o.entryMode == ControlWindow.EntryStates.TARGET_POINTS then
+              coordinateData:moveTargetpoint(startRow + 1, endRow + 1)
+            else
+            end
           end
         end
       end
@@ -143,7 +154,7 @@ function WaypointListWindow:new(o)
   )
 
   local headerCellCallback = function(self, x, y, button)
-    Logging.info("Mouse MOVE: ".."X: "..tostring(x).." Y: "..tostring(y))
+    Logging.info("Mouse MOVE(header cell): ".."X: "..tostring(x).." Y: "..tostring(y))
     local startColumn, startRow = self:getRoot().scrollGrid:getMouseCursorColumnRow(x, y)
     Logging.info("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
     if self.isDragged then

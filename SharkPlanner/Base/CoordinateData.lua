@@ -11,14 +11,17 @@ local CoordinateData = {}
 local EventTypes = {
     AddWayPoint = 1,
     RemoveWayPoint = 2,
-    AddFixPoint = 3,
-    RemoveFixPoint = 4,
-    AddTargetPoint = 5,
-    RemoveTargetPoint = 6,
-    Reset = 7,
-    FlightPlanSaved = 8,
-    FlightPlanLoaded = 9,
-    LocalCoordinatesRecalculated = 10
+    MoveWayPoint = 3,
+    AddFixPoint = 4,
+    RemoveFixPoint = 5,
+    MoveFixPoint = 6,
+    AddTargetPoint = 7,
+    RemoveTargetPoint = 8,
+    MoveTargetPoint = 9,
+    Reset = 10,
+    FlightPlanSaved = 11,
+    FlightPlanLoaded = 12,
+    LocalCoordinatesRecalculated = 13
 }
 -- make event types visible to users
 CoordinateData.EventTypes = EventTypes
@@ -34,10 +37,13 @@ function CoordinateData:new(o)
     o.eventHandlers = {
         [EventTypes.AddWayPoint] = {},
         [EventTypes.RemoveWayPoint] = {},
+        [EventTypes.MoveWayPoint] = {},
         [EventTypes.AddFixPoint] = {},
         [EventTypes.RemoveFixPoint] = {},
+        [EventTypes.MoveFixPoint] = {},
         [EventTypes.AddTargetPoint] = {},
         [EventTypes.RemoveTargetPoint] = {},
+        [EventTypes.MoveTargetPoint] = {},
         [EventTypes.Reset] = {},
         [EventTypes.FlightPlanSaved] = {},
         [EventTypes.FlightPlanLoaded] = {},
@@ -130,6 +136,36 @@ function CoordinateData:removeTargetpoint(targetPointIndex)
         targetPointIndex = targetPointIndex
     }
     self:dispatchEvent(EventTypes.RemoveTargetPoint, eventArg)
+end
+
+function CoordinateData:moveWaypoint(source, destination)
+    Logging.debug("Moving waypoint from: "..tostring(source).." to: "..tostring(destination))
+    if source == destination then return end
+    local eventArg = {
+        source = source,
+        destination = destination,
+    }
+    self:dispatchEvent(EventTypes.MoveWayPoint, eventArg)
+end
+
+function CoordinateData:moveFixpoint(source, destination)
+    if source == destination then return end
+    Logging.debug("Moving fixpoint from: "..tostring(source).." to: "..tostring(destination))
+    local eventArg = {
+        source = source,
+        destination = destination,
+    }
+    self:dispatchEvent(EventTypes.MoveFixPoint, eventArg)
+end
+
+function CoordinateData:moveTargetpoint(source, destination)
+    if source == destination then return end
+    Logging.debug("Moving target point from: "..tostring(source).." to: "..tostring(destination))
+    local eventArg = {
+        source = source,
+        destination = destination,
+    }
+    self:dispatchEvent(EventTypes.MoveTargetPoint, eventArg)
 end
 
 function CoordinateData:reset()
@@ -225,7 +261,6 @@ function CoordinateData:normalize(commandGenerator)
     Logging.info("Setting correct structure size")
     if #self.wayPoints > commandGenerator:getMaximalWaypointCount() then
         Logging.info("Prunning waypoints from "..#self.wayPoints.." to "..commandGenerator:getMaximalWaypointCount())        
-        -- self.wayPoints = { table.unpack(self.wayPoints, 1, math.min(#self.wayPoints, commandGenerator:getMaximalWaypointCount())) }
         for i = #self.wayPoints, commandGenerator:getMaximalWaypointCount() + 1, -1 do
             self:removeWaypoint(i)
         end
@@ -233,7 +268,6 @@ function CoordinateData:normalize(commandGenerator)
     end
     if #self.fixPoints > commandGenerator:getMaximalFixPointCount() then
         Logging.info("Prunning fixpoints...")
-        -- self.fixPoints = { table.unpack(self.fixPoints, 1, math.min(#self.fixPoints, commandGenerator:getMaximalFixPointCount())) }
         for i = #self.fixPoints, commandGenerator:getMaximalFixPointCount() + 1, -1 do
             self:removeFixpoint(i)
         end
@@ -241,7 +275,6 @@ function CoordinateData:normalize(commandGenerator)
     end
     if #self.targetPoints > commandGenerator:getMaximalTargetPointCount() then
         Logging.info("Prunning target points...")
-        -- self.targetPoints = { table.unpack(self.targetPoints, 1, math.min(#self.targetPoints, commandGenerator:getMaximalTargetPointCount())) }
         for i = #self.targetPoints, commandGenerator:getMaximalTargetPointCount() + 1, -1 do
             self:removeTargetpoint(i)
         end
