@@ -1,7 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local JSON = require("JSON")
 local Position = require("SharkPlanner.Base.Position")
-
+local Table = require("SharkPlanner.Utils.Table")
 -- handle lua 5.4 deprecation
 if table.unpack == nil then
 table.unpack = unpack
@@ -139,11 +139,13 @@ function CoordinateData:removeTargetpoint(targetPointIndex)
 end
 
 function CoordinateData:moveWaypoint(source, destination)
-    Logging.debug("Moving waypoint from: "..tostring(source).." to: "..tostring(destination))
     if source == destination then return end
+    Logging.debug("Moving waypoint from: "..tostring(source).." to: "..tostring(destination))
+    Table.move(self.wayPoints, source, destination)
     local eventArg = {
         source = source,
         destination = destination,
+        wayPoints = self.wayPoints
     }
     self:dispatchEvent(EventTypes.MoveWayPoint, eventArg)
 end
@@ -151,9 +153,11 @@ end
 function CoordinateData:moveFixpoint(source, destination)
     if source == destination then return end
     Logging.debug("Moving fixpoint from: "..tostring(source).." to: "..tostring(destination))
+    Table.move(self.fixPoints, source, destination)
     local eventArg = {
         source = source,
         destination = destination,
+        fixPoints = self.fixPoints
     }
     self:dispatchEvent(EventTypes.MoveFixPoint, eventArg)
 end
@@ -161,9 +165,11 @@ end
 function CoordinateData:moveTargetpoint(source, destination)
     if source == destination then return end
     Logging.debug("Moving target point from: "..tostring(source).." to: "..tostring(destination))
+    Table.move(self.targetPoints, source, destination)
     local eventArg = {
         source = source,
         destination = destination,
+        targetPoints = self.targetPoints
     }
     self:dispatchEvent(EventTypes.MoveTargetPoint, eventArg)
 end

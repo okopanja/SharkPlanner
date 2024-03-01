@@ -396,10 +396,35 @@ function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
   self:_calculateDistances(eventArgs.targetPoints)
 end
 
+function WaypointListWindow:OnMoveWayPoint(eventArgs)
+  Logging.info("Time to update waypoints")
+  self:fillPositions(eventArgs.wayPoints, coordinateData.removeWaypoint)
+end
+
+function WaypointListWindow:OnMoveFixPoint(eventArgs)
+  Logging.info("Time to update fixpoints")
+  self:fillPositions(eventArgs.fixPoints, coordinateData.removeFixpoint)
+end
+
+function WaypointListWindow:OnMoveTargetPoint(eventArgs)
+  Logging.info("Time to update targetpoints")
+  self:fillPositions(eventArgs.targetPoints, coordinateData.targetFixpoint)
+end
+
 function WaypointListWindow:OnReset(eventArgs)
   self.scrollGrid:removeAllRows()
   self.filePath = nil
   self.FileNameStatic:setText("")
+end
+
+function WaypointListWindow:fillPositions(positions, removalFunction)
+  self.scrollGrid:removeAllRows()
+  -- self.entryMode = entryMode
+  for i = 1, #positions do
+    Logging.info(tostring(i))
+    self:_createPositionRow(i, positions[i], removalFunction)
+  end
+  self:_calculateDistances(positions)
 end
 
 function WaypointListWindow:OnEntryModeChanged(eventArgs)
