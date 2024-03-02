@@ -1,7 +1,7 @@
 local Logging = require("SharkPlanner.Utils.Logging")
 local Table = require("SharkPlanner.Utils.Table")
 
-local inspect = require("SharkPlanner.inspect")
+-- local inspect = require("SharkPlanner.inspect")
 local Camera = {}
 
 local EventTypes = {
