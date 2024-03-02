@@ -72,6 +72,10 @@ function Position:getLatitude()
   return self.latitude
 end
 
+function Position:getDistanceFrom(reference)
+  return math.sqrt(math.pow(math.abs(self.x - reference.x), 2) + math.pow(math.abs(self.z - reference.z), 2))
+end
+
 function Position:getLatitudeAsDMS(precision)
   precision = precision or 0
   local result = Geometry.degAngleToDMSAngle(self.latitude, 0, 0, precision)

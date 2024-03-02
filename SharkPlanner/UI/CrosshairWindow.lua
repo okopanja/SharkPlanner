@@ -28,7 +28,7 @@ function CrosshairWindow:new(o)
     Logging.info("Path to crosshair picture: "..crosshair_picture_path)
     o.WaypointCrosshair:setSkin(SkinUtils.setStaticPicture(crosshair_picture_path, skin))
     local staticCrosshairValueSkin = SkinHelper.loadSkin('staticCrosshairRightValue')
-
+    o.DistanceFromLast:setSkin(staticCrosshairValueSkin)
     o.Longitude:setSkin(staticCrosshairValueSkin)
     o.Latitude:setSkin(staticCrosshairValueSkin)
     o.Elevation:setSkin(staticCrosshairValueSkin)
@@ -79,6 +79,18 @@ function CrosshairWindow:OnCameraMoved(eventArgs)
       local position = Position:new{x = eventArgs.newPosition.p.x, y = eventArgs.newPosition.p.y, z = eventArgs.newPosition.p.z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
       Logging.debug(position:getLongitudeDMSstr())
       Logging.debug(position:getLatitudeDMSstr())
+      if #coordinateData.wayPoints > 0 then
+        local distance = position:getDistanceFrom(coordinateData.wayPoints[#coordinateData.wayPoints])
+        if distance > 1000 then
+          self.DistanceFromLast:setText(string.format("%.3f km", distance / 1000))
+        else
+          self.DistanceFromLast:setText(string.format("%.1f m", distance))
+        end
+        
+        
+      else
+        self.DistanceFromLast:setText("")
+      end
       self.Longitude:setText(position:getLongitudeDMSstr())
       self.Latitude:setText(position:getLatitudeDMSstr())
       self.Elevation:setText(string.format("%3.1f m", Mathematics.Arithmetic.round_with_precision(elevation, 1)))
