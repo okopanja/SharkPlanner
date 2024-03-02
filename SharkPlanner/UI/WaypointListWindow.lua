@@ -69,7 +69,7 @@ function WaypointListWindow:new(o)
   o.scrollGrid.dragStartY = -1
   o.scrollGrid:addMouseLeaveCallback(
     function(self, x, y, button)
-      Logging.info("Mouse LEAVE: ".."X: "..tostring(x).." Y: "..tostring(y))
+      Logging.debug("Mouse LEAVE: ".."X: "..tostring(x).." Y: "..tostring(y))
       if self.isDragged then
         self.isDragged = false
         self.dragStartX = -1
@@ -82,15 +82,15 @@ function WaypointListWindow:new(o)
   o.scrollGrid:addMouseEnterCallback(
     function(self, x, y, button)
       if self.isDragged then
-        Logging.info("Mouse ENTER: ".."X: "..tostring(x).." Y: "..tostring(y))
+        Logging.debug("Mouse ENTER: ".."X: "..tostring(x).." Y: "..tostring(y))
       end
     end
   )
   o.scrollGrid:addMouseMoveCallback(
     function(self, x, y, button)
-      Logging.info("Mouse MOVE: ".."X: "..tostring(x).." Y: "..tostring(y))
+      Logging.debug("Mouse MOVE: ".."X: "..tostring(x).." Y: "..tostring(y))
       local startColumn, startRow = self:getMouseCursorColumnRow(x, y)
-      Logging.info("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
+      Logging.debug("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
       if button == 0 and self.isDragged == false then
         local startColumn, startRow = self:getMouseCursorColumnRow(x, y)
         if startColumn == DRAG_COLUMN and startRow >= 0 then
@@ -108,9 +108,9 @@ function WaypointListWindow:new(o)
   o.scrollGrid:addMouseDownCallback(
     function(self, x, y, button)
       if button == 1 then
-        Logging.info("Mouse DOWN: ".."X: "..tostring(x).." Y: "..tostring(y))
+        Logging.debug("Mouse DOWN: ".."X: "..tostring(x).." Y: "..tostring(y))
         local startColumn, startRow = self:getMouseCursorColumnRow(x, y)
-        Logging.info("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
+        Logging.debug("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
         if startColumn == DRAG_COLUMN then
           self.dragStartX = x
           self.dragStartY = y
@@ -124,11 +124,11 @@ function WaypointListWindow:new(o)
   o.scrollGrid:addMouseUpCallback(
     function(self, x, y, button)
       if button == 1 then
-        Logging.info("Mouse UP: ".."X: "..tostring(x).." Y: "..tostring(y))
+        Logging.debug("Mouse UP: ".."X: "..tostring(x).." Y: "..tostring(y))
         local startColumn, startRow = self:getMouseCursorColumnRow(self.dragStartX, self.dragStartY)
-        Logging.info("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
+        Logging.debug("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
         local endColumn, endRow = self:getMouseCursorColumnRow(x, y)
-        Logging.info("endRow: "..tostring(endRow).." endColumn: "..tostring(endColumn) )
+        Logging.debug("endRow: "..tostring(endRow).." endColumn: "..tostring(endColumn) )
         if self.isDragged then
           Logging.debug("Drag ended")
           self.isDragged = false
@@ -154,9 +154,9 @@ function WaypointListWindow:new(o)
   )
 
   local headerCellCallback = function(self, x, y, button)
-    Logging.info("Mouse MOVE(header cell): ".."X: "..tostring(x).." Y: "..tostring(y))
+    Logging.debug("Mouse MOVE(header cell): ".."X: "..tostring(x).." Y: "..tostring(y))
     local startColumn, startRow = self:getRoot().scrollGrid:getMouseCursorColumnRow(x, y)
-    Logging.info("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
+    Logging.debug("startRow: "..tostring(startRow).." startColumn: "..tostring(startColumn) )
     if self.isDragged then
       self:getRoot().scrollGrid.isDragged = false
       self:getRoot().scrollGrid.dragStartX = -1
@@ -397,17 +397,14 @@ function WaypointListWindow:OnRemoveTargetpoint(eventArgs)
 end
 
 function WaypointListWindow:OnMoveWayPoint(eventArgs)
-  Logging.info("Time to update waypoints")
   self:fillPositions(eventArgs.wayPoints, coordinateData.removeWaypoint)
 end
 
 function WaypointListWindow:OnMoveFixPoint(eventArgs)
-  Logging.info("Time to update fixpoints")
   self:fillPositions(eventArgs.fixPoints, coordinateData.removeFixpoint)
 end
 
 function WaypointListWindow:OnMoveTargetPoint(eventArgs)
-  Logging.info("Time to update targetpoints")
   self:fillPositions(eventArgs.targetPoints, coordinateData.targetFixpoint)
 end
 
@@ -421,7 +418,7 @@ function WaypointListWindow:fillPositions(positions, removalFunction)
   self.scrollGrid:removeAllRows()
   -- self.entryMode = entryMode
   for i = 1, #positions do
-    Logging.info(tostring(i))
+    Logging.debug(tostring(i))
     self:_createPositionRow(i, positions[i], removalFunction)
   end
   self:_calculateDistances(positions)
@@ -446,7 +443,7 @@ function WaypointListWindow:OnEntryModeChanged(eventArgs)
     return
   end
   for i = 1, #positions do
-    Logging.info(tostring(i))
+    Logging.debug(tostring(i))
     self:_createPositionRow(i, positions[i], removalFunction)
   end
   self:_calculateDistances(positions)
