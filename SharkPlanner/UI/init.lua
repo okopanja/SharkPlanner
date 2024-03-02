@@ -6,5 +6,6 @@ return {
     SkinHelper = require("SharkPlanner.UI.SkinHelper"),
     ChartWindow = require("SharkPlanner.UI.ChartWindow"),
     TransferStatusWindow = require("SharkPlanner.UI.TransferStatusWindow"),
-    OptionsWindow = require("SharkPlanner.UI.OptionsWindow")
+    OptionsWindow = require("SharkPlanner.UI.OptionsWindow"),
+    MouseCursor = require("SharkPlanner.UI.MouseCursor"),
 }

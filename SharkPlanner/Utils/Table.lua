@@ -34,8 +34,13 @@ local function clone(orig)
     return copy
 end
 
+local function move(t, source, destination)
+    table.insert(t, destination, table.remove(t, source))
+end
+
 return {
     is_in_keys = is_in_keys,
     is_in_values = is_in_values,
-    clone = clone
+    clone = clone,
+    move = move
 }

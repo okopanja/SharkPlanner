@@ -101,6 +101,18 @@ function StatusWindow:OnFlightPlanLoaded(eventArgs)
     self.Status:setText("Flight plan is loaded.")
 end
 
+function StatusWindow:OnMoveWayPoint(eventArgs)
+    self:displayMessage("Moved position from "..eventArgs.source.." to "..eventArgs.destination)
+end
+
+function StatusWindow:OnMoveFixPoint(eventArgs)
+    self:displayMessage("Moved position from "..eventArgs.source.." to "..eventArgs.destination)
+end
+
+function StatusWindow:OnMoveTargetPoint(eventArgs)
+    self:displayMessage("Moved position from "..eventArgs.source.." to "..eventArgs.destination)
+end
+
 function StatusWindow:displayMessage(message)
     self.Status:setText(message)
 end

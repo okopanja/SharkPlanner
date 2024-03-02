@@ -75,6 +75,9 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint,
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, statusWindow, statusWindow.OnReset)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, statusWindow, statusWindow.OnFlightPlanSaved)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, statusWindow, statusWindow.OnFlightPlanLoaded)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.MoveWayPoint, statusWindow, statusWindow.OnMoveWayPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.MoveFixPoint, statusWindow, statusWindow.OnMoveFixPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.MoveTargetPoint, statusWindow, statusWindow.OnMoveTargetPoint)
 
 -- register statusWindow to receive events from DCS
 Base.DCSEventHandlers.addEventHandler(Base.DCSEventHandlers.EventTypes.TransferStarted, statusWindow, statusWindow.OnTransferStarted)
@@ -99,6 +102,9 @@ coordinateData:addEventHandler(Base.CoordinateData.EventTypes.RemoveTargetPoint,
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.Reset, waypointListWindow, waypointListWindow.OnReset)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanLoaded, waypointListWindow, waypointListWindow.OnFlightPlanLoaded)
 coordinateData:addEventHandler(Base.CoordinateData.EventTypes.FlightPlanSaved, waypointListWindow, waypointListWindow.OnFlightPlanSaved)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.MoveWayPoint, waypointListWindow, waypointListWindow.OnMoveWayPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.MoveFixPoint, waypointListWindow, waypointListWindow.OnMoveFixPoint)
+coordinateData:addEventHandler(Base.CoordinateData.EventTypes.MoveTargetPoint, waypointListWindow, waypointListWindow.OnMoveTargetPoint)
 
 -- create chart window
 chartWindow = UI.ChartWindow:new{crosshairWindow = crosshairWindow}
