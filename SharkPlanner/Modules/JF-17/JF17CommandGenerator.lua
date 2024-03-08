@@ -207,13 +207,14 @@ function JF17CommandGenerator:generateCommands(waypoints, fixpoints, targets)
     local missile_offset = 30
     self:enterWaypoints(commands, fixpoints, missile_offset)
     -- clear unused missile steer points
-    self:clearWaypoints(commands, missile_offset + #fixpoints + 1, missile_offset + self:getMaximalFixPointCount() - #fixpoints + 1)
+    self:clearWaypoints(commands, missile_offset + #fixpoints, missile_offset + self:getMaximalFixPointCount() - 1)
 
     -- enter missile/bomb target points
     local target_offset = 36
     self:enterWaypoints(commands, targets, target_offset)
     -- clear unused missile steer points
-    self:clearWaypoints(commands, target_offset + #targets + 1, target_offset + self:getMaximalTargetPointCount() - #targets + 1)
+    -- self:clearWaypoints(commands, target_offset + #targets + 1, target_offset + self:getMaximalTargetPointCount() - #targets + 1)
+    self:clearWaypoints(commands, target_offset + #targets, target_offset + self:getMaximalTargetPointCount() - 1)
 
     -- select Waypoint 1 in FPL
     self:enterWaypointNumber(commands, 1)
@@ -238,9 +239,11 @@ function JF17CommandGenerator:enterWaypoints(commands, waypoints, start)
 end
 
 function JF17CommandGenerator:clearWaypoints(commands, start_point, end_point)
+    Logging.debug("Start: "..tostring(start_point).." End: "..tostring(end_point))
     self:enterWaypointNumber(commands, start_point)
     -- self:mfcdU5(commands, "Clear waypoint: "..start_point, 0)
     for i = start_point, end_point do
+        Logging.debug("Waypoint: "..i)
         self:mfcdU5(commands, "Clear waypoint: "..i)
         self:mfcdL2(commands, "Step next")
     end
