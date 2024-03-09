@@ -37,6 +37,7 @@ function Camera:new(o)
     o.eventHandlers = {
         [EventTypes.CameraMoved] = {},
     }
+    o.objectDetection = true
     return o
 end
 
@@ -46,16 +47,21 @@ function Camera:update()
     if self.position ~= nil then
         local comparison_result = self:comparePositions(self.position, currentCameraPosition)
         -- return w['x']['x'] == 0 and w['x']['y'] == -1 and w['x']['z'] == 0 and w['y']['x'] == 1 and w['y']['y'] == 0 and w['y']['z'] == 0 and w['z']['x'] == 0 and w['z']['y'] == 0 and w['z']['z'] == 1
-        local eventArg = {
-            oldPosition = self.position,
-            newPosition = currentCameraPosition,
-            cameraState = self.state
-        }
         -- dispatch CameraMoved if camera was moved
         if comparison_result == PositionCompResult.PositionChanged or comparison_result == PositionCompResult.PositionAndOrientationChanged then
-        -- if Table.is_in_values({PositionCompResult.PositionChanged, PositionCompResult.PositionAndOrientationChanged}, comparison_result) then
-            self:dispatchEvent(EventTypes.CameraMoved, eventArg)
-            -- Logging.info(inspect(terrain.getObjectsAtMapPoint(currentCameraPosition['p']['x'], currentCameraPosition['p']['z'])))
+            local eventArgs = {
+                oldPosition = self.position,
+                newPosition = currentCameraPosition,
+                cameraState = self.state,
+                objects = {}
+            }
+            if self:getObjectDetection() then
+                local foundObjects = terrain.getObjectsAtMapPoint(currentCameraPosition['p']['x'], currentCameraPosition['p']['z']) 
+                if foundObjects ~= nil and #foundObjects > 0 then
+                    eventArgs.objects = foundObjects
+                end
+            end
+            self:dispatchEvent(EventTypes.CameraMoved, eventArgs)
         end
     end
     self.position = currentCameraPosition
@@ -78,6 +84,14 @@ end
 
 function Camera:getState()
     return self.state
+end
+
+function Camera:getObjectDetection()
+    return self.objectDetection
+end
+
+function Camera:setObjectDetection(objectDetection)
+    self.objectDetection = objectDetection
 end
 
 function Camera:comparePositions(pos1, pos2)
