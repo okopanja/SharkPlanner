@@ -63,6 +63,28 @@ dialog = {
                 }
             }
         },
+        ["ObjectModel"] = {
+          ["params"] = {
+            ["bounds"] = {
+              ["x"] = 400 - 150,
+              ["y"] = 200 - 26,
+              ["h"] = 26,
+              ["w"] = 150,
+            },
+            ["enabled"] = false,
+            ["text"] = "",
+            ["tooltip"] = "Distance from last waypoint",
+            ["visible"] = true,
+            ["zindex"] = 0,
+          },
+          ["skin"] = {
+            -- ["params"] = {
+            --   ["name"] = "buttonSkinAwacs",
+            --   -- ["name"] = "staticSkin_ME",
+            -- },
+          },
+          ["type"] = "Static",
+        },
         ["DistanceFromLast"] = {
           ["params"] = {
             ["bounds"] = {

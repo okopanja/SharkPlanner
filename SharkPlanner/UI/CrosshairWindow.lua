@@ -27,7 +27,10 @@ function CrosshairWindow:new(o)
     local crosshair_picture_path = lfs.writedir()..skin.skinData.states.released[1].picture.file
     Logging.info("Path to crosshair picture: "..crosshair_picture_path)
     o.WaypointCrosshair:setSkin(SkinUtils.setStaticPicture(crosshair_picture_path, skin))
-    local staticCrosshairValueSkin = SkinHelper.loadSkin('staticCrosshairRightValue')
+    -- local staticCrosshairValueSkin = SkinHelper.loadSkin('staticCrosshairRightValue')
+    local staticCrosshairValueSkin = SkinHelper.loadSkin('staticCrosshairRightLightValue')
+    local staticCrosshairLightValueSkin = SkinHelper.loadSkin('staticCrosshairRightLightValue')
+    o.ObjectModel:setSkin(staticCrosshairLightValueSkin)
     o.DistanceFromLast:setSkin(staticCrosshairValueSkin)
     o.Longitude:setSkin(staticCrosshairValueSkin)
     o.Latitude:setSkin(staticCrosshairValueSkin)
@@ -86,10 +89,13 @@ function CrosshairWindow:OnCameraMoved(eventArgs)
         else
           self.DistanceFromLast:setText(string.format("%.1f m", distance))
         end
-        
-        
       else
         self.DistanceFromLast:setText("")
+      end
+      if #eventArgs.objects > 0 then
+        self.ObjectModel:setText(eventArgs.objects[1].model)
+      else
+        self.ObjectModel:setText("")
       end
       self.Longitude:setText(position:getLongitudeDMSstr())
       self.Latitude:setText(position:getLatitudeDMSstr())
