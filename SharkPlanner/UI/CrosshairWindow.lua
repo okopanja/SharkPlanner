@@ -74,29 +74,38 @@ function CrosshairWindow:hide()
   self:setVisible(false)
 end
 
+function CrosshairWindow:updateDistanceFromLast(position)
+  Logging.debug(position:getLongitudeDMSstr())
+  Logging.debug(position:getLatitudeDMSstr())
+  if #coordinateData.wayPoints > 0 then
+    local distance = position:getDistanceFrom(coordinateData.wayPoints[#coordinateData.wayPoints])
+    local bearingTo = position:getBearingTo(coordinateData.wayPoints[#coordinateData.wayPoints])
+    if distance > 1000 then
+      self.DistanceFromLast:setText(string.format("%.3f km", distance / 1000)..", : "..string.format("%.0f°", bearingTo))
+    else
+      self.DistanceFromLast:setText(string.format("%.1f m", distance)..", "..string.format("%.0f°", bearingTo))
+    end
+  else
+    self.DistanceFromLast:setText("")
+  end
+end
+
+function CrosshairWindow:updateObjectModel(eventArgs)
+  if #eventArgs.objects > 0 then
+      self.ObjectModel:setText(eventArgs.objects[1].model)
+  else
+      self.ObjectModel:setText("")
+  end
+end
+
 function CrosshairWindow:OnCameraMoved(eventArgs)
   if eventArgs.cameraState == Camera.CameraState.InMapView then
       Logging.debug("Camera moved!")
       local elevation = Export.LoGetAltitude(eventArgs.newPosition.p.x, eventArgs.newPosition.p.z)
       local geoCoordinates = Export.LoLoCoordinatesToGeoCoordinates(eventArgs.newPosition.p.x, eventArgs.newPosition.p.z)
       local position = Position:new{x = eventArgs.newPosition.p.x, y = eventArgs.newPosition.p.y, z = eventArgs.newPosition.p.z, longitude = geoCoordinates['longitude'], latitude = geoCoordinates['latitude'] }
-      Logging.debug(position:getLongitudeDMSstr())
-      Logging.debug(position:getLatitudeDMSstr())
-      if #coordinateData.wayPoints > 0 then
-        local distance = position:getDistanceFrom(coordinateData.wayPoints[#coordinateData.wayPoints])
-        if distance > 1000 then
-          self.DistanceFromLast:setText(string.format("%.3f km", distance / 1000))
-        else
-          self.DistanceFromLast:setText(string.format("%.1f m", distance))
-        end
-      else
-        self.DistanceFromLast:setText("")
-      end
-      if #eventArgs.objects > 0 then
-        self.ObjectModel:setText(eventArgs.objects[1].model)
-      else
-        self.ObjectModel:setText("")
-      end
+      self:updateDistanceFromLast(position)
+      self:updateObjectModel(eventArgs)
       self.Longitude:setText(position:getLongitudeDMSstr())
       self.Latitude:setText(position:getLatitudeDMSstr())
       self.Elevation:setText(string.format("%3.1f m", Mathematics.Arithmetic.round_with_precision(elevation, 1)))
