@@ -2,7 +2,6 @@ local math = require("math")
 -- local Logging = require("SharkPlanner.Utils.Logging")
 local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 local Geometry = require("SharkPlanner.Mathematics.Geometry")
-local Utils = require("SharkPlanner.Utils")
 
 local Position = {
   x = nil,
@@ -74,6 +73,23 @@ end
 
 function Position:getDistanceFrom(reference)
   return math.sqrt(math.pow(math.abs(self.x - reference.x), 2) + math.pow(math.abs(self.z - reference.z), 2))
+end
+
+function Position:getBearingTo(otherPosition)
+  local lat1 = math.rad(self.latitude)
+  local lon1 = math.rad(self.longitude)
+  local lat2 = math.rad(otherPosition.latitude)
+  local lon2 = math.rad(otherPosition.longitude)
+
+  local dLon = lon2 - lon1
+
+  local y = math.sin(dLon) * math.cos(lat2)
+  local x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dLon)
+
+  local bearing = math.deg(math.atan2(y, x))
+  bearing = (bearing + 360) % 360
+
+  return bearing
 end
 
 function Position:getLatitudeAsDMS(precision)
