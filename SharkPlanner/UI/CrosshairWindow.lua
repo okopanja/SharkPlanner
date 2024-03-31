@@ -81,7 +81,7 @@ function CrosshairWindow:updateDistanceFromLast(position)
     local distance = position:getDistanceFrom(coordinateData.wayPoints[#coordinateData.wayPoints])
     local bearingTo = position:getBearingTo(coordinateData.wayPoints[#coordinateData.wayPoints])
     if distance > 1000 then
-      self.DistanceFromLast:setText(string.format("%.3f km", distance / 1000)..", : "..string.format("%.0f°", bearingTo))
+      self.DistanceFromLast:setText(string.format("%.3f km", distance / 1000)..", "..string.format("%.0f°", bearingTo))
     else
       self.DistanceFromLast:setText(string.format("%.1f m", distance)..", "..string.format("%.0f°", bearingTo))
     end
