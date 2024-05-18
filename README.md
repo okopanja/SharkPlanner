@@ -9,8 +9,10 @@ SharkPlanner started as a MOD for entry of waypoints into **Ka-50** attack helic
   - **NADIR**
 - **F-16C** 
   - **UFC**
-- **JF-17 Thunder** lightweight multi-role combat aircraft.
+- **JF-17** lightweight multi-role combat aircraft.
   - **UFCP**
+- **UH-60L**
+  - **AN/ASN-128B**
 
 It is 100% implemented in LUA and integrates into the DCS UI.
 
@@ -31,8 +33,9 @@ Minimal requirement is **2.8** either **stable** or **openbeta**.
 - [Gazelle: SA-342L](Documentation/SA-342%20Gazelle/README.md)
 - [Gazelle: SA-342M](Documentation/SA-342%20Gazelle/README.md)
 - [Gazelle: SA-342Minigun](Documentation/SA-342%20Gazelle/README.md)
-- [F-16C](Documentation/F-16C/README.md)
-- [JF-17](Documentation/JF-17/README.md)
+- [F-16C: Viper](Documentation/F-16C/README.md)
+- [JF-17: Thunder](Documentation/JF-17/README.md)
+- [UH-60L: Black Hawk](Documentation/UH-60L/README.md)
 
 ### How do I report bugs?
 Open the [issues](https://github.com/okopanja/SharkPlanner/issues), read existing open issues to quickly figure out if your issue is already reported, and if you find none create **new issue**.
