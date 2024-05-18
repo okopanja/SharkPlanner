@@ -93,22 +93,22 @@ UH60LCommandGenerator.ASN128B_letters = {
 }
 
 UH60LCommandGenerator.SelectDisplayPositions = {
-  WIND_UTC_DATA = 0.0,
-  XTX_TKC_KEY = 0.01,
-  GS_TX_NAV_M = 0.02,
-  PP = 0.03,
-  DEST_BRG_TIME = 0.04,
-  WP_TGT = 0.05,
-  DATUM_ROUTE = 0.06,
+  WIND_UTC_DATA = { name = 'WING-UTC DATA', value =  0.0 },
+  XTX_TKC_KEY =   { name = 'XTX/TKC KEY',   value = 0.01 },
+  GS_TK_NAV_M =   { name = 'GS/TK NAV M',   value = 0.02 },
+  PP =            { name = 'PP',            value = 0.03 },
+  DEST_BRG_TIME = { name = 'DEST/BRG TIME', value = 0.04 },
+  WP_TGT =        { name = 'WP TGT',        value = 0.05 },
+  DATUM_ROUTE =   { name = 'DATUM ROUTE',   value = 0.06 },
 }
 
-UH60LCommandGenerator.SelectModePositions = {
-  OFF = 0.0,
-  LAMP_TEST = 0.01,
-  TEST = 0.02,
-  MGRS = 0.03,
-  LAT_LONG = 0.04,
-  GPS_LDG = 0.05,
+UH60LCommandGenerator.SelectModePositions = {  
+  -- OFF =           { name = 'OFF',       value =  0.0 }, -- disabled to prevent confusing users
+  LAMP_TEST =     { name = 'LAMP TEST', value = 0.01 },
+  TEST =          { name = 'TEST',      value = 0.02 },
+  MGRS =          { name = 'MGRS',      value = 0.03 },
+  LAT_LONG =      { name = 'LAT/LONG',  value = 0.04 },
+  GPS_LDG =       { name = 'GPS LDG',   value = 0.05 },
 }
 
 
@@ -159,14 +159,14 @@ function UH60LCommandGenerator:generateCommands(waypoints, fixpoints, targets)
   -- normally you need to enter the entry mode, since this may require pushing multiple buttons or dialing dials, it is best to have that in function rather than implement it in this function
   
 
-  self:asn128BSelectDisplay(commands, "Enter WP/TGT display", self.SelectDisplayPositions.WP_TGT)
-  self:asn128BSelectMode(commands, "Enter LAT/LONG mode", self.SelectModePositions.LAT_LONG)
+  self:asn128BSelectDisplay(commands, "Enter WP/TGT display", self.SelectDisplayPositions.WP_TGT.value)
+  self:asn128BSelectMode(commands, "Enter LAT/LONG mode", self.SelectModePositions.LAT_LONG.value)
   -- once you are in the correct mode it's time to enter the waypoints.
   self:asn128BEnterWaypoints(commands, waypoints)
   -- if you enter other types of positions, use another function/function call ;)
   -- once the entry is completed you will want to return to the main mode of the device
-  self:asn128BSelectMode(commands, "Enter PP display", self.SelectModePositions.MGRS)
-  self:asn128BSelectDisplay(commands, "Return to PP", self.SelectDisplayPositions.PP)
+  self:asn128BSelectDisplay(commands, "Return to desired display", self:_lookupValue(self.SelectDisplayPositions, Configuration:getOption("UH-60L.ASN-128B.SelectDisplay")))
+  self:asn128BSelectMode(commands, "Enter desired mode", self:_lookupValue(self.SelectModePositions, Configuration:getOption("UH-60L.ASN-128B.SelectMode")))
   -- -- If you ever wish to have optional commands, you can use the Configuration object to lookup for the option
   -- if Configuration:getOption("UH-60L.ASN-128B.SelectWaypoint1") then
   --   -- in this case we specified non a specific delay for this particular command
@@ -178,7 +178,7 @@ function UH60LCommandGenerator:generateCommands(waypoints, fixpoints, targets)
 end
 
 -- Select Display
-function UH60LCommandGenerator:asn128BSelectDisplay(commands, comment, intensity)
+function UH60LCommandGenerator:asn128BSelectDisplay(commands, comment, intensity, delay)
   -- in this case we call just a single command
 
   -- in this long line the following is done:
@@ -189,12 +189,11 @@ function UH60LCommandGenerator:asn128BSelectDisplay(commands, comment, intensity
   -- - Delay - declares delay, in this case if delay is nil, it will use default_delay value, but you need to decide on delay.  Typically dials require delay of 0, for buttons use default_delay (or simply ommit declaration), if you wish to use default_delay, just leave this out. Other command will not be pressed until delay expires
   -- - Intensity, for buttons use 1, for dials intensity depends on device. Simply put: trial and error. Good values to consider for dials is 0.2, 0.4, but it can also be 5
   -- - Depress, if this is true, the button will be pressed and remain pressed until delay expires. At that point SharkPlanner will issue explicit depress command. 
-  local delay = 100
   commands[#commands + 1] = Command:new():setName("ASN-128B: rotate to entry mode"):setComment(comment):setDevice(self.ENTRY_DEVICE_ASN128B):setCode(self.ASN128B_BUTTONS.SelectDisplay):setDelay(delay or self.asn128B_default_delay):setIntensity(intensity):setDepress(false)
 end
 
 -- Select Mode
-function UH60LCommandGenerator:asn128BSelectMode(commands, comment, intensity)
+function UH60LCommandGenerator:asn128BSelectMode(commands, comment, intensity, delay)
   -- in this case we call just a single command
 
   -- in this long line the following is done:
@@ -205,7 +204,6 @@ function UH60LCommandGenerator:asn128BSelectMode(commands, comment, intensity)
   -- - Delay - declares delay, in this case if delay is nil, it will use default_delay value, but you need to decide on delay.  Typically dials require delay of 0, for buttons use default_delay (or simply ommit declaration), if you wish to use default_delay, just leave this out. Other command will not be pressed until delay expires
   -- - Intensity, for buttons use 1, for dials intensity depends on device. Simply put: trial and error. Good values to consider for dials is 0.2, 0.4, but it can also be 5
   -- - Depress, if this is true, the button will be pressed and remain pressed until delay expires. At that point SharkPlanner will issue explicit depress command. 
-  local delay = 100
   commands[#commands + 1] = Command:new():setName("ASN-128B: rotate to entry mode"):setComment(comment):setDevice(self.ENTRY_DEVICE_ASN128B):setCode(self.ASN128B_BUTTONS.SelectMode):setDelay(delay or self.asn128B_default_delay):setIntensity(intensity):setDepress(false)
 end
 
@@ -271,22 +269,15 @@ function UH60LCommandGenerator:asn128BEnterWaypoint(commands, position, waypoint
 end
 
 function UH60LCommandGenerator:asn128BPressButton(commands, key, comment, delay)
-  local delay = delay or 100
   commands[#commands + 1] = Command:new():setName("ASN-128B: press button"):setComment(comment):setDevice(self.ENTRY_DEVICE_ASN128B):setCode(key):setDelay(delay or self.asn128B_default_delay):setIntensity(1):setDepress(true)
 end
 
 -- an example of digit entry sequence where device id is MY_ENTRY_DEVICE_ID and starting digit 0 is 3009 followed by 3010, 3011, 3012...
 function UH60LCommandGenerator:asn128BPressDigitButton(commands, digit, comment, delay)
   commands[#commands + 1] = Command:new():setName("ASN-128B: press numeric"):setComment(comment):setDevice(self.ENTRY_DEVICE_ASN128B):setCode(self.ASN128B_digits[digit]):setDelay(delay or self.asn128B_default_delay):setIntensity(1):setDepress(true)
-  -- NOP stands for no operation. It's a very special command, with values set as device=nil and code = nil. 
-  -- Very often the entry may require additional pause. E.g. this can happen if the module needs time for key press to register as an impulse of certain width. 
-  -- Those familiar with digital electronics will relate this behavior to edge-triggered/level-triggered. 
-  -- :) Trial and error if the entry behaves oddly or unrealiable, introduce the NOP command
-  commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay or self.asn128B_default_delay):setIntensity(nil):setDepress(true)
 end
 
 function UH60LCommandGenerator:asn128BEnterText(commands, text, comment, delay)
-  local delay = delay or 100
   local letters = self:_encodeText(text)
   for _, letter in ipairs(letters) do
     self:asn128BPressLetterButton(commands, letter, comment, delay)
@@ -294,14 +285,8 @@ function UH60LCommandGenerator:asn128BEnterText(commands, text, comment, delay)
 end
 
 function UH60LCommandGenerator:asn128BPressLetterButton(commands, letter, comment, delay)
-  local delay = delay or 100
   commands[#commands + 1] = Command:new():setName("ASN-128B: press shift"):setComment(comment):setDevice(self.ENTRY_DEVICE_ASN128B):setCode(letter.shift):setDelay(delay or self.asn128B_default_delay):setIntensity(1):setDepress(true)
   commands[#commands + 1] = Command:new():setName("ASN-128B: press numeric"):setComment(comment):setDevice(self.ENTRY_DEVICE_ASN128B):setCode(letter.digit):setDelay(delay or self.asn128B_default_delay):setIntensity(1):setDepress(true)
-  -- NOP stands for no operation. It's a very special command, with values set as device=nil and code = nil. 
-  -- Very often the entry may require additional pause. E.g. this can happen if the module needs time for key press to register as an impulse of certain width. 
-  -- Those familiar with digital electronics will relate this behavior to edge-triggered/level-triggered. 
-  -- :) Trial and error if the entry behaves oddly or unrealiable, introduce the NOP command
-  commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(delay or self.asn128B_default_delay):setIntensity(nil):setDepress(true)
 end
 
 -- Coordinates utility functions
@@ -361,6 +346,15 @@ function UH60LCommandGenerator:_encodeText(text)
     end
   end
   return result
+end
+
+function UH60LCommandGenerator:_lookupValue(table, required_name)
+  for name, info in pairs(table) do
+    if info.name == required_name then  
+      return info.value
+    end
+  end
+  return nil
 end
 
 -- generator class must always returned!
