@@ -12,6 +12,7 @@ local Camera = require("SharkPlanner.Base.Camera")
 local Position = require("SharkPlanner.Base.Position")
 local Mathematics = require("SharkPlanner.Mathematics")
 local SkinHelper = require("SharkPlanner.UI.SkinHelper")
+local JSON = require("JSON")
 
 local CrosshairWindow = DialogLoader.spawnDialogFromFile(
     lfs.writedir() .. "Scripts\\SharkPlanner\\UI\\CrosshairWindow.dlg"
@@ -31,6 +32,7 @@ function CrosshairWindow:new(o)
     local staticCrosshairValueSkin = SkinHelper.loadSkin('staticCrosshairRightLightValue')
     local staticCrosshairLightValueSkin = SkinHelper.loadSkin('staticCrosshairRightLightValue')
     o.ObjectModel:setSkin(staticCrosshairLightValueSkin)
+    o.ObjectID:setSkin(staticCrosshairLightValueSkin)
     o.DistanceFromLast:setSkin(staticCrosshairValueSkin)
     o.Longitude:setSkin(staticCrosshairValueSkin)
     o.Latitude:setSkin(staticCrosshairValueSkin)
@@ -93,8 +95,11 @@ end
 function CrosshairWindow:updateObjectModel(eventArgs)
   if #eventArgs.objects > 0 then
       self.ObjectModel:setText(eventArgs.objects[1].model)
+      self.ObjectID:setText(eventArgs.objects[1].id)
+      Logging.debug("Object: "..JSON:encode_pretty(eventArgs.objects[1]))
   else
       self.ObjectModel:setText("")
+      self.ObjectID:setText("")
   end
 end
 
