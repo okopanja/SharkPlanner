@@ -32,13 +32,44 @@ local function getConfigurationDefinition()
                     Min = 70, -- minimal value
                     Max = 500, -- maximal value
                     Step = 1, -- increment/decrement step
-                },                             
-                {
-                    Name = "SelectWaypoint1", -- defines the name of option. Later you can reference this particular option as 'UH60L.ASN-128B.SelectWaypoint1'
-                    Label = "E.g. Select waypoint 1", -- label displayed in configuration menu to end user
-                    Default = true, -- default value
-                    Control = "CheckBox", -- control to be used for editing the value
                 },
+                -- {
+                --     Name = "SelectWaypoint1", -- defines the name of option. Later you can reference this particular option as 'UH60L.ASN-128B.SelectWaypoint1'
+                --     Label = "E.g. Select waypoint 1", -- label displayed in configuration menu to end user
+                --     Default = true, -- default value
+                --     Control = "CheckBox", -- control to be used for editing the value
+                -- },
+                {
+                    Name = "SelectDisplay",
+                    Label = "Select display",
+                    Default = UH60LCommandGenerator.SelectDisplayPositions.PP.name,
+                    Control = "ComboList",
+                    Items = {
+                        UH60LCommandGenerator.SelectDisplayPositions.WIND_UTC_DATA,
+                        UH60LCommandGenerator.SelectDisplayPositions.XTX_TKC_KEY,
+                        UH60LCommandGenerator.SelectDisplayPositions.GS_TK_NAV_M,
+                        UH60LCommandGenerator.SelectDisplayPositions.PP,
+                        UH60LCommandGenerator.SelectDisplayPositions.DEST_BRG_TIME,
+                        UH60LCommandGenerator.SelectDisplayPositions.WP_TGT,
+                        UH60LCommandGenerator.SelectDisplayPositions.DATUM_ROUTE,
+                    },
+                    -- UpdateCallback = Logging.updateVerbosity
+                },
+                {
+                    Name = "SelectMode",
+                    Label = "Select mode",
+                    Default = UH60LCommandGenerator.SelectModePositions.MGRS.name,
+                    Control = "ComboList",
+                    Items = {
+                        UH60LCommandGenerator.SelectModePositions.OFF,
+                        UH60LCommandGenerator.SelectModePositions.LAMP_TEST,
+                        UH60LCommandGenerator.SelectModePositions.TEST,
+                        UH60LCommandGenerator.SelectModePositions.MGRS,
+                        UH60LCommandGenerator.SelectModePositions.LAT_LONG,
+                        UH60LCommandGenerator.SelectModePositions.GPS_LDG,
+                    },
+                    -- UpdateCallback = Logging.updateVerbosity
+                },        
             },
             -- More sub sections may follow..
         },
