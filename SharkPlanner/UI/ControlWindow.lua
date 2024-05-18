@@ -91,12 +91,14 @@ function ControlWindow:new(o)
     -- register UI callbacks
     o.HideButton:addChangeCallback(
       function(button)
-        Logging.info("Hidding...")
+        Logging.info("Hidding: ChangeCallback")
         o:hide()
+        o:enableKeyboardCommands()
       end
     )
     o.HideButton:addMouseUpCallback(
       function(button)
+        Logging.info("Hidding: MouseUpCallback")
         button:setFocused(false)
       end
     )
