@@ -21,12 +21,13 @@ end
 function TerrainHelper:loadTerrains(terrainPaths)
     self.terrains = {}
     for i, entry in ipairs(terrainPaths) do
-        local towns = tools.safeDoFileWithRequire(entry.full_path..[[\Map\towns.lua]]).towns
+        local towns = {} or tools.safeDoFileWithRequire(entry.full_path..[[\Map\towns.lua]]).towns
+        
         self.terrains[entry.id] = {
             path = entry.full_path,
             towns = towns
         }
-    end
+end
 end
 
 function TerrainHelper:new(o)
@@ -57,7 +58,10 @@ function TerrainHelper:lookupNearestTown(terrainID, position)
             nearestTown = town
         end
     end
-    return nearestTown
+    if nearestTown == nil then
+        Logging.debug("No town found")
+    end
+    return nearestTown, nearestDistance
 end
 
 local singleton = TerrainHelper:new()

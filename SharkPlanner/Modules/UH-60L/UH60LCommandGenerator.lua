@@ -233,9 +233,13 @@ function UH60LCommandGenerator:asn128BEnterWaypoint(commands, position, waypoint
   self:asn128BPressButton(commands, self.ASN128B_BUTTONS.SelectBtnKybd, "keyboard entry mode: waypoint name")
   -- TODO: not implemented, SharkPlanner does not support named coordinates yet
   local theatreID = DCS.getTheatreID()
-  local nearestTown = TerrainHelper:lookupNearestTown(theatreID, waypoint)
-  self:asn128BEnterText(commands, nearestTown.display_name, "Enter waypoint name: "..nearestTown.display_name)
-
+  local nearestTown, distance = TerrainHelper:lookupNearestTown(theatreID, waypoint)
+  if nearestTown ~= nil then
+    Logging.info("Found: "..nearestTown.display_name.." at distance: "..distance)
+    self:asn128BEnterText(commands, nearestTown.display_name, "Enter waypoint name: "..nearestTown.display_name)
+  else
+    Logging.info("No town found near waypoint")
+  end
   -- switch to latitude
   self:asn128BPressButton(commands, self.ASN128B_BUTTONS.SelectBtnKybd, "keyboard entry mode: latitude")
   -- enter hemisphere. Normally keyboard entry assumes that 2 is NORTH, 8 is SOUTH, 4 is WEST, and 6 is EAST. 
