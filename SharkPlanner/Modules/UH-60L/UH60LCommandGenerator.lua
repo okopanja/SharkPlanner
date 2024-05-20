@@ -12,7 +12,8 @@ local Hemispheres = require("SharkPlanner.Base.Hemispheres")
 local Configuration = require("SharkPlanner.Base.Configuration")
 -- Table is needed for quick checks
 local Table = require("SharkPlanner.Utils.Table")
-local TerrainHelper = require("SharkPlanner.Modules.UH-60L.TerrainHelper")
+-- TerrainHelper ensure we have a way to interuct with terrain data
+local TerrainHelper = require("SharkPlanner.Base.TerrainHelper")
 -- for coordinate conversion you might need math module
 require("math")
 

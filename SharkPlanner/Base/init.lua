@@ -10,4 +10,5 @@ return {
   DCSEventHandlers = require("SharkPlanner.Base.DCSEventHandlers"),
   Configuration = require("SharkPlanner.Base.Configuration"),
   Camera = require("SharkPlanner.Base.Camera"),
+  TerrainHelper = require("SharkPlanner.Base.TerrainHelper"),
 }
