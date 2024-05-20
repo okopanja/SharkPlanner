@@ -61,7 +61,7 @@ local function getConfigurationDefinition()
                     Default = UH60LCommandGenerator.SelectModePositions.MGRS.name,
                     Control = "ComboList",
                     Items = {
-                        UH60LCommandGenerator.SelectModePositions.OFF,
+                        -- UH60LCommandGenerator.SelectModePositions.OFF,
                         UH60LCommandGenerator.SelectModePositions.LAMP_TEST,
                         UH60LCommandGenerator.SelectModePositions.TEST,
                         UH60LCommandGenerator.SelectModePositions.MGRS,
