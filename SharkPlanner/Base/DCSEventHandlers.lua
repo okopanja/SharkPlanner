@@ -212,6 +212,9 @@ function DCSEventHandlers.transfer(commands)
     commands = DCSEventHandlers.commands
   }
   DCSEventHandlers.dispatchEvent(EventTypes.TransferStarted, eventArg)
+  if #commands == 0 then
+    DCSEventHandlers.dispatchEvent(EventTypes.TransferFinished, eventArg)
+  end
 end
 
 function DCSEventHandlers.scheduleCommands(commands)

@@ -12,7 +12,9 @@ local function getListOfModules()
     local full_path = path.."\\"..file
     if lfs.attributes(full_path, "mode") == "directory" then
       if file ~= '.' and file ~= '..' then
-        result[file] = "SharkPlanner.Modules."..file
+        if lfs.attributes(full_path.."\\init.lua", "mode") == "file" then
+          result[file] = "SharkPlanner.Modules."..file
+        end
       end
     end
   end
