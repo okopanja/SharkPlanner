@@ -1,7 +1,6 @@
 local BaseInputActionProcessor = require("SharkPlanner.Base.BaseInputActionProcessor")
 local Logging = require("SharkPlanner.Utils.Logging")
 local Table = require("SharkPlanner.Utils.Table")
-local inspect = require("SharkPlanner.inspect")
 local coordinateData = require("SharkPlanner.Base.CoordinateData")
 local Command = require("SharkPlanner.Base.Command")
 local Configuration = require("SharkPlanner.Base.Configuration")
