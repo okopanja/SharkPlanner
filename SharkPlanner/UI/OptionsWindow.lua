@@ -29,7 +29,7 @@ local OptionsWindow = DialogLoader.spawnDialogFromFile(
 local staticConfigurationSectionTitleSkin = SkinHelper.loadSkin("staticConfigurationSectionTitle")
 local staticConfigurationOptionLabelSkin = SkinHelper.loadSkin("staticConfigurationOptionLabel")
 local toggleConfigurationSidePanel = SkinHelper.loadSkin("toggleConfigurationSidePanel")
-local checkBoxNewBlue = SkinHelper.loadSkin("checkBoxNewBlue")
+local checkBoxNewBlue = SkinHelper.setMinSize(SkinHelper.loadSkin("checkBoxNewBlue"), 60, 26)
 local comboBoxSkin = SkinHelper.loadSkin("comboBox")
 local comboListSkin = SkinHelper.loadSkin("comboList")
 local editBoxSkin = SkinHelper.loadSkin("editBox")
@@ -212,6 +212,24 @@ function OptionsWindow:createOptionControl(section, subSection, option)
 end
 
 function OptionsWindow:createCheckBox(configKey, configValue)
+  local panel = Panel.new()
+  panel:setBounds(0,0,200,200)
+  local layout = LayoutFactory.createLayout("horz", HorzLayout.newLayout())
+  layout:setGap(0)
+  layout:setVertAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  layout:setHorzAlign(
+    {
+      ["offset"] = 0,
+      ["type"] = "middle",
+    }
+  )
+  panel:setLayout(layout)
+
   local control = CheckBox.new()
   control:setSkin(checkBoxNewBlue)
   control:setState(configValue)
@@ -228,8 +246,15 @@ function OptionsWindow:createCheckBox(configKey, configValue)
       control:setFocused(false)
     end
   )
+  -- return control
+  local staticValue = Static.new()
+  staticValue:setSkin(staticConfigurationOptionLabelSkin)
+  staticValue:setText("")
+  staticValue:setVisible(true)
+  panel:insertWidget(control)
+  panel:insertWidget(staticValue)
 
-  return control
+  return panel
 end
 
 function OptionsWindow:createComboBox(configKey, configValue, option)
