@@ -3,7 +3,6 @@ local GameState = require("SharkPlanner.Base.GameState")
 local coordinateData = require("SharkPlanner.Base.CoordinateData")
 local CommandGeneratorFactory = require("SharkPlanner.Base.CommandGeneratorFactory")
 local Camera = require("SharkPlanner.Base.Camera")
-
 local DCSEventHandlers = {}
 
 local EventTypes = {
@@ -17,7 +16,7 @@ local EventTypes = {
 }
 
 DCSEventHandlers.minimalInterval = 0.001
-DCSEventHandlers.lastTime = DCS.getModelTime()
+DCSEventHandlers.lastTime = DCS.getRealTime()
 DCSEventHandlers.commands = {}
 DCSEventHandlers.delayed_depress_commands = {}
 DCSEventHandlers.EventTypes = EventTypes
@@ -33,9 +32,22 @@ DCSEventHandlers.eventHandlers = {
 
 function DCSEventHandlers.onSimulationFrame()
   -- ensure we run command checks at most every minimalInterval miliseconds
-  local current_time = DCS.getModelTime()
+  local current_time = DCS.getRealTime()
+
   if( DCSEventHandlers.lastTime + DCSEventHandlers.minimalInterval <= current_time) then
       Camera:update()
+      if DCSEventHandlers.inputActionProcessor ~= nil then
+        local input_actions = input.getInputActions()
+        local processorCommands, requestedDelay = DCSEventHandlers.inputActionProcessor:process(input_actions)
+        if #processorCommands > 0 then
+          local newCommands = DCSEventHandlers.scheduleCommands(processorCommands)
+          -- prepend the new commands
+          for i, command in ipairs(newCommands) do
+            table.insert(DCSEventHandlers.commands, i, command)
+          end
+        end 
+      end
+      
       -- lastTime = current_time
       if DCSEventHandlers.transferIsActive() then
       -- determine what can be depressed
@@ -53,7 +65,7 @@ function DCSEventHandlers.onSimulationFrame()
           end
           -- if the delayed_depress_commands is still not empty we need to wait further, and not proceed with scheduled!
           if #DCSEventHandlers.delayed_depress_commands > 0 then
-          return
+            return
           end
       end
 
@@ -132,6 +144,7 @@ function DCSEventHandlers.onSimulationStart()
         Logging.info("Airframe is supported: "..DCSEventHandlers.aircraftModel)
         Logging.info("Creating command generator")
         DCSEventHandlers.commandGenerator = CommandGeneratorFactory.createGenerator(DCSEventHandlers.aircraftModel)
+        DCSEventHandlers.inputActionProcessor = CommandGeneratorFactory.createInputActionProcessor(DCSEventHandlers.aircraftModel)
         if DCSEventHandlers.commandGenerator ~= nil then
           Logging.info("Command generator for "..DCSEventHandlers.aircraftModel.." was created")
           local eventArgs = {
@@ -214,9 +227,10 @@ function DCSEventHandlers.transfer(commands)
   DCSEventHandlers.dispatchEvent(EventTypes.TransferStarted, eventArg)
 end
 
-function DCSEventHandlers.scheduleCommands(commands)
+function DCSEventHandlers.scheduleCommands(commands, initialDelay)
+  local startDelay = initialDelay or 0.100
   -- introduce 100ms delay at start
-  local schedule_time = DCS.getModelTime() + 0.100
+  local schedule_time = DCS.getRealTime() + startDelay
   Logging.info("Expected schedule start: "..schedule_time)
   for k, command in pairs(commands) do
     command:setSchedule(schedule_time)

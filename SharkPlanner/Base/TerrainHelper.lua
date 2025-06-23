@@ -21,7 +21,7 @@ end
 function TerrainHelper:loadTerrains(terrainPaths)
     self.terrains = {}
     for i, entry in ipairs(terrainPaths) do
-        local towns = {} or tools.safeDoFileWithRequire(entry.full_path..[[\Map\towns.lua]]).towns
+        local towns = tools.safeDoFileWithRequire(entry.full_path..[[\Map\towns.lua]]).towns or {}
         
         self.terrains[entry.id] = {
             path = entry.full_path,
