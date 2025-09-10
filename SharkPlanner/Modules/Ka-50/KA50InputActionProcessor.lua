@@ -134,15 +134,15 @@ function KA50InputActionProcessor:slewSHKVAL(commands)
     local verticalDistance = selfY - targetPosition:getY()
     local dcsVerticalAngle = math.atan(selfY / horizontalDistance)
     local trueVerticalAngle = math.atan(verticalDistance / horizontalDistance)
-    local correctionVerticalngle = trueVerticalAngle - dcsVerticalAngle
+    local correctionVerticalAngle = trueVerticalAngle - dcsVerticalAngle
     local dcsVerticalAngleControl = math.deg(dcsVerticalAngle)
     local trueVerticalAngleControl = math.deg(trueVerticalAngle)
-    local correctionVerticaAngleControl = math.deg(correctionVerticalngle)
+    local correctionVerticaAngleControl = math.deg(correctionVerticalAngle)
     -- local intensity = 18.75 * correctionVerticaAngle
     -- local delay = 1000
     -- local intensity = 10 * 4.6 * correctionVerticaAngle
-    local intensity = 10 * 4.6 * correctionVerticalngle
-    local intensity = 10 * 4.47 * correctionVerticalngle
+    local intensity = 10 * 4.6 * correctionVerticalAngle
+    local intensity = 10 * 4.47 * correctionVerticalAngle
     local delay = 400
     local slewSpeed = math.abs(correctionVerticaAngleControl / delay) * 1000
     Logging.info("DCS vertical angle: "..dcsVerticalAngleControl)
@@ -156,9 +156,10 @@ function KA50InputActionProcessor:slewSHKVAL(commands)
         commands[#commands + 1] = Command:new():setName("NOP"):setComment(comment):setDevice(nil):setCode(nil):setDelay(Configuration:getOption("Ka-50.SHKVAL.InitialCorrectionDelay")):setIntensity(nil):setDepress(false)
     end
     -- move shkval vertically
+    -- commands[#commands + 1] = Command:new():setName("SHKVAL: PlaneRadarVertical"):setDevice(8):setCode(self.Keys.PlaneRadarVerticalAbs):setDelay(delay):setIntensity(intensity):setDepress(true)
     commands[#commands + 1] = Command:new():setName("SHKVAL: PlaneRadarVertical"):setDevice(8):setCode(self.Keys.PlaneRadarVerticalAbs):setDelay(delay):setIntensity(intensity):setDepress(true)
     if self.zoomed == true then
-        commands[#commands + 1] = Command:new():setName("SHKVAL: Zoom IN"):setDevice(8):setCode(self.Keys.PlaneZoomIn):setDelay(50):setIntensity(1):setDepress(true)    
+        commands[#commands + 1] = Command:new():setName("SHKVAL: Zoom IN"):setDevice(8):setCode(self.Keys.PlaneZoomIn):setDelay(50):setIntensity(1):setDepress(true)
     end
 
 
