@@ -11,4 +11,5 @@ return {
   Configuration = require("SharkPlanner.Base.Configuration"),
   Camera = require("SharkPlanner.Base.Camera"),
   TerrainHelper = require("SharkPlanner.Base.TerrainHelper"),
+  BaseInputActionProcessor = require("SharkPlanner.Base.BaseInputActionProcessor"),
 }

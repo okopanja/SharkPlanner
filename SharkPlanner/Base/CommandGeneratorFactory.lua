@@ -23,6 +23,7 @@ end
 function CommandGeneratorFactory.reload()
   -- clear list of supported variants
   CommandGeneratorFactory.supported = {}
+  CommandGeneratorFactory.supportedInputActionProcessors = {}
   -- unload the packages belonging to modules
   for k, v in pairs(package.loaded) do
       if String.starts_with(k, "SharkPlanner.Modules.") then
@@ -43,6 +44,13 @@ function CommandGeneratorFactory.reload()
     for variant, command_generator in pairs(module_command_generators) do
       Logging.info("Registering generator for: "..variant)
       CommandGeneratorFactory.supported[variant] = command_generator
+    end
+    if module.getInputActionProcessors ~= nil then
+      local module_input_action_processor = module.getInputActionProcessors()
+      for variant, input_action_processor in pairs(module_input_action_processor) do
+        Logging.info("Registering input processor for: "..variant)
+        CommandGeneratorFactory.supportedInputActionProcessors[variant] = input_action_processor
+      end
     end
   end
 end
@@ -88,6 +96,17 @@ end
 function CommandGeneratorFactory.createGenerator(module)
   Logging.info("Creating generator for: "..module)
   for k, v in pairs(CommandGeneratorFactory.supported) do
+    if k == module then
+      return v:new{}
+    end
+  end
+  return nil
+end
+
+--create input action processor for supported module
+function CommandGeneratorFactory.createInputActionProcessor(module)
+  Logging.info("Creating input processor for: "..module)
+  for k, v in pairs(CommandGeneratorFactory.supportedInputActionProcessors) do
     if k == module then
       return v:new{}
     end
