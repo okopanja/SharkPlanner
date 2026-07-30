@@ -75,15 +75,6 @@ local function getConfigurationDefinition()
                     Default = true,
                     Control = "CheckBox"
                 },
-                -- {
-                --     Name = "InitialCorrectionDelay",
-                --     Label = "Initial correction delay (ms)",
-                --     Default = 2000,
-                --     Control = "HorzSlider",
-                --     Min = 0,
-                --     Max = 5000,
-                --     Step = 1,
-                -- }
             }
         },
         {
